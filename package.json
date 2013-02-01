@@ -1,0 +1,20 @@
+{
+  "name": "grid.js",
+  "version": "0.1.0",
+  "description": "operations on NxN grids.",
+  "main": "grid.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": "",
+  "author": "Yosiya Hinosawa (@kt3k)",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "b613ef505d53839f0ebe1247b8da8752610422b4",
+  "devDependencies": {
+      "grunt": "0.4.0rc2",
+      "grunt-contrib-jshint": "~0.1.0",
+      "grunt-contrib-connect": "~0.1.0",
+      "grunt-contrib-jasmine": "~0.3.0rc5",
+  }
+}
