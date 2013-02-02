@@ -344,8 +344,6 @@ window.div.hue = 17;
 window.div.sat = 30;
 window.div.lum = 50;
 
-var range = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-
 var sixteen = {};
 
 sixteen.origin = function () {
