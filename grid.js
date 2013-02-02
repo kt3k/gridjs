@@ -118,7 +118,7 @@ this.grid = (function (window) {
         };
     };
 
-    grid.periodicMethod = function (period, set, dir, up, down) {
+    grid.periodicMethod = function (period, set, dir) {
         return function () {
             this.div[set](this[period][dir]());
             this.exciteMetrics();
@@ -212,8 +212,8 @@ this.grid = (function (window) {
     grid.prototype.cU = grid.scale(8);
     grid.prototype.cD = grid.scale(-8);
 
-    grid.prototype.cR = grid.periodicMethod('periodScale', 'setScale', 'up', 'cU', 'cD');
-    grid.prototype.cL = grid.periodicMethod('periodScale', 'setScale', 'down', 'cU', 'cD');
+    grid.prototype.cR = grid.periodicMethod('periodScale', 'setScale', 'up');
+    grid.prototype.cL = grid.periodicMethod('periodScale', 'setScale', 'down');
 
     grid.prototype.commit = function () {
         metricsExcited.forEach(function (grid) {
