@@ -77,7 +77,6 @@ this.grid = (function (window) {
     });
 
     var metricsExcited = [];
-    var positionExcited = [];
 
     // constructor
     var grid = function (i, j, parent) {
@@ -131,22 +130,26 @@ this.grid = (function (window) {
         this.div.addX(i);
         this.div.addY(j);
         this.wrapXY();
-        this.excitePosition();
     });
+
     grid.rotate = grid.metricsChange(function (deg) {
         this.div.addRot(deg);
     });
+
     grid.hue = grid.metricsChange(function (hue) {
         this.div.addHue(hue);
     });
+
     grid.saturation = grid.metricsChange(function (sat) {
         this.div.addSat(sat);
         this.checkColor();
     });
+
     grid.luminosity = grid.metricsChange(function (lum) {
         this.div.addLum(lum);
         this.checkColor();
     });
+
     grid.scale = grid.metricsChange(function (scale) {
         this.div.addScale(scale);
     });
@@ -163,45 +166,30 @@ this.grid = (function (window) {
             this.met.y -= FIELD_SIZE;
         }
     };
+
     grid.prototype.checkColor = function () {
         this.met.sat = Math.min(Math.max(this.met.sat, 0), 100);
         this.met.lum = Math.min(Math.max(this.met.lum, 20), 100);
     };
-    grid.prototype.change = function (i, j) {
-        var target = this.parent[i][j];
-        this.swap(target);
-    };
-    grid.prototype.swap = function (target) {
-        this.parent[this.row][this.col] = target;
-        this.parent[target.row][target.col] = this;
-        swapParam(target, this, ['row', 'col']);
-        return target;
-    };
+
     grid.prototype.swapPosition = function (target) {
         this.parent[this.row][this.col] = target;
         this.parent[target.row][target.col] = this;
+
         swapParam(target, this, ['row', 'col']);
         swapParam(target.met, this.met, ['x', 'y']);
+
         this.exciteMetrics();
         target.exciteMetrics();
+
         this.setLastOne(target);
         return this;
     };
+
     grid.prototype.exciteMetrics = function () {
         if (metricsExcited.indexOf(this) === -1) {
             metricsExcited.push(this);
         }
-    };
-    grid.prototype.excitePosition = function () {
-        if (positionExcited.indexOf(this) === -1) {
-            positionExcited.push(this);
-        }
-    };
-    grid.prototype.reduceExcite = function () {
-        positionExcited.reduce(function (x, y) {
-            return x.swap(y);
-        });
-        positionExcited = [];
     };
 
     grid.prototype.tR = grid.translate(GRID_LEVEL, 0);
