@@ -543,7 +543,7 @@ var signHooks = (function () {
                 'RRLL',
                 'LLRR',
                 ' LR '
-            ]).commit();
+            ]);
             reduceHue(sixteen.origin(), [
                 ' ↑↓ ',
                 '↑↑↓↓',
@@ -553,10 +553,62 @@ var signHooks = (function () {
         },
         SWW: function () {},
         
-        NSS: function () {},
-        NSN: function () {},
-        NSO: function () {},
-        NSW: function () {},
+        NSS: function () {
+            reduceRot(sixteen.origin(), [
+                ' RL ',
+                'RRLL',
+                'LLRR',
+                ' LR '
+            ]);
+            reduceSat(sixteen.origin(), [
+                ' ↑↓ ',
+                '↑↑↓↓',
+                '↓↓↑↑',
+                ' ↓↑ '
+            ]).commit();
+        },
+        NSN: function () {
+            reduceRot(sixteen.origin(), [
+                'RLRL',
+                'LRLR',
+                'RLRL',
+                'LRLR'
+            ]);
+            reduceSat(sixteen.origin(), [
+                '↑↓↑↓',
+                '↓↑↓↑',
+                '↑↓↑↓',
+                '↓↑↓↑'
+            ]).commit();
+        },
+        NSO: function () {
+            reduceRot(sixteen.origin(), [
+                ' RL ',
+                'RRLL',
+                'LLRR',
+                ' LR '
+            ]);
+            reduceLum(sixteen.origin(), [
+                ' ↑↓ ',
+                '↑↑↓↓',
+                '↓↓↑↑',
+                ' ↓↑ '
+            ]).commit();
+        },
+        NSW: function () {
+            reduceRot(sixteen.origin(), [
+                'RLRL',
+                'LRLR',
+                'RLRL',
+                'LRLR'
+            ]);
+            reduceLum(sixteen.origin(), [
+                '↑↓↑↓',
+                '↓↑↓↑',
+                '↑↓↑↓',
+                '↓↑↓↑'
+            ]).commit();
+        },
         
         NNS: function () {},
         NNN: function () {},
