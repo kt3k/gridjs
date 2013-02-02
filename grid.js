@@ -263,10 +263,11 @@ this.grid = (function (window) {
     grid.prototype.g9 = grid.next(1, -1);
 
     grid.prototype.gN = function () {
-        if (this.row >= NUM_GRIDS - 1) {
-            return this.g3();
-        }
-        return this.g6();
+        return this.onLastRow() ? this.g3() : this.g6();
+    };
+
+    grid.prototype.onLastRow = function () {
+        return this.row === NUM_GRIDS - 1;
     };
 
     grid.prototype.ex = function () {
