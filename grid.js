@@ -34,15 +34,9 @@ this.grid = (function (window) {
     };
 
     var swapParam = function (x, y, key) {
-        if (key instanceof Array) {
-            key.forEach(function (k) {
-                swapParam(x, y, k);
-            });
-            return;
-        }
-        var tmp = x[key];
+        var xKey = x[key];
         x[key] = y[key];
-        y[key] = tmp;
+        y[key] = xKey;
     };
 
     var init = function (args) {
@@ -99,14 +93,18 @@ this.grid = (function (window) {
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
 
-        this.div.setX(GRID_LEVEL * this.row + LEFT_MARGIN);
-        this.div.setY(GRID_LEVEL * this.col + TOP_MARGIN);
-        this.div.commit();
+        this.resetXY();
 
         this.div.grid = this;
 
         this.met = this.div.met;
         this.dom = this.div.dom;
+    };
+
+    grid.prototype.resetXY = function () {
+        this.div.setX(GRID_LEVEL * this.row + LEFT_MARGIN);
+        this.div.setY(GRID_LEVEL * this.col + TOP_MARGIN);
+        this.exciteMetrics();
     };
 
     grid.metricsChange = function (callback) {
@@ -178,11 +176,11 @@ this.grid = (function (window) {
         this.parent[this.row][this.col] = target;
         this.parent[target.row][target.col] = this;
 
-        swapParam(target, this, ['row', 'col']);
-        swapParam(target.met, this.met, ['x', 'y']);
+        swapParam(target, this, 'col');
+        swapParam(target, this, 'row');
 
-        this.exciteMetrics();
-        target.exciteMetrics();
+        this.resetXY();
+        target.resetXY();
 
         this.setLastOne(target);
         return this;
@@ -289,9 +287,9 @@ this.grid = (function (window) {
         return this.parent.lastOneGrid || this;
     };
 
-    grid.swapNext = function (key) {
+    grid.swapNext = function (direction) {
         return function () {
-            return this.swapPosition(this.execute(key));
+            return this.swapPosition(this.execute(direction));
         };
     };
 
@@ -340,15 +338,7 @@ window.div.lum = 50;
 
 var range = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-var sixteen = function (c, r, cFunc, crFunc) {
-    'use strict';
-    c.forEach(function (i) {
-        cFunc(i);
-        r.forEach(function (j) {
-            crFunc(i, j);
-        });
-    });
-};
+var sixteen = {};
 
 sixteen.origin = function () {
     'use strict';
@@ -357,11 +347,11 @@ sixteen.origin = function () {
 
 var born = function () {
     'use strict';
-    var field = sixteen;
-    field(range.slice(0, NUM_GRIDS_DEFAULT), range.slice(0, NUM_GRIDS_DEFAULT), function () {
-    }, function (i, j) {
-        window.grid(i, j, field).commit().appendTo(window.document.body);
-    });
+    for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
+        for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
+            window.grid(i, j, sixteen).commit().appendTo(window.document.body);
+        }
+    }
 };
 
 var COMMAND_SEPARATOR = '|';
