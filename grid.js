@@ -88,9 +88,10 @@ this.grid = (function (window) {
         this.parent = parent;
         this.commitDelay = 0;
 
-        this.periodScale = period([100, 112, 100, 88]);
-        this.periodSat = period([30, 60, 90, 60, 30, 0]);
-        this.periodLum = period([50, 70, 90, 70, 50, 30, 10, 30]);
+        this.periodic = {}
+        this.periodic.scale = period([100, 112, 100, 88]);
+        this.periodic.sat = period([30, 60, 90, 60, 30, 0]);
+        this.periodic.lum = period([50, 70, 90, 70, 50, 30, 10, 30]);
 
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
@@ -120,9 +121,9 @@ this.grid = (function (window) {
         };
     };
 
-    grid.periodicMethod = function (period, set, dir) {
+    grid.periodicMethod = function (key, dir) {
         return function () {
-            this.div[set](this[period][dir]());
+            this.div.met[key](this.periodic[key][dir]());
             this.exciteMetrics();
             return this;
         };
@@ -208,20 +209,20 @@ this.grid = (function (window) {
     grid.prototype.sU = grid.saturation(20);
     grid.prototype.sD = grid.saturation(-20);
 
-    grid.prototype.sR = grid.periodicMethod('periodSat', 'setSat', 'up');
-    grid.prototype.sL = grid.periodicMethod('periodSat', 'setSat', 'down');
+    grid.prototype.sR = grid.periodicMethod('sat', 'up');
+    grid.prototype.sL = grid.periodicMethod('sat', 'down');
 
     grid.prototype.lU = grid.luminosity(20);
     grid.prototype.lD = grid.luminosity(-20);
 
-    grid.prototype.lR = grid.periodicMethod('periodLum', 'setLum', 'up');
-    grid.prototype.lL = grid.periodicMethod('periodLum', 'setLum', 'down');
+    grid.prototype.lR = grid.periodicMethod('lum', 'up');
+    grid.prototype.lL = grid.periodicMethod('lum', 'down');
 
     grid.prototype.cU = grid.scale(8);
     grid.prototype.cD = grid.scale(-8);
 
-    grid.prototype.cR = grid.periodicMethod('periodScale', 'setScale', 'up');
-    grid.prototype.cL = grid.periodicMethod('periodScale', 'setScale', 'down');
+    grid.prototype.cR = grid.periodicMethod('scale', 'up');
+    grid.prototype.cL = grid.periodicMethod('scale', 'down');
 
     grid.prototype.commit = function () {
         metricsExcited.forEach(function (grid) {
