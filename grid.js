@@ -89,6 +89,8 @@ this.grid = (function (window) {
         this.commitDelay = 0;
 
         this.periodScale = period([100, 112, 100, 88]);
+        this.periodSat = period([30, 60, 90, 60, 30, 0]);
+        this.periodLum = period([50, 70, 90, 70, 50, 30, 10, 30]);
 
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
@@ -206,8 +208,14 @@ this.grid = (function (window) {
     grid.prototype.sU = grid.saturation(20);
     grid.prototype.sD = grid.saturation(-20);
 
+    grid.prototype.sR = grid.periodicMethod('periodSat', 'setSat', 'up');
+    grid.prototype.sL = grid.periodicMethod('periodSat', 'setSat', 'down');
+
     grid.prototype.lU = grid.luminosity(20);
     grid.prototype.lD = grid.luminosity(-20);
+
+    grid.prototype.lR = grid.periodicMethod('periodLum', 'setLum', 'up');
+    grid.prototype.lL = grid.periodicMethod('periodLum', 'setLum', 'down');
 
     grid.prototype.cU = grid.scale(8);
     grid.prototype.cD = grid.scale(-8);
@@ -420,14 +428,14 @@ var reduceHue = reduceCommandsWithMapping({
 });
 
 var reduceSat = reduceCommandsWithMapping({
-    '↑': 'sU|gN',
-    '↓': 'sD|gN',
+    '↑': 'sR|gN',
+    '↓': 'sL|gN',
     ' ': 'gN'
 });
 
 var reduceLum = reduceCommandsWithMapping({
-    '↑': 'lU|gN',
-    '↓': 'lD|gN',
+    '↑': 'lR|gN',
+    '↓': 'lL|gN',
     ' ': 'gN'
 });
 
