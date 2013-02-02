@@ -103,6 +103,8 @@ this.grid = (function (window) {
         this.div.setY(GRID_LEVEL * this.col + TOP_MARGIN);
         this.div.commit();
 
+        this.div.grid = this;
+
         this.met = this.div.met;
         this.dom = this.div.dom;
     };
