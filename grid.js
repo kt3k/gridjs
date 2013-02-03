@@ -330,14 +330,6 @@ var TOP_MARGIN_DEFAULT = 10;
 var GRID_SIZE_DEFAULT = 50;
 var COMMIT_DIFF_DEFAULT = 40;
 
-this.grid.init({
-    num: NUM_GRIDS_DEFAULT,
-    margin: GRID_MARGIN_DEFAULT,
-    left: LEFT_MARGIN_DEFAULT,
-    top: TOP_MARGIN_DEFAULT,
-    size: GRID_SIZE_DEFAULT,
-    diff: COMMIT_DIFF_DEFAULT
-});
 
 window.div.hue = 17;
 window.div.sat = 30;
@@ -352,6 +344,16 @@ sixteen.origin = function () {
 
 var born = function () {
     'use strict';
+
+    window.grid.init({
+        num: NUM_GRIDS_DEFAULT,
+        margin: GRID_MARGIN_DEFAULT,
+        left: LEFT_MARGIN_DEFAULT,
+        top: TOP_MARGIN_DEFAULT,
+        size: GRID_SIZE_DEFAULT,
+        diff: COMMIT_DIFF_DEFAULT
+    });
+
     for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
         for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
             window.grid(i, j, sixteen).commit().appendTo(window.document.body);
@@ -394,7 +396,7 @@ var reduceCommandsWithMapping = function (mapping, append) {
     };
 };
 
-var reduce2 = reduceCommandsWithMapping({
+var reduceMove = reduceCommandsWithMapping({
     '→': 'w6',
     '←': 'w4',
     '↓': 'w2',
@@ -443,7 +445,7 @@ window.documentReady(function () {
 
     var proteins = {
         SSS: function () {
-            reduce2(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
+            reduceMove(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
         },
         SSN: function () {
             sixteen[0][0].rR();
@@ -475,34 +477,34 @@ window.documentReady(function () {
             sixteen[0][0].commit();
         },
         SNN: function () {
-            reduce2(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
+            reduceMove(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
         },
         SNO: function () {
-            reduce2(sixteen[0][0], '*↓*→*↑*');
-            reduce2(sixteen[0][2], '↓→↑');
-            reduce2(sixteen[2][0], '↓→↑');
-            reduce2(sixteen[2][2], '*↓*→*↑*').commit();
+            reduceMove(sixteen[0][0], '*↓*→*↑*');
+            reduceMove(sixteen[0][2], '↓→↑');
+            reduceMove(sixteen[2][0], '↓→↑');
+            reduceMove(sixteen[2][2], '*↓*→*↑*').commit();
         },
         SNW: function () {
-            reduce2(sixteen[0][0], '*→*↓*←*');
-            reduce2(sixteen[0][2], '→↓←');
-            reduce2(sixteen[2][0], '→↓←');
-            reduce2(sixteen[2][2], '*→*↓*←*').commit();
+            reduceMove(sixteen[0][0], '*→*↓*←*');
+            reduceMove(sixteen[0][2], '→↓←');
+            reduceMove(sixteen[2][0], '→↓←');
+            reduceMove(sixteen[2][2], '*→*↓*←*').commit();
         },
 
         SOS: function () {
-            reduce2(sixteen.origin(), '*↓↓↓↙*↓↓↓').commit();
-            reduce2(sixteen.origin().g6(), '*↓↓↓↘*↓↓↓').commit();
+            reduceMove(sixteen.origin(), '*↓↓↓↙*↓↓↓').commit();
+            reduceMove(sixteen.origin().g6(), '*↓↓↓↘*↓↓↓').commit();
         },
         SON: function () {
-            reduce2(sixteen.origin(), '*↓*↓*↓*→*→*→*↑*↑*↑*←*←*').commit();
-            reduce2(sixteen.origin().g3(), '→↓←').commit();
+            reduceMove(sixteen.origin(), '*↓*↓*↓*→*→*→*↑*↑*↑*←*←*').commit();
+            reduceMove(sixteen.origin().g3(), '→↓←').commit();
         },
         SOO: function () {
-            reduce2(sixteen.origin(), '↓↓↓');
-            reduce2(sixteen.origin().g6(), '*↓*↓*↓*');
-            reduce2(sixteen.origin().g4(), '***↓***↓***↓***');
-            reduce2(sixteen.origin().g6().g6(), '**↓**↓**↓**').commit();
+            reduceMove(sixteen.origin(), '↓↓↓');
+            reduceMove(sixteen.origin().g6(), '*↓*↓*↓*');
+            reduceMove(sixteen.origin().g4(), '***↓***↓***↓***');
+            reduceMove(sixteen.origin().g6().g6(), '**↓**↓**↓**').commit();
         },
         SOW: function () {
             reduceScales(sixteen.origin(), [
