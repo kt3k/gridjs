@@ -8,6 +8,7 @@
 window.grid = (function (window) {
     'use strict';
 
+    // utility for periodic metrics
     var period = function (table) {
         var index = 0;
         var length = table.length;
@@ -275,173 +276,175 @@ var SAT_DEFAULT = 30;
 var LUM_DEFAULT = 50;
 
 
-var sixteen = {};
-
-sixteen.init = function (args) {
-    'use strict';
-    this.NUM_GRIDS = args.num;
-    this.GRID_MARGIN = args.margin;
-    this.LEFT_MARGIN = args.left;
-    this.TOP_MARGIN = args.top;
-    this.GRID_SIZE = args.size;
-    this.GRID_LEVEL = this.GRID_SIZE + this.GRID_MARGIN;
-    this.LEFT_LIMIT = this.LEFT_MARGIN - this.GRID_SIZE;
-    this.TOP_LIMIT = this.TOP_MARGIN - this.GRID_SIZE;
-    this.FIELD_SIZE = this.GRID_LEVEL * this.NUM_GRIDS;
-    this.RIGHT_LIMIT = this.LEFT_MARGIN + this.FIELD_SIZE;
-    this.BOTTOM_LIMIT = this.TOP_MARGIN + this.FIELD_SIZE;
-    this.COMMIT_DIFF = args.diff;
-};
-
-sixteen.origin = function () {
-    'use strict';
-    return this[0][0];
-};
-
-sixteen.born = function () {
+window.gridField = (function () {
     'use strict';
 
-    window.div.hue = HUE_DEFAULT;
-    window.div.sat = SAT_DEFAULT;
-    window.div.lum = LUM_DEFAULT;
-
-    this.init({
-        num: NUM_GRIDS_DEFAULT,
-        margin: GRID_MARGIN_DEFAULT,
-        left: LEFT_MARGIN_DEFAULT,
-        top: TOP_MARGIN_DEFAULT,
-        size: GRID_SIZE_DEFAULT,
-        diff: COMMIT_DIFF_DEFAULT
-    });
-
-    forEachGrid(this, function (i, j) {
-        window.grid(i, j, this);
-    });
-
-    return this;
-};
-
-sixteen.commit = function () {
-    'use strict';
-    this.origin().commit();
-    return this;
-};
-
-sixteen.solidCommit = function () {
-    'use strict';
-
-    forEachGrid(this, function (i, j) {
-        this[i][j].div.commit();
-    });
-
-    return this;
-};
-
-sixteen.appendTo = function (dom) {
-    'use strict';
-
-    forEachGrid(this, function (i, j) {
-        this[i][j].appendTo(dom);
-    });
-
-    return this;
-};
-
-var COMMAND_SEPARATOR = '|';
-
-var mapper = function (mapping) {
-    'use strict';
-    return function (x) {
-        return mapping[x];
+    var gridField = function () {
     };
-};
 
-var forEachGrid = function (self, func) {
-    'use strict';
-    for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
-        for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
-            func.call(self, i, j);
+    var pt = gridField.prototype;
+
+    pt.init = function (args) {
+        this.NUM_GRIDS = args.num;
+        this.GRID_MARGIN = args.margin;
+        this.LEFT_MARGIN = args.left;
+        this.TOP_MARGIN = args.top;
+        this.GRID_SIZE = args.size;
+        this.GRID_LEVEL = this.GRID_SIZE + this.GRID_MARGIN;
+        this.LEFT_LIMIT = this.LEFT_MARGIN - this.GRID_SIZE;
+        this.TOP_LIMIT = this.TOP_MARGIN - this.GRID_SIZE;
+        this.FIELD_SIZE = this.GRID_LEVEL * this.NUM_GRIDS;
+        this.RIGHT_LIMIT = this.LEFT_MARGIN + this.FIELD_SIZE;
+        this.BOTTOM_LIMIT = this.TOP_MARGIN + this.FIELD_SIZE;
+        this.COMMIT_DIFF = args.diff;
+    };
+
+    pt.origin = function () {
+        return this[0][0];
+    };
+
+    pt.born = function () {
+        window.div.hue = HUE_DEFAULT;
+        window.div.sat = SAT_DEFAULT;
+        window.div.lum = LUM_DEFAULT;
+
+        this.init({
+            num: NUM_GRIDS_DEFAULT,
+            margin: GRID_MARGIN_DEFAULT,
+            left: LEFT_MARGIN_DEFAULT,
+            top: TOP_MARGIN_DEFAULT,
+            size: GRID_SIZE_DEFAULT,
+            diff: COMMIT_DIFF_DEFAULT
+        });
+
+        this.forEachGrid(function (i, j) {
+            window.grid(i, j, this);
+        });
+
+        return this;
+    };
+
+    pt.commit = function () {
+        this.origin().commit();
+        return this;
+    };
+
+    pt.solidCommit = function () {
+        this.forEachGrid(function (i, j) {
+            this[i][j].div.commit();
+        });
+
+        return this;
+    };
+
+    pt.appendTo = function (dom) {
+        this.forEachGrid(function (i, j) {
+            this[i][j].appendTo(dom);
+        });
+
+        return this;
+    };
+
+    var COMMAND_SEPARATOR = '|';
+
+    var mapper = function (mapping) {
+        return function (x) {
+            return mapping[x];
+        };
+    };
+
+    pt.forEachGrid = function (func) {
+        for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
+            for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
+                func.call(this, i, j);
+            }
         }
-    }
-};
-
-var flattenJoin = function flattenJoin(array, sep) {
-    'use strict';
-    if (!(array instanceof Array)) {
-        return array;
-    }
-
-    return array.map(function (x) {
-        return flattenJoin(x, sep);
-    }).join(sep);
-};
-
-var reduceCommandsWithMapping = function (mapping, append) {
-    'use strict';
-
-    return function (grid, routes) {
-        routes = flattenJoin(routes, '');
-
-        var commands = routes.split('')
-        .map(mapper(mapping))
-        .join(COMMAND_SEPARATOR)
-        .split(COMMAND_SEPARATOR)
-        .concat(append || []);
-
-        return grid.executeIterate(commands);
     };
-};
 
-var reduceMove = reduceCommandsWithMapping({
-    '→': 'w6',
-    '←': 'w4',
-    '↓': 'w2',
-    '↑': 'w8',
-    '↘': 'w3',
-    '↗': 'w9',
-    '↖': 'w7',
-    '↙': 'w1',
-    '*': 'ex'
-}, ['resetLastOne']);
+    var flattenJoin = function flattenJoin(array, sep) {
+        if (!(array instanceof Array)) {
+            return array;
+        }
 
-var reduceScales = reduceCommandsWithMapping({
-    '↑': 'cR|gN',
-    '↓': 'cL|gN',
-    ' ': 'gN'
-});
+        return array.map(function (x) {
+            return flattenJoin(x, sep);
+        }).join(sep);
+    };
 
-var reduceRot = reduceCommandsWithMapping({
-    'R': 'rR|gN',
-    'L': 'rL|gN',
-    ' ': 'gN'
-});
+    var reduceCommandsWithMapping = function (mapping, append) {
+        return function (grid, routes) {
+            routes = flattenJoin(routes, '');
 
-var reduceHue = reduceCommandsWithMapping({
-    '↑': 'hR|gN',
-    '↓': 'hL|gN',
-    ' ': 'gN'
-});
+            var commands = routes.split('')
+            .map(mapper(mapping))
+            .join(COMMAND_SEPARATOR)
+            .split(COMMAND_SEPARATOR)
+            .concat(append || []);
 
-var reduceSat = reduceCommandsWithMapping({
-    '↑': 'sR|gN',
-    '↓': 'sL|gN',
-    ' ': 'gN'
-});
+            return grid.executeIterate(commands);
+        };
+    };
 
-var reduceLum = reduceCommandsWithMapping({
-    '↑': 'lR|gN',
-    '↓': 'lL|gN',
-    ' ': 'gN'
-});
+    pt.reduceMove = reduceCommandsWithMapping({
+        '→': 'w6',
+        '←': 'w4',
+        '↓': 'w2',
+        '↑': 'w8',
+        '↘': 'w3',
+        '↗': 'w9',
+        '↖': 'w7',
+        '↙': 'w1',
+        '*': 'ex'
+    }, ['resetLastOne']);
+
+    pt.reduceScales = reduceCommandsWithMapping({
+        '↑': 'cR|gN',
+        '↓': 'cL|gN',
+        ' ': 'gN'
+    });
+
+    pt.reduceRot = reduceCommandsWithMapping({
+        'R': 'rR|gN',
+        'L': 'rL|gN',
+        ' ': 'gN'
+    });
+
+    pt.reduceHue = reduceCommandsWithMapping({
+        '↑': 'hR|gN',
+        '↓': 'hL|gN',
+        ' ': 'gN'
+    });
+
+    pt.reduceSat = reduceCommandsWithMapping({
+        '↑': 'sR|gN',
+        '↓': 'sL|gN',
+        ' ': 'gN'
+    });
+
+    pt.reduceLum = reduceCommandsWithMapping({
+        '↑': 'lR|gN',
+        '↓': 'lL|gN',
+        ' ': 'gN'
+    });
+
+    var exports = function () {
+        return new gridField();
+    };
+
+    pt.constructor = exports;
+    exports.prototype = pt;
+
+    return exports;
+}());
 
 window.documentReady(function () {
     'use strict';
 
-    sixteen.born().solidCommit().appendTo(document.body);
+    var sixteen = window.gridField().born().solidCommit().appendTo(document.body);
 
     var proteins = {
         SSS: function () {
-            reduceMove(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
+            sixteen.reduceMove(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
         },
         SSN: function () {
             sixteen[0][0].rR();
@@ -473,37 +476,37 @@ window.documentReady(function () {
             sixteen[0][0].commit();
         },
         SNN: function () {
-            reduceMove(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
+            sixteen.reduceMove(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
         },
         SNO: function () {
-            reduceMove(sixteen[0][0], '*↓*→*↑*');
-            reduceMove(sixteen[0][2], '↓→↑');
-            reduceMove(sixteen[2][0], '↓→↑');
-            reduceMove(sixteen[2][2], '*↓*→*↑*').commit();
+            sixteen.reduceMove(sixteen[0][0], '*↓*→*↑*');
+            sixteen.reduceMove(sixteen[0][2], '↓→↑');
+            sixteen.reduceMove(sixteen[2][0], '↓→↑');
+            sixteen.reduceMove(sixteen[2][2], '*↓*→*↑*').commit();
         },
         SNW: function () {
-            reduceMove(sixteen[0][0], '*→*↓*←*');
-            reduceMove(sixteen[0][2], '→↓←');
-            reduceMove(sixteen[2][0], '→↓←');
-            reduceMove(sixteen[2][2], '*→*↓*←*').commit();
+            sixteen.reduceMove(sixteen[0][0], '*→*↓*←*');
+            sixteen.reduceMove(sixteen[0][2], '→↓←');
+            sixteen.reduceMove(sixteen[2][0], '→↓←');
+            sixteen.reduceMove(sixteen[2][2], '*→*↓*←*').commit();
         },
 
         SOS: function () {
-            reduceMove(sixteen.origin(), '*↓↓↓↙*↓↓↓').commit();
-            reduceMove(sixteen.origin().g6(), '*↓↓↓↘*↓↓↓').commit();
+            sixteen.reduceMove(sixteen.origin(), '*↓↓↓↙*↓↓↓').commit();
+            sixteen.reduceMove(sixteen.origin().g6(), '*↓↓↓↘*↓↓↓').commit();
         },
         SON: function () {
-            reduceMove(sixteen.origin(), '*↓*↓*↓*→*→*→*↑*↑*↑*←*←*').commit();
-            reduceMove(sixteen.origin().g3(), '→↓←').commit();
+            sixteen.reduceMove(sixteen.origin(), '*↓*↓*↓*→*→*→*↑*↑*↑*←*←*').commit();
+            sixteen.reduceMove(sixteen.origin().g3(), '→↓←').commit();
         },
         SOO: function () {
-            reduceMove(sixteen.origin(), '↓↓↓');
-            reduceMove(sixteen.origin().g6(), '*↓*↓*↓*');
-            reduceMove(sixteen.origin().g4(), '***↓***↓***↓***');
-            reduceMove(sixteen.origin().g6().g6(), '**↓**↓**↓**').commit();
+            sixteen.reduceMove(sixteen.origin(), '↓↓↓');
+            sixteen.reduceMove(sixteen.origin().g6(), '*↓*↓*↓*');
+            sixteen.reduceMove(sixteen.origin().g4(), '***↓***↓***↓***');
+            sixteen.reduceMove(sixteen.origin().g6().g6(), '**↓**↓**↓**').commit();
         },
         SOW: function () {
-            reduceScales(sixteen.origin(), [
+            sixteen.reduceScales(sixteen.origin(), [
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
@@ -512,7 +515,7 @@ window.documentReady(function () {
         },
 
         SWS: function () {
-            reduceScales(sixteen.origin(), [
+            sixteen.reduceScales(sixteen.origin(), [
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -520,13 +523,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SWN: function () {
-            reduceRot(sixteen.origin(), [
+            sixteen.reduceRot(sixteen.origin(), [
                 'RLRL',
                 'LRLR',
                 'RLRL',
                 'LRLR'
             ]);
-            reduceHue(sixteen.origin(), [
+            sixteen.reduceHue(sixteen.origin(), [
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
@@ -534,13 +537,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SWO: function () {
-            reduceRot(sixteen.origin(), [
+            sixteen.reduceRot(sixteen.origin(), [
                 ' RL ',
                 'RRLL',
                 'LLRR',
                 ' LR '
             ]);
-            reduceHue(sixteen.origin(), [
+            sixteen.reduceHue(sixteen.origin(), [
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -550,13 +553,13 @@ window.documentReady(function () {
         SWW: function () {},
         
         NSS: function () {
-            reduceRot(sixteen.origin(), [
+            sixteen.reduceRot(sixteen.origin(), [
                 ' RL ',
                 'RRLL',
                 'LLRR',
                 ' LR '
             ]);
-            reduceSat(sixteen.origin(), [
+            sixteen.reduceSat(sixteen.origin(), [
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -564,13 +567,13 @@ window.documentReady(function () {
             ]).commit();
         },
         NSN: function () {
-            reduceRot(sixteen.origin(), [
+            sixteen.reduceRot(sixteen.origin(), [
                 'RLRL',
                 'LRLR',
                 'RLRL',
                 'LRLR'
             ]);
-            reduceSat(sixteen.origin(), [
+            sixteen.reduceSat(sixteen.origin(), [
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
@@ -578,13 +581,13 @@ window.documentReady(function () {
             ]).commit();
         },
         NSO: function () {
-            reduceRot(sixteen.origin(), [
+            sixteen.reduceRot(sixteen.origin(), [
                 ' RL ',
                 'RRLL',
                 'LLRR',
                 ' LR '
             ]);
-            reduceLum(sixteen.origin(), [
+            sixteen.reduceLum(sixteen.origin(), [
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -592,13 +595,13 @@ window.documentReady(function () {
             ]).commit();
         },
         NSW: function () {
-            reduceRot(sixteen.origin(), [
+            sixteen.reduceRot(sixteen.origin(), [
                 'RLRL',
                 'LRLR',
                 'RLRL',
                 'LRLR'
             ]);
-            reduceLum(sixteen.origin(), [
+            sixteen.reduceLum(sixteen.origin(), [
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
