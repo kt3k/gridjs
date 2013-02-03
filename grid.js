@@ -5,9 +5,7 @@
  * license: MIT License ( http://opensource.org/licenses/MIT )
  */
 
-var window = this;
-
-this.grid = (function (window) {
+window.grid = (function (window) {
     'use strict';
 
     var NUM_GRIDS, GRID_LEVEL, GRID_SIZE, GRID_MARGIN, LEFT_MARGIN, TOP_MARGIN, LEFT_LIMIT,
@@ -88,7 +86,7 @@ this.grid = (function (window) {
         this.parent = parent;
         this.commitDelay = 0;
 
-        this.periodic = {}
+        this.periodic = {};
         this.periodic.scale = period([100, 112, 100, 88]);
         this.periodic.sat = period([30, 60, 90, 60, 30, 0]);
         this.periodic.lum = period([50, 70, 90, 70, 50, 30, 10, 30]);
@@ -123,7 +121,7 @@ this.grid = (function (window) {
 
     grid.periodicMethod = function (key, dir) {
         return function () {
-            this.div.met[key](this.periodic[key][dir]());
+            this.div.met[key] = this.periodic[key][dir]();
             this.exciteMetrics();
             return this;
         };
@@ -323,7 +321,7 @@ this.grid = (function (window) {
     exports.init = init;
 
     return exports;
-}(this));
+}(window));
 
 var NUM_GRIDS_DEFAULT = 4;
 var GRID_MARGIN_DEFAULT = 10;
@@ -438,9 +436,12 @@ var reduceLum = reduceCommandsWithMapping({
     ' ': 'gN'
 });
 
-var signHooks = (function () {
+window.documentReady(function () {
     'use strict';
-    return {
+
+    born();
+
+    var proteins = {
         SSS: function () {
             reduce2(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
         },
@@ -662,13 +663,6 @@ var signHooks = (function () {
         WWO: function () {},
         WWW: function () {}
     };
-}());
 
-window.cardRibosome(signHooks);
-
-window.document.addEventListener('DOMContentLoaded', function x() {
-    'use strict';
-    born();
-
-    window.document.removeEventListener('DOMConetenLoaded', x);
+    window.cardRibosome(proteins);
 });
