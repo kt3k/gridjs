@@ -265,21 +265,11 @@ window.grid = (function (window) {
     return exports;
 }(window));
 
-var NUM_GRIDS_DEFAULT = 4;
-var GRID_MARGIN_DEFAULT = 10;
-var LEFT_MARGIN_DEFAULT = 30;
-var TOP_MARGIN_DEFAULT = 10;
-var GRID_SIZE_DEFAULT = 50;
-var COMMIT_DIFF_DEFAULT = 40;
-var HUE_DEFAULT = 17;
-var SAT_DEFAULT = 30;
-var LUM_DEFAULT = 50;
-
-
 window.gridField = (function () {
     'use strict';
 
-    var gridField = function () {
+    var gridField = function (args) {
+        this.init(args);
     };
 
     var pt = gridField.prototype;
@@ -296,7 +286,12 @@ window.gridField = (function () {
         this.FIELD_SIZE = this.GRID_LEVEL * this.NUM_GRIDS;
         this.RIGHT_LIMIT = this.LEFT_MARGIN + this.FIELD_SIZE;
         this.BOTTOM_LIMIT = this.TOP_MARGIN + this.FIELD_SIZE;
+
         this.COMMIT_DIFF = args.diff;
+
+        this.HUE_DEFAULT = args.hue;
+        this.SAT_DEFAULT = args.sat;
+        this.LUM_DEFAULT = args.lum;
     };
 
     pt.origin = function () {
@@ -304,18 +299,9 @@ window.gridField = (function () {
     };
 
     pt.born = function () {
-        window.div.hue = HUE_DEFAULT;
-        window.div.sat = SAT_DEFAULT;
-        window.div.lum = LUM_DEFAULT;
-
-        this.init({
-            num: NUM_GRIDS_DEFAULT,
-            margin: GRID_MARGIN_DEFAULT,
-            left: LEFT_MARGIN_DEFAULT,
-            top: TOP_MARGIN_DEFAULT,
-            size: GRID_SIZE_DEFAULT,
-            diff: COMMIT_DIFF_DEFAULT
-        });
+        window.div.hue = this.HUE_DEFAULT;
+        window.div.sat = this.SAT_DEFAULT;
+        window.div.lum = this.LUM_DEFAULT;
 
         this.forEachGrid(function (i, j) {
             window.grid(i, j, this);
@@ -345,20 +331,20 @@ window.gridField = (function () {
         return this;
     };
 
+    pt.forEachGrid = function (func) {
+        for (var i = 0; i < this.NUM_GRIDS; i++) {
+            for (var j = 0; j < this.NUM_GRIDS; j++) {
+                func.call(this, i, j);
+            }
+        }
+    };
+
     var COMMAND_SEPARATOR = '|';
 
     var mapper = function (mapping) {
         return function (x) {
             return mapping[x];
         };
-    };
-
-    pt.forEachGrid = function (func) {
-        for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
-            for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
-                func.call(this, i, j);
-            }
-        }
     };
 
     var flattenJoin = function flattenJoin(array, sep) {
@@ -427,8 +413,8 @@ window.gridField = (function () {
         ' ': 'gN'
     });
 
-    var exports = function () {
-        return new gridField();
+    var exports = function (args) {
+        return new gridField(args);
     };
 
     pt.constructor = exports;
@@ -440,18 +426,43 @@ window.gridField = (function () {
 window.documentReady(function () {
     'use strict';
 
-    var sixteen = window.gridField().born().solidCommit().appendTo(document.body);
+    var NUM_GRIDS_DEFAULT = 4;
+    var GRID_MARGIN_DEFAULT = 10;
+    var LEFT_MARGIN_DEFAULT = 30;
+    var TOP_MARGIN_DEFAULT = 10;
+    var GRID_SIZE_DEFAULT = 50;
+    var COMMIT_DIFF_DEFAULT = 40;
+    var HUE_DEFAULT = 17;
+    var SAT_DEFAULT = 30;
+    var LUM_DEFAULT = 50;
+
+    var sixteen = window.gridField({
+        num: NUM_GRIDS_DEFAULT,
+        margin: GRID_MARGIN_DEFAULT,
+        left: LEFT_MARGIN_DEFAULT,
+        top: TOP_MARGIN_DEFAULT,
+        size: GRID_SIZE_DEFAULT,
+        diff: COMMIT_DIFF_DEFAULT,
+        hue: HUE_DEFAULT,
+        sat: SAT_DEFAULT,
+        lum: LUM_DEFAULT
+    });
+
+    sixteen.born().solidCommit();
+
+    sixteen.appendTo(document.body);
 
     var proteins = {
         SSS: function () {
             sixteen.reduceMove(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
         },
         SSN: function () {
-            sixteen[0][0].rR();
-            sixteen[1][0].rL();
-            sixteen[2][0].rR();
-            sixteen[3][0].rL();
-            sixteen[2][3].rR().commit();
+            sixteen.reduceRot(sixteen.origin(), [
+                'RLRL',
+                '    ',
+                '    ',
+                '  R '
+            ]).commit();
         },
         SSO: function () {
             sixteen[1][0].rR().lD();
