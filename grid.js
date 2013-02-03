@@ -8,9 +8,6 @@
 window.grid = (function (window) {
     'use strict';
 
-    var NUM_GRIDS, GRID_LEVEL, GRID_SIZE, GRID_MARGIN, LEFT_MARGIN, TOP_MARGIN, LEFT_LIMIT,
-        TOP_LIMIT, FIELD_SIZE, RIGHT_LIMIT, BOTTOM_LIMIT, COMMIT_DIFF;
-
     var period = function (table) {
         var index = 0;
         var length = table.length;
@@ -37,53 +34,21 @@ window.grid = (function (window) {
         y[key] = xKey;
     };
 
-    var init = function (args) {
-        NUM_GRIDS = args.num;
-        GRID_MARGIN = args.margin;
-        LEFT_MARGIN = args.left;
-        TOP_MARGIN = args.top;
-        GRID_SIZE = args.size;
-        GRID_LEVEL = GRID_SIZE + GRID_MARGIN;
-        LEFT_LIMIT = LEFT_MARGIN - GRID_SIZE;
-        TOP_LIMIT = TOP_MARGIN - GRID_SIZE;
-        FIELD_SIZE = GRID_LEVEL * NUM_GRIDS;
-        RIGHT_LIMIT = LEFT_MARGIN + FIELD_SIZE;
-        BOTTOM_LIMIT = TOP_MARGIN + FIELD_SIZE;
-        COMMIT_DIFF = args.diff;
-    };
-
-    var NUM_GRIDS_DEFAULT = 4;
-    var GRID_MARGIN_DEFAULT = 10;
-    var LEFT_MARGIN_DEFAULT = 30;
-    var TOP_MARGIN_DEFAULT = 10;
-    var GRID_SIZE_DEFAULT = 50;
-    var COMMIT_DIFF_DEFAULT = 50;
-
-    init({
-        num: NUM_GRIDS_DEFAULT,
-        margin: GRID_MARGIN_DEFAULT,
-        left: LEFT_MARGIN_DEFAULT,
-        top: TOP_MARGIN_DEFAULT,
-        size: GRID_SIZE_DEFAULT,
-        diff: COMMIT_DIFF_DEFAULT
-    });
-
-    var metricsExcited = [];
-
     // constructor
     var grid = function (i, j, parent) {
+        this.row = i;
+        this.col = j;
+        this.parent = parent;
+
         this.div = window.div({
             position: 'absolute',
             left: 0,
             top: 0,
-            width: GRID_SIZE + 'px',
-            height: GRID_SIZE + 'px',
+            width: this.parent.GRID_SIZE + 'px',
+            height: this.parent.GRID_SIZE + 'px',
             webkitTransitionDuration: '500ms'
         });
 
-        this.row = i;
-        this.col = j;
-        this.parent = parent;
         this.commitDelay = 0;
 
         this.periodic = {};
@@ -94,6 +59,8 @@ window.grid = (function (window) {
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
 
+        parent.metricsExcited || (parent.metricsExcited = []);
+
         this.resetXY();
 
         this.div.grid = this;
@@ -103,8 +70,8 @@ window.grid = (function (window) {
     };
 
     grid.prototype.resetXY = function () {
-        this.div.setX(GRID_LEVEL * this.row + LEFT_MARGIN);
-        this.div.setY(GRID_LEVEL * this.col + TOP_MARGIN);
+        this.div.setX(this.parent.GRID_LEVEL * this.row + this.parent.LEFT_MARGIN);
+        this.div.setY(this.parent.GRID_LEVEL * this.col + this.parent.TOP_MARGIN);
         this.exciteMetrics();
     };
 
@@ -126,12 +93,6 @@ window.grid = (function (window) {
             return this;
         };
     };
-
-    grid.translate = grid.metricsChange(function (i, j) {
-        this.div.addX(i);
-        this.div.addY(j);
-        this.wrapXY();
-    });
 
     grid.rotate = grid.metricsChange(function (deg) {
         this.div.addRot(deg);
@@ -155,19 +116,6 @@ window.grid = (function (window) {
         this.div.addScale(scale);
     });
 
-    grid.prototype.wrapXY = function () {
-        if (this.met.x <= LEFT_LIMIT) {
-            this.met.x += FIELD_SIZE;
-        } else if (this.met.x >= RIGHT_LIMIT) {
-            this.met.x -= FIELD_SIZE;
-        }
-        if (this.met.y <= TOP_LIMIT) {
-            this.met.y += FIELD_SIZE;
-        } else if (this.met.y >= BOTTOM_LIMIT) {
-            this.met.y -= FIELD_SIZE;
-        }
-    };
-
     grid.prototype.checkColor = function () {
         this.met.sat = Math.min(Math.max(this.met.sat, 0), 100);
         this.met.lum = Math.min(Math.max(this.met.lum, 20), 100);
@@ -188,15 +136,10 @@ window.grid = (function (window) {
     };
 
     grid.prototype.exciteMetrics = function () {
-        if (metricsExcited.indexOf(this) === -1) {
-            metricsExcited.push(this);
+        if (this.parent.metricsExcited.indexOf(this) === -1) {
+            this.parent.metricsExcited.push(this);
         }
     };
-
-    grid.prototype.tR = grid.translate(GRID_LEVEL, 0);
-    grid.prototype.tL = grid.translate(-GRID_LEVEL, 0);
-    grid.prototype.tD = grid.translate(0, GRID_LEVEL);
-    grid.prototype.tU = grid.translate(0, -GRID_LEVEL);
 
     grid.prototype.rR = grid.rotate(90);
     grid.prototype.rL = grid.rotate(-90);
@@ -223,22 +166,22 @@ window.grid = (function (window) {
     grid.prototype.cL = grid.periodicMethod('scale', 'down');
 
     grid.prototype.commit = function () {
-        metricsExcited.forEach(function (grid) {
+        this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
                 grid.div.commit();
-            }, Math.random() * COMMIT_DIFF + grid.commitDelay);
+            }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
             grid.commitDelay = 0;
         });
-        metricsExcited = [];
+        this.parent.metricsExcited = [];
         return this;
     };
 
     grid.next = function (r, c) {
         return function () {
             return this.parent[
-                (this.row + NUM_GRIDS + r) % NUM_GRIDS
+                (this.row + this.parent.NUM_GRIDS + r) % this.parent.NUM_GRIDS
             ][
-                (this.col + NUM_GRIDS + c) % NUM_GRIDS
+                (this.col + this.parent.NUM_GRIDS + c) % this.parent.NUM_GRIDS
             ];
         };
     };
@@ -272,7 +215,7 @@ window.grid = (function (window) {
     };
 
     grid.prototype.onLastRow = function () {
-        return this.row === NUM_GRIDS - 1;
+        return this.row === this.parent.NUM_GRIDS - 1;
     };
 
     grid.prototype.ex = function () {
@@ -318,8 +261,6 @@ window.grid = (function (window) {
     grid.prototype.constructor = exports;
     exports.prototype = grid.prototype;
 
-    exports.init = init;
-
     return exports;
 }(window));
 
@@ -329,23 +270,42 @@ var LEFT_MARGIN_DEFAULT = 30;
 var TOP_MARGIN_DEFAULT = 10;
 var GRID_SIZE_DEFAULT = 50;
 var COMMIT_DIFF_DEFAULT = 40;
+var HUE_DEFAULT = 17;
+var SAT_DEFAULT = 30;
+var LUM_DEFAULT = 50;
 
-
-window.div.hue = 17;
-window.div.sat = 30;
-window.div.lum = 50;
 
 var sixteen = {};
+
+sixteen.init = function (args) {
+    'use strict';
+    this.NUM_GRIDS = args.num;
+    this.GRID_MARGIN = args.margin;
+    this.LEFT_MARGIN = args.left;
+    this.TOP_MARGIN = args.top;
+    this.GRID_SIZE = args.size;
+    this.GRID_LEVEL = this.GRID_SIZE + this.GRID_MARGIN;
+    this.LEFT_LIMIT = this.LEFT_MARGIN - this.GRID_SIZE;
+    this.TOP_LIMIT = this.TOP_MARGIN - this.GRID_SIZE;
+    this.FIELD_SIZE = this.GRID_LEVEL * this.NUM_GRIDS;
+    this.RIGHT_LIMIT = this.LEFT_MARGIN + this.FIELD_SIZE;
+    this.BOTTOM_LIMIT = this.TOP_MARGIN + this.FIELD_SIZE;
+    this.COMMIT_DIFF = args.diff;
+};
 
 sixteen.origin = function () {
     'use strict';
     return this[0][0];
 };
 
-var born = function () {
+sixteen.born = function () {
     'use strict';
 
-    window.grid.init({
+    window.div.hue = HUE_DEFAULT;
+    window.div.sat = SAT_DEFAULT;
+    window.div.lum = LUM_DEFAULT;
+
+    this.init({
         num: NUM_GRIDS_DEFAULT,
         margin: GRID_MARGIN_DEFAULT,
         left: LEFT_MARGIN_DEFAULT,
@@ -354,11 +314,37 @@ var born = function () {
         diff: COMMIT_DIFF_DEFAULT
     });
 
-    for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
-        for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
-            window.grid(i, j, sixteen).commit().appendTo(window.document.body);
-        }
-    }
+    forEachGrid(this, function (i, j) {
+        window.grid(i, j, this);
+    });
+
+    return this;
+};
+
+sixteen.commit = function () {
+    'use strict';
+    this.origin().commit();
+    return this;
+};
+
+sixteen.solidCommit = function () {
+    'use strict';
+
+    forEachGrid(this, function (i, j) {
+        this[i][j].div.commit();
+    });
+
+    return this;
+};
+
+sixteen.appendTo = function (dom) {
+    'use strict';
+
+    forEachGrid(this, function (i, j) {
+        this[i][j].appendTo(dom);
+    });
+
+    return this;
 };
 
 var COMMAND_SEPARATOR = '|';
@@ -370,11 +356,21 @@ var mapper = function (mapping) {
     };
 };
 
+var forEachGrid = function (self, func) {
+    'use strict';
+    for (var i = 0; i < NUM_GRIDS_DEFAULT; i++) {
+        for (var j = 0; j < NUM_GRIDS_DEFAULT; j++) {
+            func.call(self, i, j);
+        }
+    }
+};
+
 var flattenJoin = function flattenJoin(array, sep) {
     'use strict';
     if (!(array instanceof Array)) {
         return array;
     }
+
     return array.map(function (x) {
         return flattenJoin(x, sep);
     }).join(sep);
@@ -441,7 +437,7 @@ var reduceLum = reduceCommandsWithMapping({
 window.documentReady(function () {
     'use strict';
 
-    born();
+    sixteen.born().solidCommit().appendTo(document.body);
 
     var proteins = {
         SSS: function () {
