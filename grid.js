@@ -402,14 +402,14 @@ window.gridField = (function () {
     });
 
     pt.reduceSat = reduceCommandsWithMapping({
-        '↑': 'sR|gN',
-        '↓': 'sL|gN',
+        'R': 'sR|gN',
+        'L': 'sL|gN',
         ' ': 'gN'
     });
 
     pt.reduceLum = reduceCommandsWithMapping({
-        '↑': 'lR|gN',
-        '↓': 'lL|gN',
+        'R': 'lR|gN',
+        'L': 'lL|gN',
         ' ': 'gN'
     });
 
@@ -465,26 +465,47 @@ window.documentReady(function () {
             ]).commit();
         },
         SSO: function () {
-            sixteen[1][0].rR().lD();
-            sixteen[1][1].rL().lD();
-            sixteen[2][2].rR().lD();
-            sixteen[3][3].rL().lD();
-            sixteen[0][2].rR().lD().commit();
+            sixteen.reduceRot(sixteen.origin(), [
+                ' L  ',
+                ' L  ',
+                'L L ',
+                '   L'
+            ]);
+            sixteen.reduceLum(sixteen.origin(), [
+                ' L  ',
+                ' L  ',
+                'L L ',
+                '   L'
+            ]).commit();
         },
         SSW: function () {
-            sixteen[0][2].rR().lU();
-            sixteen[1][2].rL().lU();
-            sixteen[2][2].rR().lU();
-            sixteen[3][2].rL().lU();
-            sixteen[0][0].commit();
+            sixteen.reduceRot(sixteen.origin(), [
+                '    ',
+                '    ',
+                'RRRR',
+                '    '
+            ]);
+            sixteen.reduceLum(sixteen.origin(), [
+                '    ',
+                '    ',
+                'RRRR',
+                '    '
+            ]).commit();
         },
 
         SNS: function () {
-            sixteen[2][0].rR().sU();
-            sixteen[2][1].rL().sU();
-            sixteen[2][2].rR().sU();
-            sixteen[2][3].rR().sU();
-            sixteen[0][0].commit();
+            sixteen.reduceSat(sixteen.origin(), [
+                '  R ',
+                '  R ',
+                '  R ',
+                '  R '
+            ]);
+            sixteen.reduceLum(sixteen.origin(), [
+                '  R ',
+                '  R ',
+                '  R ',
+                '  R '
+            ]).commit();
         },
         SNN: function () {
             sixteen.reduceMove(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
@@ -561,7 +582,26 @@ window.documentReady(function () {
                 ' ↓↑ '
             ]).commit();
         },
-        SWW: function () {},
+        SWW: function () {
+            sixteen.reduceRot(sixteen.origin(), [
+                ' L  ',
+                ' L  ',
+                'L L ',
+                '   L'
+            ]);
+            sixteen.reduceLum(sixteen.origin(), [
+                ' L  ',
+                ' L  ',
+                'L L ',
+                '   L'
+            ]).commit();
+            sixteen.reduceHue(sixteen.origin(), [
+                ' ↑  ',
+                ' ↑  ',
+                '↑ ↑ ',
+                '   ↑'
+            ]).commit();
+        },
         
         NSS: function () {
             sixteen.reduceRot(sixteen.origin(), [
@@ -571,10 +611,10 @@ window.documentReady(function () {
                 ' LR '
             ]);
             sixteen.reduceSat(sixteen.origin(), [
-                ' ↑↓ ',
-                '↑↑↓↓',
-                '↓↓↑↑',
-                ' ↓↑ '
+                ' RL ',
+                'RRLL',
+                'LLRR',
+                ' LR '
             ]).commit();
         },
         NSN: function () {
@@ -585,10 +625,10 @@ window.documentReady(function () {
                 'LRLR'
             ]);
             sixteen.reduceSat(sixteen.origin(), [
-                '↑↓↑↓',
-                '↓↑↓↑',
-                '↑↓↑↓',
-                '↓↑↓↑'
+                'RLRL',
+                'LRLR',
+                'RLRL',
+                'LRLR'
             ]).commit();
         },
         NSO: function () {
@@ -599,10 +639,10 @@ window.documentReady(function () {
                 ' LR '
             ]);
             sixteen.reduceLum(sixteen.origin(), [
-                ' ↑↓ ',
-                '↑↑↓↓',
-                '↓↓↑↑',
-                ' ↓↑ '
+                ' RL ',
+                'RRLL',
+                'LLRR',
+                ' LR '
             ]).commit();
         },
         NSW: function () {
@@ -613,10 +653,10 @@ window.documentReady(function () {
                 'LRLR'
             ]);
             sixteen.reduceLum(sixteen.origin(), [
-                '↑↓↑↓',
-                '↓↑↓↑',
-                '↑↓↑↓',
-                '↓↑↓↑'
+                'RLRL',
+                'LRLR',
+                'RLRL',
+                'LRLR'
             ]).commit();
         },
         
