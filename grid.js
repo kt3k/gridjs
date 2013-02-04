@@ -225,6 +225,24 @@ window.grid = (function (window) {
     grid.prototype.w8 = grid.swapNext('g8');
     grid.prototype.w9 = grid.swapNext('g9');
 
+    grid.delay = function (n) {
+        return function () {
+            this.commitDelay = 300 * n;
+            this.exciteMetrics();
+            return this;
+        }
+    }
+
+    grid.prototype.d1 = grid.delay(1);
+    grid.prototype.d2 = grid.delay(2);
+    grid.prototype.d3 = grid.delay(3);
+    grid.prototype.d4 = grid.delay(4);
+    grid.prototype.d5 = grid.delay(5);
+    grid.prototype.d6 = grid.delay(6);
+    grid.prototype.d7 = grid.delay(7);
+    grid.prototype.d8 = grid.delay(8);
+    grid.prototype.d9 = grid.delay(9);
+
     grid.prototype.nop = function () {};
 
     var exports = function (i, j, parent) {
@@ -343,6 +361,19 @@ window.gridField = (function () {
         };
     };
 
+    pt.reduceDelay = reduceCommandsWithMapping({
+        ' ': 'gN',
+        '1': 'd1|gN',
+        '2': 'd2|gN',
+        '3': 'd3|gN',
+        '4': 'd4|gN',
+        '5': 'd5|gN',
+        '6': 'd6|gN',
+        '7': 'd7|gN',
+        '8': 'd8|gN',
+        '9': 'd9|gN'
+    });
+
     pt.reduceMove = reduceCommandsWithMapping({
         '→': 'w6',
         '←': 'w4',
@@ -426,7 +457,13 @@ window.documentReady(function () {
 
     var proteins = {
         SSS: function () {
-            sixteen.reduceMove(sixteen.origin(), '↖*←←←↖←←←↖←←←↖←←').commit();
+            sixteen.reduceDelay(sixteen.origin(), [
+                '    ',
+                '    ',
+                '    ',
+                '   1'
+            ]);
+            sixteen.reduceMove(sixteen.origin(), '↖←←←↖←←←↖←←←↖←←').commit();
         },
         SSN: function () {
             sixteen.reduceRot(sixteen.origin(), [
@@ -483,31 +520,61 @@ window.documentReady(function () {
             sixteen.reduceMove(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
         },
         SNO: function () {
-            sixteen.reduceMove(sixteen[0][0], '*↓*→*↑*');
+            sixteen.reduceDelay(sixteen.origin(), [
+                '11  ',
+                '11  ',
+                '  11',
+                '  11'
+            ]);
+            sixteen.reduceMove(sixteen[0][0], '↓→↑');
             sixteen.reduceMove(sixteen[0][2], '↓→↑');
             sixteen.reduceMove(sixteen[2][0], '↓→↑');
-            sixteen.reduceMove(sixteen[2][2], '*↓*→*↑*').commit();
+            sixteen.reduceMove(sixteen[2][2], '↓→↑').commit();
         },
         SNW: function () {
-            sixteen.reduceMove(sixteen[0][0], '*→*↓*←*');
+            sixteen.reduceDelay(sixteen.origin(), [
+                '11  ',
+                '11  ',
+                '  11',
+                '  11'
+            ]);
+            sixteen.reduceMove(sixteen[0][0], '→↓←');
             sixteen.reduceMove(sixteen[0][2], '→↓←');
             sixteen.reduceMove(sixteen[2][0], '→↓←');
-            sixteen.reduceMove(sixteen[2][2], '*→*↓*←*').commit();
+            sixteen.reduceMove(sixteen[2][2], '→↓←').commit();
         },
 
         SOS: function () {
-            sixteen.reduceMove(sixteen.origin(), '*↓↓↓↙*↓↓↓').commit();
-            sixteen.reduceMove(sixteen.origin().g6(), '*↓↓↓↘*↓↓↓').commit();
+            sixteen.reduceDelay(sixteen.origin(), [
+                '1  1',
+                '    ',
+                '    ',
+                '    '
+            ]);
+            sixteen.reduceMove(sixteen.origin(), '↓↓↓↙↓↓↓');
+            sixteen.reduceMove(sixteen.origin().g6(), '↓↓↓↘↓↓↓').commit();
         },
         SON: function () {
-            sixteen.reduceMove(sixteen.origin(), '*↓*↓*↓*→*→*→*↑*↑*↑*←*←*').commit();
+            sixteen.reduceDelay(sixteen.origin(), [
+                '1111',
+                '1  1',
+                '1  1',
+                '1111'
+            ]);
+            sixteen.reduceMove(sixteen.origin(), '↓↓↓→→→↑↑↑←←');
             sixteen.reduceMove(sixteen.origin().g3(), '→↓←').commit();
         },
         SOO: function () {
+            sixteen.reduceDelay(sixteen.origin(), [
+                ' 123',
+                ' 123',
+                ' 123',
+                ' 123'
+            ]);
             sixteen.reduceMove(sixteen.origin(), '↓↓↓');
-            sixteen.reduceMove(sixteen.origin().g6(), '*↓*↓*↓*');
-            sixteen.reduceMove(sixteen.origin().g4(), '***↓***↓***↓***');
-            sixteen.reduceMove(sixteen.origin().g6().g6(), '**↓**↓**↓**').commit();
+            sixteen.reduceMove(sixteen.origin().g6(), '↓↓↓');
+            sixteen.reduceMove(sixteen.origin().g4(), '↓↓↓');
+            sixteen.reduceMove(sixteen.origin().g6().g6(), '↓↓↓').commit();
         },
         SOW: function () {
             sixteen.reduceScales(sixteen.origin(), [
