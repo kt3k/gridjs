@@ -103,25 +103,6 @@ window.grid = (function (window) {
         this.div.addHue(hue);
     });
 
-    grid.saturation = grid.metricsChange(function (sat) {
-        this.div.addSat(sat);
-        this.checkColor();
-    });
-
-    grid.luminosity = grid.metricsChange(function (lum) {
-        this.div.addLum(lum);
-        this.checkColor();
-    });
-
-    grid.scale = grid.metricsChange(function (scale) {
-        this.div.addScale(scale);
-    });
-
-    grid.prototype.checkColor = function () {
-        this.met.sat = Math.min(Math.max(this.met.sat, 0), 100);
-        this.met.lum = Math.min(Math.max(this.met.lum, 20), 100);
-    };
-
     grid.prototype.swapPosition = function (target) {
         this.parent[this.row][this.col] = target;
         this.parent[target.row][target.col] = this;
@@ -148,20 +129,11 @@ window.grid = (function (window) {
     grid.prototype.hR = grid.hue(60);
     grid.prototype.hL = grid.hue(-60);
 
-    grid.prototype.sU = grid.saturation(20);
-    grid.prototype.sD = grid.saturation(-20);
-
     grid.prototype.sR = grid.periodicMethod('sat', 'up');
     grid.prototype.sL = grid.periodicMethod('sat', 'down');
 
-    grid.prototype.lU = grid.luminosity(20);
-    grid.prototype.lD = grid.luminosity(-20);
-
     grid.prototype.lR = grid.periodicMethod('lum', 'up');
     grid.prototype.lL = grid.periodicMethod('lum', 'down');
-
-    grid.prototype.cU = grid.scale(8);
-    grid.prototype.cD = grid.scale(-8);
 
     grid.prototype.cR = grid.periodicMethod('scale', 'up');
     grid.prototype.cL = grid.periodicMethod('scale', 'down');
