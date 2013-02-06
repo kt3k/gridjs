@@ -113,7 +113,6 @@ window.grid = (function (window) {
         this.resetXY();
         target.resetXY();
 
-        this.setLastOne(target);
         return this;
     };
 
@@ -191,25 +190,6 @@ window.grid = (function (window) {
         return this.row === this.parent.NUM_GRIDS - 1;
     };
 
-    grid.prototype.ex = function () {
-        var lastOne = this.getLastOne();
-        lastOne.commitDelay += 300;
-        return this;
-    };
-
-    grid.prototype.resetLastOne = function () {
-        this.parent.lastOneGrid = null;
-        return this;
-    };
-
-    grid.prototype.setLastOne = function (target) {
-        this.parent.lastOneGrid = target;
-    };
-
-    grid.prototype.getLastOne = function () {
-        return this.parent.lastOneGrid || this;
-    };
-
     grid.swapNext = function (direction) {
         return function () {
             return this.swapPosition(this.execute(direction));
@@ -230,8 +210,8 @@ window.grid = (function (window) {
             this.commitDelay = 300 * n;
             this.exciteMetrics();
             return this;
-        }
-    }
+        };
+    };
 
     grid.prototype.d1 = grid.delay(1);
     grid.prototype.d2 = grid.delay(2);
@@ -382,9 +362,8 @@ window.gridField = (function () {
         '↘': 'w3',
         '↗': 'w9',
         '↖': 'w7',
-        '↙': 'w1',
-        '*': 'ex'
-    }, ['resetLastOne']);
+        '↙': 'w1'
+    });
 
     pt.reduceScales = reduceCommandsWithMapping({
         '↑': 'cR|gN',
