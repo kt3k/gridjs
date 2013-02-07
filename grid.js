@@ -37,8 +37,8 @@ window.grid = (function (window) {
 
     // constructor
     var grid = function (i, j, parent) {
-        this.row = i;
-        this.col = j;
+        this.row = this.rowToGo = i;
+        this.col = this.colToGo = j;
         this.parent = parent;
 
         this.div = window.div({
@@ -70,9 +70,11 @@ window.grid = (function (window) {
         this.dom = this.div.dom;
     };
 
+    var pt = grid.prototype;
+
     grid.prototype.resetXY = function () {
-        this.div.setX(this.parent.GRID_LEVEL * this.row + this.parent.LEFT_MARGIN);
-        this.div.setY(this.parent.GRID_LEVEL * this.col + this.parent.TOP_MARGIN);
+        this.div.setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN);
+        this.div.setX(this.parent.GRID_LEVEL * this.col + this.parent.LEFT_MARGIN);
         this.exciteMetrics();
     };
 
@@ -109,9 +111,10 @@ window.grid = (function (window) {
 
         swapParam(target, this, 'col');
         swapParam(target, this, 'row');
+        swapParam(target, this, 'colToGo');
+        swapParam(target, this, 'rowToGo');
 
-        this.resetXY();
-        target.resetXY();
+        this.exciteMetrics();
 
         return this;
     };
@@ -140,6 +143,10 @@ window.grid = (function (window) {
     grid.prototype.commit = function () {
         this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
+                grid.row = grid.rowToGo;
+                grid.col = grid.colToGo;
+                grid.parent[grid.row][grid.col] = grid;
+                grid.resetXY();
                 grid.div.commit();
             }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
             grid.commitDelay = 0;
@@ -150,12 +157,16 @@ window.grid = (function (window) {
 
     grid.next = function (r, c) {
         return function () {
-            return this.parent[
-                (this.row + this.parent.NUM_GRIDS + r) % this.parent.NUM_GRIDS
-            ][
-                (this.col + this.parent.NUM_GRIDS + c) % this.parent.NUM_GRIDS
-            ];
+            return this.parent[this.nextRow(r)][this.nextCol(c)];
         };
+    };
+
+    grid.prototype.nextRow = function (d) {
+        return (this.row + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
+    };
+
+    grid.prototype.nextCol = function (d) {
+        return (this.col + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
     grid.prototype.appendTo = function (dom) {
@@ -173,21 +184,21 @@ window.grid = (function (window) {
         }, this);
     };
 
-    grid.prototype.g1 = grid.next(-1, 1);
-    grid.prototype.g2 = grid.next(0, 1);
+    grid.prototype.g1 = grid.next(1, -1);
+    grid.prototype.g2 = grid.next(1, 0);
     grid.prototype.g3 = grid.next(1, 1);
-    grid.prototype.g4 = grid.next(-1, 0);
-    grid.prototype.g6 = grid.next(1, 0);
+    grid.prototype.g4 = grid.next(0, -1);
+    grid.prototype.g6 = grid.next(0, 1);
     grid.prototype.g7 = grid.next(-1, -1);
-    grid.prototype.g8 = grid.next(0, -1);
-    grid.prototype.g9 = grid.next(1, -1);
+    grid.prototype.g8 = grid.next(-1, 0);
+    grid.prototype.g9 = grid.next(-1, 1);
 
     grid.prototype.gN = function () {
-        return this.onLastRow() ? this.g3() : this.g6();
+        return this.onLastCol() ? this.g3() : this.g6();
     };
 
-    grid.prototype.onLastRow = function () {
-        return this.row === this.parent.NUM_GRIDS - 1;
+    grid.prototype.onLastCol = function () {
+        return this.col === this.parent.NUM_GRIDS - 1;
     };
 
     grid.swapNext = function (direction) {
@@ -223,17 +234,36 @@ window.grid = (function (window) {
     grid.prototype.d8 = grid.delay(8);
     grid.prototype.d9 = grid.delay(9);
 
-    grid.prototype.nop = function () {};
+    grid.trans = function (r, c) {
+        return function () {
+            this.rowToGo = this.nextRow(r);
+            this.colToGo = this.nextCol(c);
+            return this;
+        };
+    };
+
+    pt.t1 = grid.trans(1, -1);
+    pt.t2 = grid.trans(1, 0);
+    pt.t3 = grid.trans(1, 1);
+    pt.t4 = grid.trans(0, -1);
+    pt.t6 = grid.trans(0, 1);
+    pt.t7 = grid.trans(-1, -1);
+    pt.t8 = grid.trans(-1, 0);
+    pt.t9 = grid.trans(-1, 1);
+
+    pt.nop = function () {};
 
     var exports = function (i, j, parent) {
         return new grid(i, j, parent);
     };
 
-    grid.prototype.constructor = exports;
-    exports.prototype = grid.prototype;
+    pt.constructor = exports;
+    exports.prototype = pt;
 
     return exports;
 }(window));
+
+
 
 window.gridField = (function () {
     'use strict';
@@ -342,7 +372,6 @@ window.gridField = (function () {
     };
 
     pt.reduceDelay = reduceCommandsWithMapping({
-        ' ': 'gN',
         '1': 'd1|gN',
         '2': 'd2|gN',
         '3': 'd3|gN',
@@ -351,18 +380,31 @@ window.gridField = (function () {
         '6': 'd6|gN',
         '7': 'd7|gN',
         '8': 'd8|gN',
-        '9': 'd9|gN'
+        '9': 'd9|gN',
+        ' ': 'gN'
+    });
+
+    pt.reduceTranslate = reduceCommandsWithMapping({
+        '↙': 't1|gN',
+        '↓': 't2|gN',
+        '↘': 't3|gN',
+        '←': 't4|gN',
+        '→': 't6|gN',
+        '↖': 't7|gN',
+        '↑': 't8|gN',
+        '↗': 't9|gN',
+        ' ': 'gN'
     });
 
     pt.reduceMove = reduceCommandsWithMapping({
-        '→': 'w6',
-        '←': 'w4',
+        '↙': 'w1',
         '↓': 'w2',
-        '↑': 'w8',
         '↘': 'w3',
-        '↗': 'w9',
+        '←': 'w4',
+        '→': 'w6',
         '↖': 'w7',
-        '↙': 'w1'
+        '↑': 'w8',
+        '↗': 'w9'
     });
 
     pt.reduceScales = reduceCommandsWithMapping({
@@ -418,7 +460,7 @@ window.documentReady(function () {
     var SAT_DEFAULT = 30;
     var LUM_DEFAULT = 50;
 
-    var sixteen = window.gridField({
+    window.sixteen = window.gridField({
         num: NUM_GRIDS_DEFAULT,
         margin: GRID_MARGIN_DEFAULT,
         left: LEFT_MARGIN_DEFAULT,
@@ -437,12 +479,17 @@ window.documentReady(function () {
     var proteins = {
         SSS: function () {
             sixteen.reduceDelay(sixteen.origin(), [
-                '    ',
-                '    ',
-                '    ',
-                '   1'
+                ' 123',
+                ' 124',
+                ' 125',
+                ' 126'
             ]);
-            sixteen.reduceMove(sixteen.origin(), '↖←←←↖←←←↖←←←↖←←').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '→→→↘',
+                '→→→↘',
+                '→→→↘',
+                '→→→↘'
+            ]).commit();
         },
         SSN: function () {
             sixteen.reduceRot(sixteen.origin(), [
