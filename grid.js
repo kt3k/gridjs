@@ -8,6 +8,8 @@
 window.grid = (function (window) {
     'use strict';
 
+    var DELAY_LEVEL = 300;
+
     // utility for periodic metrics
     var period = function (table) {
         var index = 0;
@@ -66,13 +68,49 @@ window.grid = (function (window) {
 
     var pt = grid.prototype;
 
-    grid.prototype.resetXY = function () {
+    pt.resetXY = function () {
         this.div.setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN);
         this.div.setX(this.parent.GRID_LEVEL * this.col + this.parent.LEFT_MARGIN);
         this.exciteMetrics();
     };
 
-    grid.metricsChange = function (callback) {
+    pt.exciteMetrics = function () {
+        if (this.parent.metricsExcited.indexOf(this) === -1) {
+            this.parent.metricsExcited.push(this);
+        }
+    };
+
+    pt.commit = function () {
+        this.parent.metricsExcited.forEach(function (grid) {
+            window.setTimeout(function () {
+                grid.div.commit();
+            }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
+            grid.row = grid.rowToGo;
+            grid.col = grid.colToGo;
+            grid.parent[grid.row][grid.col] = grid;
+            grid.resetXY();
+            grid.commitDelay = 0;
+        });
+        this.parent.metricsExcited = [];
+        return this;
+    };
+
+    pt.appendTo = function (dom) {
+        dom.appendChild(this.dom);
+        return this;
+    };
+
+    pt.execute = function (cmd) {
+        return this[cmd]();
+    };
+
+    pt.executeIterate = function (cmds) {
+        return cmds.reduce(function (grid, cmd) {
+            return grid.execute(cmd);
+        }, this);
+    };
+
+    var linearChangeMethod = function (callback) {
         return function () {
             var args = arguments;
             return function () {
@@ -83,7 +121,7 @@ window.grid = (function (window) {
         };
     };
 
-    grid.periodicMethod = function (key, dir) {
+    var periodicMethod = function (key, dir) {
         return function () {
             this.div.met[key] = this.periodic[key][dir]();
             this.exciteMetrics();
@@ -91,130 +129,95 @@ window.grid = (function (window) {
         };
     };
 
-    grid.rotate = grid.metricsChange(function (deg) {
+    var rotateMethod = linearChangeMethod(function (deg) {
         this.div.addRot(deg);
     });
 
-    grid.hue = grid.metricsChange(function (hue) {
+    var hueMethod = linearChangeMethod(function (hue) {
         this.div.addHue(hue);
     });
 
-    grid.prototype.exciteMetrics = function () {
-        if (this.parent.metricsExcited.indexOf(this) === -1) {
-            this.parent.metricsExcited.push(this);
-        }
-    };
+    pt.rR = rotateMethod(90);
+    pt.rL = rotateMethod(-90);
 
-    grid.prototype.rR = grid.rotate(90);
-    grid.prototype.rL = grid.rotate(-90);
+    pt.hR = hueMethod(60);
+    pt.hL = hueMethod(-60);
 
-    grid.prototype.hR = grid.hue(60);
-    grid.prototype.hL = grid.hue(-60);
+    pt.sR = periodicMethod('sat', 'up');
+    pt.sL = periodicMethod('sat', 'down');
 
-    grid.prototype.sR = grid.periodicMethod('sat', 'up');
-    grid.prototype.sL = grid.periodicMethod('sat', 'down');
+    pt.lR = periodicMethod('lum', 'up');
+    pt.lL = periodicMethod('lum', 'down');
 
-    grid.prototype.lR = grid.periodicMethod('lum', 'up');
-    grid.prototype.lL = grid.periodicMethod('lum', 'down');
+    pt.cR = periodicMethod('scale', 'up');
+    pt.cL = periodicMethod('scale', 'down');
 
-    grid.prototype.cR = grid.periodicMethod('scale', 'up');
-    grid.prototype.cL = grid.periodicMethod('scale', 'down');
-
-    grid.prototype.commit = function () {
-        this.parent.metricsExcited.forEach(function (grid) {
-            window.setTimeout(function () {
-                grid.row = grid.rowToGo;
-                grid.col = grid.colToGo;
-                grid.parent[grid.row][grid.col] = grid;
-                grid.resetXY();
-                grid.div.commit();
-            }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
-            grid.commitDelay = 0;
-        });
-        this.parent.metricsExcited = [];
-        return this;
-    };
-
-    grid.next = function (r, c) {
+    var nextGetOp = function (r, c) {
         return function () {
             return this.parent[this.nextRow(r)][this.nextCol(c)];
         };
     };
 
-    grid.prototype.nextRow = function (d) {
+    pt.nextRow = function (d) {
         return (this.row + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
-    grid.prototype.nextCol = function (d) {
+    pt.nextCol = function (d) {
         return (this.col + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
-    grid.prototype.appendTo = function (dom) {
-        dom.appendChild(this.dom);
-        return this;
-    };
+    pt.g1 = nextGetOp(1, -1);
+    pt.g2 = nextGetOp(1, 0);
+    pt.g3 = nextGetOp(1, 1);
+    pt.g4 = nextGetOp(0, -1);
+    pt.g6 = nextGetOp(0, 1);
+    pt.g7 = nextGetOp(-1, -1);
+    pt.g8 = nextGetOp(-1, 0);
+    pt.g9 = nextGetOp(-1, 1);
 
-    grid.prototype.execute = function (cmd) {
-        return this[cmd]();
-    };
-
-    grid.prototype.executeIterate = function (cmds) {
-        return cmds.reduce(function (grid, cmd) {
-            return grid.execute(cmd);
-        }, this);
-    };
-
-    grid.prototype.g1 = grid.next(1, -1);
-    grid.prototype.g2 = grid.next(1, 0);
-    grid.prototype.g3 = grid.next(1, 1);
-    grid.prototype.g4 = grid.next(0, -1);
-    grid.prototype.g6 = grid.next(0, 1);
-    grid.prototype.g7 = grid.next(-1, -1);
-    grid.prototype.g8 = grid.next(-1, 0);
-    grid.prototype.g9 = grid.next(-1, 1);
-
-    grid.prototype.gN = function () {
+    pt.gN = function () {
         return this.onLastCol() ? this.g3() : this.g6();
     };
 
-    grid.prototype.onLastCol = function () {
+    pt.onLastCol = function () {
         return this.col === this.parent.NUM_GRIDS - 1;
     };
 
-    grid.delay = function (n) {
+    var delayMethod = function (n) {
         return function () {
-            this.commitDelay = 300 * n;
+            this.commitDelay = n * DELAY_LEVEL;
             this.exciteMetrics();
             return this;
         };
     };
 
-    grid.prototype.d1 = grid.delay(1);
-    grid.prototype.d2 = grid.delay(2);
-    grid.prototype.d3 = grid.delay(3);
-    grid.prototype.d4 = grid.delay(4);
-    grid.prototype.d5 = grid.delay(5);
-    grid.prototype.d6 = grid.delay(6);
-    grid.prototype.d7 = grid.delay(7);
-    grid.prototype.d8 = grid.delay(8);
-    grid.prototype.d9 = grid.delay(9);
+    pt.d1 = delayMethod(1);
+    pt.d2 = delayMethod(2);
+    pt.d3 = delayMethod(3);
+    pt.d4 = delayMethod(4);
+    pt.d5 = delayMethod(5);
+    pt.d6 = delayMethod(6);
+    pt.d7 = delayMethod(7);
+    pt.d8 = delayMethod(8);
+    pt.d9 = delayMethod(9);
 
-    grid.trans = function (r, c) {
+    var transMethod = function (r, c) {
         return function () {
             this.rowToGo = this.nextRow(r);
             this.colToGo = this.nextCol(c);
+            this.exciteMetrics();
             return this;
         };
     };
 
-    pt.t1 = grid.trans(1, -1);
-    pt.t2 = grid.trans(1, 0);
-    pt.t3 = grid.trans(1, 1);
-    pt.t4 = grid.trans(0, -1);
-    pt.t6 = grid.trans(0, 1);
-    pt.t7 = grid.trans(-1, -1);
-    pt.t8 = grid.trans(-1, 0);
-    pt.t9 = grid.trans(-1, 1);
+    pt.t1 = transMethod(1, -1);
+    pt.t2 = transMethod(1, 0);
+    pt.t3 = transMethod(1, 1);
+    pt.t4 = transMethod(0, -1);
+    pt.t6 = transMethod(0, 1);
+    pt.t7 = transMethod(-1, -1);
+    pt.t8 = transMethod(-1, 0);
+    pt.t9 = transMethod(-1, 1);
 
     pt.nop = function () {};
 
@@ -414,7 +417,7 @@ window.documentReady(function () {
     var SAT_DEFAULT = 30;
     var LUM_DEFAULT = 50;
 
-    window.sixteen = window.gridField({
+    var sixteen = window.gridField({
         num: NUM_GRIDS_DEFAULT,
         margin: GRID_MARGIN_DEFAULT,
         left: LEFT_MARGIN_DEFAULT,
@@ -544,7 +547,7 @@ window.documentReady(function () {
                 '↖↗↖↗',
                 '↖↗↖↗',
                 '↖↗↖↗',
-                '↖↗↖↗',
+                '↖↗↖↗'
             ]).commit();
         },
         SON: function () {
