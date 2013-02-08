@@ -479,10 +479,10 @@ window.documentReady(function () {
     var proteins = {
         SSS: function () {
             sixteen.reduceDelay(sixteen.origin(), [
-                ' 123',
-                ' 124',
-                ' 125',
-                ' 126'
+                '21 3',
+                '21 3',
+                '21 3',
+                '21 4'
             ]);
             sixteen.reduceTranslate(sixteen.origin(), [
                 '→→→↘',
@@ -543,7 +543,12 @@ window.documentReady(function () {
             ]).commit();
         },
         SNN: function () {
-            sixteen.reduceMove(sixteen[0][0], '↓↓↓→↑→↓→↑↑↑←↓←↑').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '↓←↓←',
+                '↓↑←↑',
+                '↓→↓↑',
+                '→↑→↑'
+            ]).commit();
         },
         SNO: function () {
             sixteen.reduceDelay(sixteen.origin(), [
@@ -552,33 +557,41 @@ window.documentReady(function () {
                 '  11',
                 '  11'
             ]);
-            sixteen.reduceMove(sixteen[0][0], '↓→↑');
-            sixteen.reduceMove(sixteen[0][2], '↓→↑');
-            sixteen.reduceMove(sixteen[2][0], '↓→↑');
-            sixteen.reduceMove(sixteen[2][2], '↓→↑').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '→↓→↓',
+                '↑←↑←',
+                '→↓→↓',
+                '↑←↑←'
+            ]).commit();
         },
         SNW: function () {
             sixteen.reduceDelay(sixteen.origin(), [
-                '11  ',
-                '11  ',
                 '  11',
-                '  11'
+                '  11',
+                '11  ',
+                '11  '
             ]);
-            sixteen.reduceMove(sixteen[0][0], '→↓←');
-            sixteen.reduceMove(sixteen[0][2], '→↓←');
-            sixteen.reduceMove(sixteen[2][0], '→↓←');
-            sixteen.reduceMove(sixteen[2][2], '→↓←').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '↓←↓←',
+                '→↑→↑',
+                '↓←↓←',
+                '→↑→↑'
+            ]).commit();
         },
 
         SOS: function () {
             sixteen.reduceDelay(sixteen.origin(), [
-                '1  1',
-                '    ',
-                '    ',
-                '    '
+                '3113',
+                '2  2',
+                '2  2',
+                '2  2'
             ]);
-            sixteen.reduceMove(sixteen.origin(), '↓↓↓↙↓↓↓');
-            sixteen.reduceMove(sixteen.origin().g6(), '↓↓↓↘↓↓↓').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '↖↗↖↗',
+                '↖↗↖↗',
+                '↖↗↖↗',
+                '↖↗↖↗',
+            ]).commit();
         },
         SON: function () {
             sixteen.reduceDelay(sixteen.origin(), [
@@ -587,20 +600,26 @@ window.documentReady(function () {
                 '1  1',
                 '1111'
             ]);
-            sixteen.reduceMove(sixteen.origin(), '↓↓↓→→→↑↑↑←←');
-            sixteen.reduceMove(sixteen.origin().g3(), '→↓←').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '→→→↓',
+                '↑→↓↓',
+                '↑↑←↓',
+                '↑←←←'
+            ]).commit();
         },
         SOO: function () {
             sixteen.reduceDelay(sixteen.origin(), [
                 ' 123',
                 ' 123',
                 ' 123',
-                ' 123'
+                '1234'
             ]);
-            sixteen.reduceMove(sixteen.origin(), '↓↓↓');
-            sixteen.reduceMove(sixteen.origin().g6(), '↓↓↓');
-            sixteen.reduceMove(sixteen.origin().g4(), '↓↓↓');
-            sixteen.reduceMove(sixteen.origin().g6().g6(), '↓↓↓').commit();
+            sixteen.reduceTranslate(sixteen.origin(), [
+                '↓↓↓↓',
+                '↓↓↓↓',
+                '↓↓↓↓',
+                '↓↓↓↓'
+            ]).commit();
         },
         SOW: function () {
             sixteen.reduceScales(sixteen.origin(), [
