@@ -316,13 +316,13 @@ window.gridField = (function () {
     };
 
     var flattenJoin = function flattenJoin(array, sep) {
-        if (!(array instanceof Array)) {
-            return array;
+        if (array instanceof Array) {
+            return array.map(function (x) {
+                return flattenJoin(x, sep);
+            }).join(sep);
         }
 
-        return array.map(function (x) {
-            return flattenJoin(x, sep);
-        }).join(sep);
+        return array;
     };
 
     var reduceCommandsWithMapping = function (mapping, append) {
