@@ -29,12 +29,6 @@ window.grid = (function (window) {
         };
     };
 
-    var swapParam = function (x, y, key) {
-        var xKey = x[key];
-        x[key] = y[key];
-        y[key] = xKey;
-    };
-
     // constructor
     var grid = function (i, j, parent) {
         this.row = this.rowToGo = i;
@@ -104,20 +98,6 @@ window.grid = (function (window) {
     grid.hue = grid.metricsChange(function (hue) {
         this.div.addHue(hue);
     });
-
-    grid.prototype.swapPosition = function (target) {
-        this.parent[this.row][this.col] = target;
-        this.parent[target.row][target.col] = this;
-
-        swapParam(target, this, 'col');
-        swapParam(target, this, 'row');
-        swapParam(target, this, 'colToGo');
-        swapParam(target, this, 'rowToGo');
-
-        this.exciteMetrics();
-
-        return this;
-    };
 
     grid.prototype.exciteMetrics = function () {
         if (this.parent.metricsExcited.indexOf(this) === -1) {
@@ -200,21 +180,6 @@ window.grid = (function (window) {
     grid.prototype.onLastCol = function () {
         return this.col === this.parent.NUM_GRIDS - 1;
     };
-
-    grid.swapNext = function (direction) {
-        return function () {
-            return this.swapPosition(this.execute(direction));
-        };
-    };
-
-    grid.prototype.w1 = grid.swapNext('g1');
-    grid.prototype.w2 = grid.swapNext('g2');
-    grid.prototype.w3 = grid.swapNext('g3');
-    grid.prototype.w4 = grid.swapNext('g4');
-    grid.prototype.w6 = grid.swapNext('g6');
-    grid.prototype.w7 = grid.swapNext('g7');
-    grid.prototype.w8 = grid.swapNext('g8');
-    grid.prototype.w9 = grid.swapNext('g9');
 
     grid.delay = function (n) {
         return function () {
@@ -394,17 +359,6 @@ window.gridField = (function () {
         '↑': 't8|gN',
         '↗': 't9|gN',
         ' ': 'gN'
-    });
-
-    pt.reduceMove = reduceCommandsWithMapping({
-        '↙': 'w1',
-        '↓': 'w2',
-        '↘': 'w3',
-        '←': 'w4',
-        '→': 'w6',
-        '↖': 'w7',
-        '↑': 'w8',
-        '↗': 'w9'
     });
 
     pt.reduceScales = reduceCommandsWithMapping({
