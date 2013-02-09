@@ -503,7 +503,12 @@ window.documentReady(function () {
             ]).commit();
         },
         SNN: function () {
-            sixteen.reduceTranslate([
+            sixteen.reduceDelay([
+                '  11',
+                '  11',
+                '11  ',
+                '11  ',
+            ]).reduceTranslate([
                 '↓←↓←',
                 '↓↑←↑',
                 '↓→↓↑',
@@ -722,7 +727,19 @@ window.documentReady(function () {
                 ' ↑↖ '
             ]).commit();
         },
-        NNO: function () {},
+        NNO: function () {
+            sixteen.reduceDelay([
+                '1 1 ',
+                '2322',
+                '2232',
+                ' 1 1'
+            ]).reduceTranslate([
+                '→↓→↓',
+                '↑→↑↓',
+                '↑↓←↓',
+                '↑←↑←'
+            ]).commit();
+        },
         NNW: function () {},
         
         NOS: function () {},
