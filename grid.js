@@ -336,7 +336,9 @@ window.gridField = (function () {
             .split(COMMAND_SEPARATOR)
             .concat(append);
 
-            return this.origin().executeIterate(commands);
+            this.origin().executeIterate(commands);
+
+            return this;
         };
     };
 
@@ -441,8 +443,7 @@ window.documentReady(function () {
                 '21 3',
                 '21 3',
                 '21 4'
-            ]);
-            sixteen.reduceTranslate([
+            ]).reduceTranslate([
                 '→→→↘',
                 '→→→↘',
                 '→→→↘',
@@ -463,8 +464,7 @@ window.documentReady(function () {
                 ' L  ',
                 'L L ',
                 '   L'
-            ]);
-            sixteen.reduceLum([
+            ]).reduceLum([
                 ' L  ',
                 ' L  ',
                 'L L ',
@@ -477,8 +477,7 @@ window.documentReady(function () {
                 '    ',
                 'RRRR',
                 '    '
-            ]);
-            sixteen.reduceLum([
+            ]).reduceLum([
                 '    ',
                 '    ',
                 'RRRR',
@@ -492,8 +491,7 @@ window.documentReady(function () {
                 '  R ',
                 '  R ',
                 '  R '
-            ]);
-            sixteen.reduceLum([
+            ]).reduceLum([
                 '  R ',
                 '  R ',
                 '  R ',
@@ -514,8 +512,7 @@ window.documentReady(function () {
                 '11  ',
                 '  11',
                 '  11'
-            ]);
-            sixteen.reduceTranslate([
+            ]).reduceTranslate([
                 '→↓→↓',
                 '↑←↑←',
                 '→↓→↓',
@@ -528,8 +525,7 @@ window.documentReady(function () {
                 '  11',
                 '11  ',
                 '11  '
-            ]);
-            sixteen.reduceTranslate([
+            ]).reduceTranslate([
                 '↓←↓←',
                 '→↑→↑',
                 '↓←↓←',
@@ -543,8 +539,7 @@ window.documentReady(function () {
                 '2  2',
                 '2  2',
                 '2  2'
-            ]);
-            sixteen.reduceTranslate([
+            ]).reduceTranslate([
                 '↖↗↖↗',
                 '↖↗↖↗',
                 '↖↗↖↗',
@@ -557,8 +552,7 @@ window.documentReady(function () {
                 '1  1',
                 '1  1',
                 '1111'
-            ]);
-            sixteen.reduceTranslate([
+            ]).reduceTranslate([
                 '→→→↓',
                 '↑→↓↓',
                 '↑↑←↓',
@@ -571,8 +565,7 @@ window.documentReady(function () {
                 ' 123',
                 ' 123',
                 '1234'
-            ]);
-            sixteen.reduceTranslate([
+            ]).reduceTranslate([
                 '↓↓↓↓',
                 '↓↓↓↓',
                 '↓↓↓↓',
@@ -602,8 +595,7 @@ window.documentReady(function () {
                 'LRLR',
                 'RLRL',
                 'LRLR'
-            ]);
-            sixteen.reduceHue([
+            ]).reduceHue([
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
@@ -616,8 +608,7 @@ window.documentReady(function () {
                 'RRLL',
                 'LLRR',
                 ' LR '
-            ]);
-            sixteen.reduceHue([
+            ]).reduceHue([
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -630,14 +621,12 @@ window.documentReady(function () {
                 ' L  ',
                 'L L ',
                 '   L'
-            ]);
-            sixteen.reduceLum([
+            ]).reduceLum([
                 ' L  ',
                 ' L  ',
                 'L L ',
                 '   L'
-            ]);
-            sixteen.reduceHue([
+            ]).reduceHue([
                 ' ↑  ',
                 ' ↑  ',
                 '↑ ↑ ',
@@ -651,8 +640,7 @@ window.documentReady(function () {
                 'RRLL',
                 'LLRR',
                 ' LR '
-            ]);
-            sixteen.reduceSat([
+            ]).reduceSat([
                 ' RL ',
                 'RRLL',
                 'LLRR',
@@ -665,8 +653,7 @@ window.documentReady(function () {
                 'LRLR',
                 'RLRL',
                 'LRLR'
-            ]);
-            sixteen.reduceSat([
+            ]).reduceSat([
                 'RLRL',
                 'LRLR',
                 'RLRL',
@@ -679,8 +666,7 @@ window.documentReady(function () {
                 'RRLL',
                 'LLRR',
                 ' LR '
-            ]);
-            sixteen.reduceLum([
+            ]).reduceLum([
                 ' RL ',
                 'RRLL',
                 'LLRR',
@@ -693,8 +679,7 @@ window.documentReady(function () {
                 'LRLR',
                 'RLRL',
                 'LRLR'
-            ]);
-            sixteen.reduceLum([
+            ]).reduceLum([
                 'RLRL',
                 'LRLR',
                 'RLRL',
