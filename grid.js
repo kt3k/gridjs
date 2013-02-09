@@ -326,16 +326,17 @@ window.gridField = (function () {
     };
 
     var reduceCommandsWithMapping = function (mapping, append) {
-        return function (grid, routes) {
+        append = append || [];
+        return function (routes) {
             routes = flattenJoin(routes, '');
 
             var commands = routes.split('')
             .map(mapper(mapping))
             .join(COMMAND_SEPARATOR)
             .split(COMMAND_SEPARATOR)
-            .concat(append || []);
+            .concat(append);
 
-            return grid.executeIterate(commands);
+            return this.origin().executeIterate(commands);
         };
     };
 
@@ -413,7 +414,7 @@ window.documentReady(function () {
     var TOP_MARGIN_DEFAULT = 10;
     var GRID_SIZE_DEFAULT = 50;
     var COMMIT_DIFF_DEFAULT = 40;
-    var HUE_DEFAULT = 17;
+    var HUE_DEFAULT = 23;
     var SAT_DEFAULT = 30;
     var LUM_DEFAULT = 50;
 
@@ -435,13 +436,13 @@ window.documentReady(function () {
 
     var proteins = {
         SSS: function () {
-            sixteen.reduceDelay(sixteen.origin(), [
+            sixteen.reduceDelay([
                 '21 3',
                 '21 3',
                 '21 3',
                 '21 4'
             ]);
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '→→→↘',
                 '→→→↘',
                 '→→→↘',
@@ -449,7 +450,7 @@ window.documentReady(function () {
             ]).commit();
         },
         SSN: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 'RLRL',
                 '    ',
                 '    ',
@@ -457,13 +458,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SSO: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 ' L  ',
                 ' L  ',
                 'L L ',
                 '   L'
             ]);
-            sixteen.reduceLum(sixteen.origin(), [
+            sixteen.reduceLum([
                 ' L  ',
                 ' L  ',
                 'L L ',
@@ -471,13 +472,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SSW: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 '    ',
                 '    ',
                 'RRRR',
                 '    '
             ]);
-            sixteen.reduceLum(sixteen.origin(), [
+            sixteen.reduceLum([
                 '    ',
                 '    ',
                 'RRRR',
@@ -486,13 +487,13 @@ window.documentReady(function () {
         },
 
         SNS: function () {
-            sixteen.reduceSat(sixteen.origin(), [
+            sixteen.reduceSat([
                 '  R ',
                 '  R ',
                 '  R ',
                 '  R '
             ]);
-            sixteen.reduceLum(sixteen.origin(), [
+            sixteen.reduceLum([
                 '  R ',
                 '  R ',
                 '  R ',
@@ -500,7 +501,7 @@ window.documentReady(function () {
             ]).commit();
         },
         SNN: function () {
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '↓←↓←',
                 '↓↑←↑',
                 '↓→↓↑',
@@ -508,13 +509,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SNO: function () {
-            sixteen.reduceDelay(sixteen.origin(), [
+            sixteen.reduceDelay([
                 '11  ',
                 '11  ',
                 '  11',
                 '  11'
             ]);
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '→↓→↓',
                 '↑←↑←',
                 '→↓→↓',
@@ -522,13 +523,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SNW: function () {
-            sixteen.reduceDelay(sixteen.origin(), [
+            sixteen.reduceDelay([
                 '  11',
                 '  11',
                 '11  ',
                 '11  '
             ]);
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '↓←↓←',
                 '→↑→↑',
                 '↓←↓←',
@@ -537,13 +538,13 @@ window.documentReady(function () {
         },
 
         SOS: function () {
-            sixteen.reduceDelay(sixteen.origin(), [
+            sixteen.reduceDelay([
                 '3113',
                 '2  2',
                 '2  2',
                 '2  2'
             ]);
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '↖↗↖↗',
                 '↖↗↖↗',
                 '↖↗↖↗',
@@ -551,13 +552,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SON: function () {
-            sixteen.reduceDelay(sixteen.origin(), [
+            sixteen.reduceDelay([
                 '1111',
                 '1  1',
                 '1  1',
                 '1111'
             ]);
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '→→→↓',
                 '↑→↓↓',
                 '↑↑←↓',
@@ -565,13 +566,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SOO: function () {
-            sixteen.reduceDelay(sixteen.origin(), [
+            sixteen.reduceDelay([
                 ' 123',
                 ' 123',
                 ' 123',
                 '1234'
             ]);
-            sixteen.reduceTranslate(sixteen.origin(), [
+            sixteen.reduceTranslate([
                 '↓↓↓↓',
                 '↓↓↓↓',
                 '↓↓↓↓',
@@ -579,7 +580,7 @@ window.documentReady(function () {
             ]).commit();
         },
         SOW: function () {
-            sixteen.reduceScales(sixteen.origin(), [
+            sixteen.reduceScales([
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
@@ -588,7 +589,7 @@ window.documentReady(function () {
         },
 
         SWS: function () {
-            sixteen.reduceScales(sixteen.origin(), [
+            sixteen.reduceScales([
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -596,13 +597,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SWN: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 'RLRL',
                 'LRLR',
                 'RLRL',
                 'LRLR'
             ]);
-            sixteen.reduceHue(sixteen.origin(), [
+            sixteen.reduceHue([
                 '↑↓↑↓',
                 '↓↑↓↑',
                 '↑↓↑↓',
@@ -610,13 +611,13 @@ window.documentReady(function () {
             ]).commit();
         },
         SWO: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 ' RL ',
                 'RRLL',
                 'LLRR',
                 ' LR '
             ]);
-            sixteen.reduceHue(sixteen.origin(), [
+            sixteen.reduceHue([
                 ' ↑↓ ',
                 '↑↑↓↓',
                 '↓↓↑↑',
@@ -624,19 +625,19 @@ window.documentReady(function () {
             ]).commit();
         },
         SWW: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 ' L  ',
                 ' L  ',
                 'L L ',
                 '   L'
             ]);
-            sixteen.reduceLum(sixteen.origin(), [
+            sixteen.reduceLum([
                 ' L  ',
                 ' L  ',
                 'L L ',
                 '   L'
             ]).commit();
-            sixteen.reduceHue(sixteen.origin(), [
+            sixteen.reduceHue([
                 ' ↑  ',
                 ' ↑  ',
                 '↑ ↑ ',
@@ -645,13 +646,13 @@ window.documentReady(function () {
         },
         
         NSS: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 ' RL ',
                 'RRLL',
                 'LLRR',
                 ' LR '
             ]);
-            sixteen.reduceSat(sixteen.origin(), [
+            sixteen.reduceSat([
                 ' RL ',
                 'RRLL',
                 'LLRR',
@@ -659,13 +660,13 @@ window.documentReady(function () {
             ]).commit();
         },
         NSN: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 'RLRL',
                 'LRLR',
                 'RLRL',
                 'LRLR'
             ]);
-            sixteen.reduceSat(sixteen.origin(), [
+            sixteen.reduceSat([
                 'RLRL',
                 'LRLR',
                 'RLRL',
@@ -673,13 +674,13 @@ window.documentReady(function () {
             ]).commit();
         },
         NSO: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 ' RL ',
                 'RRLL',
                 'LLRR',
                 ' LR '
             ]);
-            sixteen.reduceLum(sixteen.origin(), [
+            sixteen.reduceLum([
                 ' RL ',
                 'RRLL',
                 'LLRR',
@@ -687,13 +688,13 @@ window.documentReady(function () {
             ]).commit();
         },
         NSW: function () {
-            sixteen.reduceRot(sixteen.origin(), [
+            sixteen.reduceRot([
                 'RLRL',
                 'LRLR',
                 'RLRL',
                 'LRLR'
             ]);
-            sixteen.reduceLum(sixteen.origin(), [
+            sixteen.reduceLum([
                 'RLRL',
                 'LRLR',
                 'RLRL',
