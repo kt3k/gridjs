@@ -453,6 +453,69 @@ window.gridField = (function () {
     return exports;
 }());
 
+/**
+ * elapsed.js 1.0.0
+ * author: Yosiya Hinosawa (@kt3k)
+ * license: MIT license
+ */
+
+/**
+README.md
+
+elapsed.js
+==========
+
+*elapsed.js* is just 6 line script which replaces the use of `setTimeout` function and considerably increase the readability of the code using setTimeout.
+
+source code
+-----------
+
+```
+window.elapsed = function (n) {
+    return {
+        then: function (func) {
+            window.setTimeout(func, n);
+        }
+    };
+};
+```
+
+usage
+-----
+
+```
+elapsed(500).then(function () {
+    doIt();
+});
+```
+
+```
+elapsed300 = elapsed(300);
+
+elapsed300.then(function() {
+    doThis();
+
+    elapsed300.then(function () {
+        doThat();
+    });
+});
+```
+
+*/
+
+window.elapsed = function (n) {
+    return {
+        then: function (func) {
+            window.setTimeout(func, n);
+        }
+    };
+};
+
+(function () {
+    elapsed(500).then(function () {
+        doIt();
+    });
+});
 
 window.documentReady(function () {
     'use strict';
@@ -481,12 +544,13 @@ window.documentReady(function () {
 
     sixteen.born().css({opacity: 0}).randomize().solidCommit();
 
-    setTimeout(function () {
+    elapsed(200).then(function () {
         sixteen.css({opacity: 1}).solidCommit();
-        setTimeout(function () {
+
+        elapsed(500).then(function () {
             sixteen.reset().commit();
-        }, 500);
-    }, 200);
+        });
+    });
 
     window.sixteen = sixteen;
 
