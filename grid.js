@@ -85,15 +85,19 @@ window.grid = (function (window) {
             window.setTimeout(function () {
                 grid.div.commit();
             }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
-            grid.row = grid.rowToGo;
-            grid.col = grid.colToGo;
-            grid.parent[grid.row][grid.col] = grid;
-            grid.resetXY();
-            grid.commitDelay = 0;
+            grid.commitMetrics();
         });
         this.parent.metricsExcited = [];
         return this;
     };
+
+    pt.commitMetrics = function () {
+        this.row = this.rowToGo;
+        this.col = this.colToGo;
+        this.parent[this.row][this.col] = this;
+        this.resetXY();
+        this.commitDelay = 0;
+    }
 
     pt.appendTo = function (dom) {
         dom.appendChild(this.dom);
@@ -154,16 +158,16 @@ window.grid = (function (window) {
 
     var nextGetOp = function (r, c) {
         return function () {
-            return this.parent[this.nextRow(r)][this.nextCol(c)];
+            return this.parent[this.nextRow(this.row, r)][this.nextCol(this.col, c)];
         };
     };
 
-    pt.nextRow = function (d) {
-        return (this.row + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
+    pt.nextRow = function (row, d) {
+        return (row + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
-    pt.nextCol = function (d) {
-        return (this.col + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
+    pt.nextCol = function (col, d) {
+        return (col + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
     pt.g1 = nextGetOp(1, -1);
@@ -203,8 +207,8 @@ window.grid = (function (window) {
 
     var transMethod = function (r, c) {
         return function () {
-            this.rowToGo = this.nextRow(r);
-            this.colToGo = this.nextCol(c);
+            this.rowToGo = this.nextRow(this.rowToGo, r);
+            this.colToGo = this.nextCol(this.colToGo, c);
             this.exciteMetrics();
             return this;
         };
@@ -486,7 +490,7 @@ window.documentReady(function () {
         },
 
         SNS: function () {
-            sixteen.reduceSat([
+            sixteen.reduceRot([
                 '  R ',
                 '  R ',
                 '  R ',
@@ -687,8 +691,37 @@ window.documentReady(function () {
             ]).commit();
         },
         
-        NNS: function () {},
-        NNN: function () {},
+        NNS: function () {
+            sixteen.reduceDelay([
+                '3 23',
+                '211 ',
+                ' 112',
+                '32 3'
+            ]).reduceTranslate([
+                '←→↘↑',
+                '↗→↓↓',
+                '↑↑←↙',
+                '↓↖←→'
+            ]).commit();
+        },
+        NNN: function () {
+            sixteen.reduceDelay([
+                '3 23',
+                '211 ',
+                ' 112',
+                '32 3'
+            ]).reduceTranslate([
+                '←→↘↑',
+                '↗→↓↓',
+                '↑↑←↙',
+                '↓↖←→',
+
+                ' ↘↓ ',
+                '→  ↙',
+                '↗  ←',
+                ' ↑↖ '
+            ]).commit();
+        },
         NNO: function () {},
         NNW: function () {},
         
