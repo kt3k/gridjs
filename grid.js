@@ -9,6 +9,7 @@ window.grid = (function (window) {
     'use strict';
 
     var DELAY_LEVEL = 300;
+    var ANIMATION_DURATION = '500ms';
 
     // utility for periodic metrics
     var period = function (table) {
@@ -37,17 +38,20 @@ window.grid = (function (window) {
         this.col = this.colToGo = j;
         this.parent = parent;
 
-        this.div = window.div({
+        var basicStyle = {
             position: 'absolute',
             left: 0,
             top: 0,
             width: this.parent.GRID_SIZE + 'px',
             height: this.parent.GRID_SIZE + 'px',
-            webkitTransitionDuration: '500ms'
-        });
+            webkitTransitionDuration: ANIMATION_DURATION
+        };
+
+        this.div = window.div(basicStyle).css(this.parent.style);
 
         this.commitDelay = 0;
 
+        // periodic parameters
         this.periodic = {};
         this.periodic.scale = period([100, 112, 100, 88]);
         this.periodic.sat = period([30, 60, 90, 60, 30, 0]);
@@ -69,7 +73,7 @@ window.grid = (function (window) {
     // return random positive integer less than n.
     var dice = function (n) {
         return Math.floor(Math.random() * n);
-    }
+    };
 
     pt.setRandomMetrics = function () {
         this.div.setX(dice(this.parent.FIELD_SIZE) + this.parent.FIELD_CENTER_X);
@@ -111,7 +115,7 @@ window.grid = (function (window) {
         this.parent[this.row][this.col] = this;
         this.resetXY();
         this.commitDelay = 0;
-    }
+    };
 
     pt.appendTo = function (dom) {
         dom.appendChild(this.dom);
@@ -276,6 +280,8 @@ window.gridField = (function () {
         this.HUE_DEFAULT = args.hue;
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
+
+        this.style = args.style;
     };
 
     pt.origin = function () {
@@ -296,6 +302,14 @@ window.gridField = (function () {
 
     pt.commit = function () {
         this.origin().commit();
+        return this;
+    };
+
+    pt.css = function (style) {
+        this.forEachGrid(function (i, j) {
+            this[i][j].div.css(style);
+        });
+
         return this;
     };
 
@@ -465,7 +479,14 @@ window.documentReady(function () {
         lum: LUM_DEFAULT
     });
 
-    sixteen.born().randomize().solidCommit().reset().commit();
+    sixteen.born().css({opacity: 0}).randomize().solidCommit();
+
+    setTimeout(function () {
+        sixteen.css({opacity: 1}).solidCommit();
+        setTimeout(function () {
+            sixteen.reset().commit();
+        }, 500);
+    }, 200);
 
     window.sixteen = sixteen;
 
@@ -538,7 +559,7 @@ window.documentReady(function () {
                 '  11',
                 '  11',
                 '11  ',
-                '11  ',
+                '11  '
             ]).reduceTranslate([
                 '↓←↓←',
                 '↓↑←↑',
