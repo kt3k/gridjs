@@ -295,7 +295,7 @@ window.gridField = (function () {
         window.div.sat = this.SAT_DEFAULT;
         window.div.lum = this.LUM_DEFAULT;
 
-        this.forEachGrid(function (i, j) {
+        this.forEachIndex(function (i, j) {
             window.grid(i, j, this);
         });
 
@@ -304,50 +304,57 @@ window.gridField = (function () {
 
     pt.commit = function () {
         this.origin().commit();
+
         return this;
     };
 
     pt.css = function (style) {
-        this.forEachGrid(function (i, j) {
-            this[i][j].div.css(style);
+        this.forEachGrid(function (grid) {
+            grid.div.css(style);
         });
 
         return this;
     };
 
     pt.solidCommit = function () {
-        this.forEachGrid(function (i, j) {
-            this[i][j].div.commit();
+        this.forEachGrid(function (grid) {
+            grid.div.commit();
         });
 
         return this;
     };
 
     pt.randomize = function () {
-        this.forEachGrid(function (i, j) {
-            this[i][j].setRandomMetrics();
+        this.forEachGrid(function (grid) {
+            grid.setRandomMetrics();
         });
 
         return this;
     };
 
     pt.reset = function () {
-        this.forEachGrid(function (i, j) {
-            this[i][j].reset();
+        this.forEachGrid(function (grid) {
+            grid.reset();
         });
 
         return this;
     };
 
     pt.appendTo = function (dom) {
-        this.forEachGrid(function (i, j) {
-            this[i][j].appendTo(dom);
+        this.forEachGrid(function (grid) {
+            grid.appendTo(dom);
         });
 
         return this;
     };
 
     pt.forEachGrid = function (func) {
+        this.forEachIndex(function (i, j) {
+            func.call(this, this[i][j]);
+        });
+    };
+
+    pt.forEachIndex = function (func) {
         for (var i = 0; i < this.NUM_GRIDS; i++) {
             for (var j = 0; j < this.NUM_GRIDS; j++) {
                 func.call(this, i, j);
@@ -467,16 +474,23 @@ README.md
 elapsed.js
 ==========
 
-*elapsed.js* is just 6 line script which replaces the use of `setTimeout` function and considerably increase the readability of the code using setTimeout.
+*elapsed.js* is a thin wrapper of `setTimeout` and aims to increase the readability of the code using `setTimeout`.
 
 source code
 -----------
 
 ```
 window.elapsed = function (n) {
+    'use strict';
     return {
         then: function (func) {
-            window.setTimeout(func, n);
+            var timer = window.setTimeout(func, n);
+
+            return {
+                cancel: function () {
+                    clearTimeout(timer);
+                };
+            };
         }
     };
 };
@@ -485,14 +499,16 @@ window.elapsed = function (n) {
 usage
 -----
 
-```
+#### one time use
+```javascript
 elapsed(500).then(function () {
     doIt();
 });
 ```
 
-```
-elapsed300 = elapsed(300);
+#### reuse same elapsed object
+```javascript
+var elapsed300 = elapsed(300);
 
 elapsed300.then(function() {
     doThis();
@@ -503,13 +519,29 @@ elapsed300.then(function() {
 });
 ```
 
+### clearTimeout and cancel callback
+```javascript
+var timer = elapsed(3000).then(function () {
+    doIt();
+});
+
+$('#button').click(function () {
+    timer.cancel();
+});
+```
 */
 
 window.elapsed = function (n) {
     'use strict';
     return {
         then: function (func) {
-            window.setTimeout(func, n);
+            var timer = window.setTimeout(func, n);
+
+            return {
+                cancel: function () {
+                    window.clearTimeout(timer);
+                }
+            };
         }
     };
 };
