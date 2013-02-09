@@ -636,7 +636,7 @@ window.documentReady(function () {
                 ' L  ',
                 'L L ',
                 '   L'
-            ]).commit();
+            ]);
             sixteen.reduceHue([
                 ' ↑  ',
                 ' ↑  ',
