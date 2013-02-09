@@ -76,9 +76,11 @@ window.grid = (function (window) {
     };
 
     pt.setRandomMetrics = function () {
-        this.div.setX(dice(this.parent.FIELD_SIZE) + this.parent.FIELD_CENTER_X);
-        this.div.setY(dice(this.parent.FIELD_SIZE) + this.parent.FIELD_CENTER_Y);
-        this.div.setRot(dice(360) - 180);
+        this.div.setX(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_X - this.parent.GRID_SIZE / 2);
+        this.div.setY(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_Y - this.parent.GRID_SIZE / 2);
+
+        var amp = 270;
+        this.div.setRot(dice(amp * 2) - amp);
     };
 
     pt.reset = function () {
@@ -272,8 +274,8 @@ window.gridField = (function () {
         this.GRID_SIZE = args.size;
         this.GRID_LEVEL = this.GRID_SIZE + this.GRID_MARGIN;
         this.FIELD_SIZE = this.GRID_LEVEL * this.NUM_GRIDS;
-        this.FIELD_CENTER_X = this.LEFT_MARGIN + this.GRID_SIZE / 2;
-        this.FIELD_CENTER_Y = this.TOP_MARGIN + this.GRID_SIZE / 2;
+        this.FIELD_CENTER_X = this.LEFT_MARGIN + this.FIELD_SIZE / 2;
+        this.FIELD_CENTER_Y = this.TOP_MARGIN + this.FIELD_SIZE / 2;
 
         this.COMMIT_DIFF = args.diff;
 
@@ -504,18 +506,13 @@ elapsed300.then(function() {
 */
 
 window.elapsed = function (n) {
+    'use strict';
     return {
         then: function (func) {
             window.setTimeout(func, n);
         }
     };
 };
-
-(function () {
-    elapsed(500).then(function () {
-        doIt();
-    });
-});
 
 window.documentReady(function () {
     'use strict';
@@ -529,6 +526,8 @@ window.documentReady(function () {
     var HUE_DEFAULT = 23;
     var SAT_DEFAULT = 30;
     var LUM_DEFAULT = 50;
+
+    var elapsed = window.elapsed;
 
     var sixteen = window.gridField({
         num: NUM_GRIDS_DEFAULT,
