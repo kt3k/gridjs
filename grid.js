@@ -58,8 +58,6 @@ window.grid = (function (window) {
 
         parent.metricsExcited || (parent.metricsExcited = []);
 
-        this.resetXY();
-
         this.div.grid = this;
 
         this.met = this.div.met;
@@ -67,6 +65,22 @@ window.grid = (function (window) {
     };
 
     var pt = grid.prototype;
+
+    // return random positive integer less than n.
+    var dice = function (n) {
+        return Math.floor(Math.random() * n);
+    }
+
+    pt.setRandomMetrics = function () {
+        this.div.setX(dice(this.parent.FIELD_SIZE) + this.parent.FIELD_CENTER_X);
+        this.div.setY(dice(this.parent.FIELD_SIZE) + this.parent.FIELD_CENTER_Y);
+        this.div.setRot(dice(360) - 180);
+    };
+
+    pt.reset = function () {
+        this.div.setRot(0);
+        this.resetXY();
+    };
 
     pt.resetXY = function () {
         this.div.setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN);
@@ -253,11 +267,9 @@ window.gridField = (function () {
         this.TOP_MARGIN = args.top;
         this.GRID_SIZE = args.size;
         this.GRID_LEVEL = this.GRID_SIZE + this.GRID_MARGIN;
-        this.LEFT_LIMIT = this.LEFT_MARGIN - this.GRID_SIZE;
-        this.TOP_LIMIT = this.TOP_MARGIN - this.GRID_SIZE;
         this.FIELD_SIZE = this.GRID_LEVEL * this.NUM_GRIDS;
-        this.RIGHT_LIMIT = this.LEFT_MARGIN + this.FIELD_SIZE;
-        this.BOTTOM_LIMIT = this.TOP_MARGIN + this.FIELD_SIZE;
+        this.FIELD_CENTER_X = this.LEFT_MARGIN + this.GRID_SIZE / 2;
+        this.FIELD_CENTER_Y = this.TOP_MARGIN + this.GRID_SIZE / 2;
 
         this.COMMIT_DIFF = args.diff;
 
@@ -290,6 +302,22 @@ window.gridField = (function () {
     pt.solidCommit = function () {
         this.forEachGrid(function (i, j) {
             this[i][j].div.commit();
+        });
+
+        return this;
+    };
+
+    pt.randomize = function () {
+        this.forEachGrid(function (i, j) {
+            this[i][j].setRandomMetrics();
+        });
+
+        return this;
+    };
+
+    pt.reset = function () {
+        this.forEachGrid(function (i, j) {
+            this[i][j].reset();
         });
 
         return this;
@@ -411,6 +439,7 @@ window.gridField = (function () {
     return exports;
 }());
 
+
 window.documentReady(function () {
     'use strict';
 
@@ -436,7 +465,9 @@ window.documentReady(function () {
         lum: LUM_DEFAULT
     });
 
-    sixteen.born().solidCommit();
+    sixteen.born().randomize().solidCommit().reset().commit();
+
+    window.sixteen = sixteen;
 
     sixteen.appendTo(document.body);
 
