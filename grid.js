@@ -486,7 +486,7 @@ window.gridField = (function () {
  * gridlayouter.js 0.1.0
  * author: Yosiya Hinosawa ( @kt3k )
  * license: MIT License ( http://kt3k.mit-license.org/ )
- * dependency: grid.js@0.1.0 card-ribosome.js@0.1.0 elapsed.js@1.0
+ * dependency: grid.js@0.1.0 card-ribosome.js@0.1.0 elapsed.js@1.0 scene.js@0.1.0
  */
 
 /**
@@ -512,7 +512,7 @@ window.gridLayouter = (function () {
         this.initParams();
     };
 
-    var pt = gridLayouter.prototype;
+    var pt = gridLayouter.prototype = new window.scene();
 
     pt.initParams = function () {
         this.num = NUM_GRIDS_DEFAULT;
@@ -526,7 +526,8 @@ window.gridLayouter = (function () {
         this.lum = LUM_DEFAULT;
     };
 
-    pt.onStart = function (done) {
+    pt.onStart = function (done, fail) {
+
         var gfield = window.gridField({
             num: this.num,
             margin: this.margin,
@@ -914,13 +915,9 @@ window.gridLayouter = (function () {
         window.cardRibosome(proteins);
 
     };
+    pt.onStart = pt.methodOnStart(pt.onStart);
 
     pt.onStop = function (done, fail) {
-        if (!this.isRunning) {
-            fail();
-            return;
-        }
-
         var gfield = this.gfield;
         var self = this;
 
@@ -941,6 +938,7 @@ window.gridLayouter = (function () {
             });
         });
     };
+    pt.onStop = pt.methodOnStop(pt.onStop);
 
     var exports = function (args) {
         return new gridLayouter(args);
