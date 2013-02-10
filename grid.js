@@ -633,10 +633,10 @@ window.documentReady(function () {
         },
         SOO: function () {
             sixteen.reduceDelay([
-                ' 123',
-                ' 123',
-                ' 123',
-                '1234'
+                ' 11 ',
+                '3223',
+                '2112',
+                '3333'
             ]).reduceTranslate([
                 '↓↓↓↓',
                 '↓↓↓↓',
