@@ -488,9 +488,27 @@ window.gridField = (function () {
                 return this.reduceLum(cmds);
             case 'c':
                 return this.reduceScales(cmds);
+            case 'm':
+                return this.commit();
             default:
                 throw Error('unsupported operation: key = `' + key + '`');
         }
+    };
+
+    pt.createOperationMapping = function (json) {
+        var mapping = {};
+        var field = this;
+
+        Object.keys(json).forEach(function (key) {
+            var ops = json[key]
+            mapping[key] = function () {
+                ops.forEach(function (op) {
+                    field.operate(op.key, op.cmds)
+                });
+            };
+        });
+
+        return mapping;
     };
 
     var exports = function (args) {
@@ -611,20 +629,44 @@ window.gridLayouter = (function () {
     };
     pt.onStop = pt.methodOnStop(pt.onStop);
 
-    pt.createGridAlgorithm = function (gfield) {
+    pt.createGridAlgorithm = function (field) {
+        return field.createOperationMapping({
+            SSS: [
+                {
+                    key: 'd',
+                    cmds: [
+                        '21 3',
+                        '21 3',
+                        '21 3',
+                        '21 4'
+                    ]
+                },{
+                    key: 't',
+                    cmds: [
+                        '→→→↘',
+                        '→→→↘',
+                        '→→→↘',
+                        '→→→↘'
+                    ]
+                },{
+                    key: 'm'
+                }
+            ]
+        });
+
         return {
             SSS: function () {
-                gfield.reduceDelay([
+                gfield.operate('d', [
                     '21 3',
                     '21 3',
                     '21 3',
                     '21 4'
-                ]).reduceTranslate([
+                ]).operate('t', [
                     '→→→↘',
                     '→→→↘',
                     '→→→↘',
                     '→→→↘'
-                ]).commit();
+                ]).operate('m');
             },
             SSN: function () {
                 gfield.reduceRot([
@@ -962,7 +1004,7 @@ window.gridLayouter = (function () {
             WWS: function () {},
             WWN: function () {},
             WWO: function () {},
-            WWW: function () {}
+            WWW: null
         };
     };
 
