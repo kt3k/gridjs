@@ -532,66 +532,58 @@ window.gridField = (function () {
  */
 
 var OPERATION_MAPPING = {
-    SSS: [{
-        key: 'd',
-        cmds: [
-            '21 3',
-            '21 3',
-            '21 3',
-            '21 4'
-        ]
-    }, {
-        key: 't',
-        cmds: [
-            '→→→↘',
-            '→→→↘',
-            '→→→↘',
-            '→→→↘'
-        ]
-    }, {
-        key: 'm'
-    }],
+    SSS: [{key: 'd', cmds: [
+        '21 3',
+        '21 3',
+        '21 3',
+        '21 4'
+    ]}, {key: 't', cmds: [
+        '→→→↘',
+        '→→→↘',
+        '→→→↘',
+        '→→→↘'
+    ]}, {key: 'm'}],
 
-    SSN: [{
-        key: 'r',
-        cmds: [
-            'RLRL',
-            '    ',
-            '    ',
-            '  R '
-        ]
-    }, {
-        key: 'm'
-    }],
+    SSN: [{key: 'r', cmds: [
+        'RLRL',
+        '    ',
+        '    ',
+        '  R '
+    ]}, {key: 'm'}],
 
-    SSO: [{
-        key: 'r',
-        cmds: [
-            ' L  ',
-            ' L  ',
-            'L L ',
-            '   L'
-        ]
-    }, {
-        key: 'l',
-        cmds: [
-            ' L  ',
-            ' L  ',
-            'L L ',
-            '   L'
-        ]
-    }, {
-        key: 'm'
-    }],
+    SSO: [{key: 'r', cmds: [
+        ' L  ',
+        ' L  ',
+        'L L ',
+        '   L'
+    ]}, {key: 'l', cmds: [
+        ' L  ',
+        ' L  ',
+        'L L ',
+        '   L'
+    ]}, {key: 'm'}],
 
-    SSW: [
-    ],
+    SSW: [{key: 'r', cmds: [
+        '    ',
+        '    ',
+        'RRRR',
+        '    '
+    ]}, {key: 'l', cmds: [
+        '    ',
+        '    ',
+        'RRRR',
+        '    '
+    ]}, {key: 'm'}],
+
     SNS: [
     ],
+
     SNN: [
     ],
+
     SNO: [
     ],
+
     SNW: [
     ],
     SOS: [
@@ -810,17 +802,17 @@ window.gridLayouter = (function () {
     pt.createGridAlgorithm = function (gfield) {
         return {
             SSS: function () {
-                gfield.operate('d', [
+                gfield.operate({key: 'd', cmds: [
                     '21 3',
                     '21 3',
                     '21 3',
                     '21 4'
-                ]).operate('t', [
+                ]}).operate({key: 't', cmds: [
                     '→→→↘',
                     '→→→↘',
                     '→→→↘',
                     '→→→↘'
-                ]).operate('m');
+                ]}).operate({key: 'm'});
             },
             SSN: function () {
                 gfield.reduceRot([
