@@ -586,116 +586,172 @@ var OPERATION_MAPPING = {
 
     SNW: [
     ],
+
     SOS: [
     ],
+
     SON: [
     ],
+
     SOO: [
     ],
+
     SOW: [
     ],
+
     SWS: [
     ],
+
     SWN: [
     ],
+
     SWO: [
     ],
+
     SWW: [
     ],
+
     NSS: [
     ],
+
     NSN: [
     ],
+
     NSO: [
     ],
+
     NSW: [
     ],
+
     NNS: [
     ],
+
     NNN: [
     ],
+
     NNO: [
     ],
+
     NNW: [
     ],
+
     NOS: [
     ],
+
     NON: [
     ],
+
     NOO: [
     ],
+
     NOW: [
     ],
+
     NWS: [
     ],
+
     NWN: [
     ],
+
     NWO: [
     ],
+
     NWW: [
     ],
+
     OSS: [
     ],
+
     OSN: [
     ],
+
     OSO: [
     ],
+
     OSW: [
     ],
+
     ONS: [
     ],
+
     ONN: [
     ],
+
     ONO: [
     ],
+
     ONW: [
     ],
+
     OOS: [
     ],
+
     OON: [
     ],
+
     OOO: [
     ],
+
     OOW: [
     ],
+
     OWS: [
     ],
+
     OWN: [
     ],
+
     OWO: [
     ],
+
     OWW: [
     ],
+
     WSS: [
     ],
+
     WSN: [
     ],
+
     WSO: [
     ],
+
     WSW: [
     ],
+
     WNS: [
     ],
+
     WNN: [
     ],
+
     WNO: [
     ],
+
     WNW: [
     ],
+
     WOS: [
     ],
+
     WON: [
     ],
+
     WOO: [
     ],
+
     WOW: [
     ],
+
     WWS: [
     ],
+
     WWN: [
     ],
+
     WWO: [
     ],
+
     WWW: [
     ]
 };
