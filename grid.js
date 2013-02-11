@@ -472,6 +472,27 @@ window.gridField = (function () {
         ' ': 'gN'
     });
 
+    pt.operate = function (key, cmds) {
+        switch (key) {
+            case 't':
+                return this.reduceTranslate(cmds);
+            case 'd':
+                return this.reduceDelay(cmds);
+            case 'r':
+                return this.reduceRot(cmds);
+            case 'h':
+                return this.reduceHue(cmds);
+            case 's':
+                return this.reduceSat(cmds);
+            case 'l':
+                return this.reduceLum(cmds);
+            case 'c':
+                return this.reduceScales(cmds);
+            default:
+                throw Error('unsupported operation: key = `' + key + '`');
+        }
+    };
+
     var exports = function (args) {
         return new gridField(args);
     };
@@ -555,11 +576,43 @@ window.gridLayouter = (function () {
             elapsed(500).then(function () {
                 gfield.reset().commit();
 
-                done();
+                elapsed(0).then(done);
             });
         });
 
-        var proteins = {
+        this.proteins = this.createGridAlgorithm(gfield)
+
+        window.cardRibosome(this.proteins);
+
+    };
+    pt.onStart = pt.methodOnStart(pt.onStart);
+
+    pt.onStop = function (done, fail) {
+        var gfield = this.gfield;
+        var self = this;
+
+        gfield.randomize().solidCommit();
+
+        elapsed(1000).then(function () {
+            gfield.css({opacity: 0}).solidCommit();
+
+            elapsed(1500).then(function () {
+                gfield.remove()
+                delete self.gfield;
+
+                // debug
+                delete window.gfield;
+
+                window.cardRibosome.clear();
+
+                elapsed(0).then(done);
+            });
+        });
+    };
+    pt.onStop = pt.methodOnStop(pt.onStop);
+
+    pt.createGridAlgorithm = function (gfield) {
+        return {
             SSS: function () {
                 gfield.reduceDelay([
                     '21 3',
@@ -911,34 +964,7 @@ window.gridLayouter = (function () {
             WWO: function () {},
             WWW: function () {}
         };
-
-        window.cardRibosome(proteins);
-
     };
-    pt.onStart = pt.methodOnStart(pt.onStart);
-
-    pt.onStop = function (done, fail) {
-        var gfield = this.gfield;
-        var self = this;
-
-        gfield.randomize().solidCommit();
-
-        elapsed(1000).then(function () {
-            gfield.css({opacity: 0}).solidCommit();
-
-            elapsed(1500).then(function () {
-                gfield.remove()
-                delete self.gfield;
-
-                // debug
-                delete window.gfield;
-
-                window.cardRibosome.clear();
-                done();
-            });
-        });
-    };
-    pt.onStop = pt.methodOnStop(pt.onStop);
 
     var exports = function (args) {
         return new gridLayouter(args);
