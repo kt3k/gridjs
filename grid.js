@@ -849,14 +849,14 @@ window.gridLayouter = (function () {
 
         gfield.randomize().solidCommit();
 
+        window.cardRibosome.clear();
+
         elapsed(1000).then(function () {
             gfield.css({opacity: 0}).solidCommit();
 
             elapsed(1500).then(function () {
                 gfield.remove();
                 delete self.gfield;
-
-                window.cardRibosome.clear();
 
                 elapsed(0).then(done);
             });
