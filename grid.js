@@ -575,8 +575,17 @@ var OPERATION_MAPPING = {
         '    '
     ]}, {key: 'm'}],
 
-    SNS: [
-    ],
+    SNS: [{key: 'r', cmds: [
+        '  R ',
+        '  R ',
+        '  R ',
+        '  R '
+    ]}, {key: 'l', cmds: [
+        '  R ',
+        '  R ',
+        '  R ',
+        '  R '
+    ]}, {key: 'm'}],
 
     SNN: [
     ],
