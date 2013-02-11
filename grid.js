@@ -472,43 +472,45 @@ window.gridField = (function () {
         ' ': 'gN'
     });
 
-    pt.operate = function (key, cmds) {
-        switch (key) {
+    pt.operate = function (op) {
+        switch (op.key) {
             case 't':
-                return this.reduceTranslate(cmds);
+                return this.reduceTranslate(op.cmds);
             case 'd':
-                return this.reduceDelay(cmds);
+                return this.reduceDelay(op.cmds);
             case 'r':
-                return this.reduceRot(cmds);
+                return this.reduceRot(op.cmds);
             case 'h':
-                return this.reduceHue(cmds);
+                return this.reduceHue(op.cmds);
             case 's':
-                return this.reduceSat(cmds);
+                return this.reduceSat(op.cmds);
             case 'l':
-                return this.reduceLum(cmds);
+                return this.reduceLum(op.cmds);
             case 'c':
-                return this.reduceScales(cmds);
+                return this.reduceScales(op.cmds);
             case 'm':
                 return this.commit();
             default:
-                throw Error('unsupported operation: key = `' + key + '`');
+                throw Error('unsupported operation: key = `' + op.key + '`');
         }
     };
 
     pt.createOperationMapping = function (json) {
         var mapping = {};
-        var field = this;
 
         Object.keys(json).forEach(function (key) {
-            var ops = json[key]
-            mapping[key] = function () {
-                ops.forEach(function (op) {
-                    field.operate(op.key, op.cmds)
-                });
-            };
-        });
+            mapping[key] = this.createOperation(json[key]);
+        }, this);
 
         return mapping;
+    };
+
+    pt.createOperation = function (ops) {
+        var field = this;
+
+        return function () {
+            ops.forEach(pt.operate, field);
+        };
     };
 
     var exports = function (args) {
@@ -516,6 +518,7 @@ window.gridField = (function () {
     };
 
     pt.constructor = exports;
+
     exports.prototype = pt;
 
     return exports;
@@ -527,6 +530,167 @@ window.gridField = (function () {
  * license: MIT License ( http://kt3k.mit-license.org/ )
  * dependency: grid.js@0.1.0 card-ribosome.js@0.1.0 elapsed.js@1.0 scene.js@0.1.0
  */
+
+var OPERATION_MAPPING = {
+    SSS: [
+        {
+            key: 'd',
+            cmds: [
+                '21 3',
+                '21 3',
+                '21 3',
+                '21 4'
+            ]
+        },{
+            key: 't',
+            cmds: [
+                '→→→↘',
+                '→→→↘',
+                '→→→↘',
+                '→→→↘'
+            ]
+        },{
+            key: 'm'
+        }
+    ],
+    SSN: [
+        {
+            key: 'r',
+            cmds: [
+                'RLRL',
+                '    ',
+                '    ',
+                '  R '
+            ]
+        },{
+            key: 'm'
+        }
+    ],
+    SSO: [
+    ],
+    SSW: [
+    ],
+    SNS: [
+    ],
+    SNN: [
+    ],
+    SNO: [
+    ],
+    SNW: [
+    ],
+    SOS: [
+    ],
+    SON: [
+    ],
+    SOO: [
+    ],
+    SOW: [
+    ],
+    SWS: [
+    ],
+    SWN: [
+    ],
+    SWO: [
+    ],
+    SWW: [
+    ],
+    NSS: [
+    ],
+    NSN: [
+    ],
+    NSO: [
+    ],
+    NSW: [
+    ],
+    NNS: [
+    ],
+    NNN: [
+    ],
+    NNO: [
+    ],
+    NNW: [
+    ],
+    NOS: [
+    ],
+    NON: [
+    ],
+    NOO: [
+    ],
+    NOW: [
+    ],
+    NWS: [
+    ],
+    NWN: [
+    ],
+    NWO: [
+    ],
+    NWW: [
+    ],
+    OSS: [
+    ],
+    OSN: [
+    ],
+    OSO: [
+    ],
+    OSW: [
+    ],
+    ONS: [
+    ],
+    ONN: [
+    ],
+    ONO: [
+    ],
+    ONW: [
+    ],
+    OOS: [
+    ],
+    OON: [
+    ],
+    OOO: [
+    ],
+    OOW: [
+    ],
+    OWS: [
+    ],
+    OWN: [
+    ],
+    OWO: [
+    ],
+    OWW: [
+    ],
+    WSS: [
+    ],
+    WSN: [
+    ],
+    WSO: [
+    ],
+    WSW: [
+    ],
+    WNS: [
+    ],
+    WNN: [
+    ],
+    WNO: [
+    ],
+    WNW: [
+    ],
+    WOS: [
+    ],
+    WON: [
+    ],
+    WOO: [
+    ],
+    WOW: [
+    ],
+    WWS: [
+    ],
+    WWN: [
+    ],
+    WWO: [
+    ],
+    WWW: [
+    ],
+};
 
 /**
  * gridLayouter implements scene
@@ -582,7 +746,7 @@ window.gridLayouter = (function () {
         this.gfield = gfield;
 
         // debug
-        window.gfield = gfield;
+        // window.gfield = gfield;
 
         gfield.born().css({opacity: 0}).randomize().solidCommit();
 
@@ -598,7 +762,8 @@ window.gridLayouter = (function () {
             });
         });
 
-        this.proteins = this.createGridAlgorithm(gfield)
+        this.proteins = gfield.createOperationMapping(OPERATION_MAPPING);
+        // this.proteins = this.createGridAlgorithm(gfield);
 
         window.cardRibosome(this.proteins);
 
@@ -618,9 +783,6 @@ window.gridLayouter = (function () {
                 gfield.remove()
                 delete self.gfield;
 
-                // debug
-                delete window.gfield;
-
                 window.cardRibosome.clear();
 
                 elapsed(0).then(done);
@@ -629,31 +791,7 @@ window.gridLayouter = (function () {
     };
     pt.onStop = pt.methodOnStop(pt.onStop);
 
-    pt.createGridAlgorithm = function (field) {
-        return field.createOperationMapping({
-            SSS: [
-                {
-                    key: 'd',
-                    cmds: [
-                        '21 3',
-                        '21 3',
-                        '21 3',
-                        '21 4'
-                    ]
-                },{
-                    key: 't',
-                    cmds: [
-                        '→→→↘',
-                        '→→→↘',
-                        '→→→↘',
-                        '→→→↘'
-                    ]
-                },{
-                    key: 'm'
-                }
-            ]
-        });
-
+    pt.createGridAlgorithm = function (gfield) {
         return {
             SSS: function () {
                 gfield.operate('d', [
