@@ -131,7 +131,7 @@ window.grid = (function (window) {
         if (parentElement != null) {
             parentElement.removeChild(this.dom);
         }
-    }
+    };
 
     pt.execute = function (cmd) {
         return this[cmd]();
@@ -366,7 +366,7 @@ window.gridField = (function () {
         this.forEachGrid(function (grid) {
             grid.remove();
         });
-    }
+    };
 
     pt.forEachGrid = function (func) {
         this.forEachIndex(function (i, j) {
@@ -474,24 +474,24 @@ window.gridField = (function () {
 
     pt.operate = function (op) {
         switch (op.key) {
-            case 't':
-                return this.reduceTranslate(op.cmds);
-            case 'd':
-                return this.reduceDelay(op.cmds);
-            case 'r':
-                return this.reduceRot(op.cmds);
-            case 'h':
-                return this.reduceHue(op.cmds);
-            case 's':
-                return this.reduceSat(op.cmds);
-            case 'l':
-                return this.reduceLum(op.cmds);
-            case 'c':
-                return this.reduceScales(op.cmds);
-            case 'm':
-                return this.commit();
-            default:
-                throw Error('unsupported operation: key = `' + op.key + '`');
+        case 't':
+            return this.reduceTranslate(op.cmds);
+        case 'd':
+            return this.reduceDelay(op.cmds);
+        case 'r':
+            return this.reduceRot(op.cmds);
+        case 'h':
+            return this.reduceHue(op.cmds);
+        case 's':
+            return this.reduceSat(op.cmds);
+        case 'l':
+            return this.reduceLum(op.cmds);
+        case 'c':
+            return this.reduceScales(op.cmds);
+        case 'm':
+            return this.commit();
+        default:
+            throw Error('unsupported operation: key = `' + op.key + '`');
         }
     };
 
@@ -541,7 +541,7 @@ var OPERATION_MAPPING = {
                 '21 3',
                 '21 4'
             ]
-        },{
+        }, {
             key: 't',
             cmds: [
                 '→→→↘',
@@ -549,7 +549,7 @@ var OPERATION_MAPPING = {
                 '→→→↘',
                 '→→→↘'
             ]
-        },{
+        }, {
             key: 'm'
         }
     ],
@@ -562,7 +562,7 @@ var OPERATION_MAPPING = {
                 '    ',
                 '  R '
             ]
-        },{
+        }, {
             key: 'm'
         }
     ],
@@ -689,7 +689,7 @@ var OPERATION_MAPPING = {
     WWO: [
     ],
     WWW: [
-    ],
+    ]
 };
 
 /**
@@ -729,7 +729,7 @@ window.gridLayouter = (function () {
         this.lum = LUM_DEFAULT;
     };
 
-    pt.onStart = function (done, fail) {
+    pt.onStart = function (done) {
 
         var gfield = window.gridField({
             num: this.num,
@@ -770,7 +770,7 @@ window.gridLayouter = (function () {
     };
     pt.onStart = pt.methodOnStart(pt.onStart);
 
-    pt.onStop = function (done, fail) {
+    pt.onStop = function (done) {
         var gfield = this.gfield;
         var self = this;
 
@@ -780,7 +780,7 @@ window.gridLayouter = (function () {
             gfield.css({opacity: 0}).solidCommit();
 
             elapsed(1500).then(function () {
-                gfield.remove()
+                gfield.remove();
                 delete self.gfield;
 
                 window.cardRibosome.clear();
@@ -1160,7 +1160,7 @@ window.gridLayouter = (function () {
 window.documentReady(function () {
     'use strict';
 
-    var gridScene = gridLayouter();
+    var gridScene = window.gridLayouter();
 
     window.gs = gridScene;
 
