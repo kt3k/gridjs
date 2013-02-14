@@ -599,8 +599,17 @@ var OPERATION_MAPPING = {
         '→↑→↑'
     ]}, {key: 'm'}],
 
-    SNO: [
-    ],
+    SNO: [{key: 'd', cmds: [
+        '11  ',
+        '11  ',
+        '  11',
+        '  11'
+    ]}, {key: 't', cmds: [
+        '→↓→↓',
+        '↑←↑←',
+        '→↓→↓',
+        '↑←↑←'
+    ]},{key: 'm'}],
 
     SNW: [
     ],
@@ -811,7 +820,7 @@ window.gridLayouter = (function () {
         this.lum = LUM_DEFAULT;
     };
 
-    pt.onStart = function (done) {
+    pt.onEnter = function (done) {
 
         var gfield = window.gridField({
             num: this.num,
@@ -850,9 +859,9 @@ window.gridLayouter = (function () {
         window.cardRibosome(this.proteins);
 
     };
-    pt.onStart = pt.methodOnStart(pt.onStart);
+    pt.onEnter = pt.methodOnEnter(pt.onEnter);
 
-    pt.onStop = function (done) {
+    pt.onExit = function (done) {
         var gfield = this.gfield;
         var self = this;
 
@@ -871,7 +880,7 @@ window.gridLayouter = (function () {
             });
         });
     };
-    pt.onStop = pt.methodOnStop(pt.onStop);
+    pt.onExit = pt.methodOnExit(pt.onExit);
 
     pt.createGridAlgorithm = function (gfield) {
         return {
@@ -1246,5 +1255,5 @@ window.documentReady(function () {
 
     window.gs = gridScene;
 
-    gridScene.onStart(function () {});
+    gridScene.onEnter(function () {});
 });
