@@ -199,6 +199,7 @@ window.grid = (function (window) {
         return (col + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
+    // g[num] num is ten key notation.
     pt.g1 = nextGetOp(1, -1);
     pt.g2 = nextGetOp(1, 0);
     pt.g3 = nextGetOp(1, 1);
@@ -243,6 +244,7 @@ window.grid = (function (window) {
         };
     };
 
+    // t[num] num is ten key notation.
     pt.t1 = transMethod(1, -1);
     pt.t2 = transMethod(1, 0);
     pt.t3 = transMethod(1, 1);
