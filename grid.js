@@ -980,9 +980,6 @@ window.gridLayouter = (function () {
 
         this.gfield = gfield;
 
-        // debug
-        // window.gfield = gfield;
-
         gfield.born().css({opacity: 0}).randomize().solidCommit();
 
         gfield.appendTo(window.document.body);
