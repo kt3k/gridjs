@@ -714,26 +714,94 @@ var OPERATION_MAPPING = {
         '   ↑'
     ]}, {key: 'm'}],
 
-    NSS: [
-    ],
+    NSS: [{key: 'r', cmds: [
+        ' RL ',
+        'RRLL',
+        'LLRR',
+        ' LR '
+    ]}, {key: 's', cmds: [
+        ' RL ',
+        'RRLL',
+        'LLRR',
+        ' LR '
+    ]}, {key: 'm'}],
 
-    NSN: [
-    ],
+    NSN: [{key: 'r', cmds: [
+        'RLRL',
+        'LRLR',
+        'RLRL',
+        'LRLR'
+    ]}, {key: 's', cmds: [
+        'RLRL',
+        'LRLR',
+        'RLRL',
+        'LRLR'
+    ]}, {key: 'm'}],
 
-    NSO: [
-    ],
+    NSO: [{key: 'r', cmds: [
+        ' RL ',
+        'RRLL',
+        'LLRR',
+        ' LR '
+    ]}, {key: 'l', cmds: [
+        ' RL ',
+        'RRLL',
+        'LLRR',
+        ' LR '
+    ]}, {key: 'm'}],
 
-    NSW: [
-    ],
+    NSW: [{key: 'r', cmds: [
+        'RLRL',
+        'LRLR',
+        'RLRL',
+        'LRLR'
+    ]}, {key: 'l', cmds: [
+        'RLRL',
+        'LRLR',
+        'RLRL',
+        'LRLR'
+    ]}, {key: 'm'}],
 
-    NNS: [
-    ],
+    NNS: [{key: 'd', cmds: [
+        '3 23',
+        '211 ',
+        ' 112',
+        '32 3'
+    ]}, {key: 't', cmds: [
+        '←→↘↑',
+        '↗→↓↓',
+        '↑↑←↙',
+        '↓↖←→'
+    ]}, {key: 'm'}],
 
-    NNN: [
-    ],
+    NNN: [{key: 'd', cmds: [
+        '3 23',
+        '211 ',
+        ' 112',
+        '32 3'
+    ]}, {key: 't', cmds: [
+        '←→↘↑',
+        '↗→↓↓',
+        '↑↑←↙',
+        '↓↖←→',
 
-    NNO: [
-    ],
+        ' ↘↓ ',
+        '→  ↙',
+        '↗  ←',
+        ' ↑↖ '
+    ]}, {key: 'm'}],
+
+    NNO: [{key: 'd', cmds: [
+        '1 1 ',
+        '2322',
+        '2232',
+        ' 1 1'
+    ]}, {key: 't', cmds: [
+        '→↓→↓',
+        '↑→↑↓',
+        '↑↓←↓',
+        '↑←↑←'
+    ]}, {key: 'm'}],
 
     NNW: [
     ],
