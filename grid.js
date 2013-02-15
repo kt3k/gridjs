@@ -1022,6 +1022,8 @@ window.gridLayouter = (function () {
     };
     pt.onExit = pt.methodOnExit(pt.onExit);
 
+    pt.needConfirmExit = true;
+
     var exports = function (args) {
         return new gridLayouter(args);
     };
@@ -1032,13 +1034,3 @@ window.gridLayouter = (function () {
 
     return exports;
 }());
-
-window.documentReady(function () {
-    'use strict';
-
-    var gridScene = window.gridLayouter();
-
-    window.gs = gridScene;
-
-    gridScene.onEnter(function () {});
-});
