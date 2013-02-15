@@ -1022,7 +1022,7 @@ window.gridLayouter = (function () {
     };
     pt.onExit = pt.methodOnExit(pt.onExit);
 
-    pt.needConfirmExit = true;
+    pt.exitConfirmNeeded = true;
 
     var exports = function (args) {
         return new gridLayouter(args);
