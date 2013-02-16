@@ -106,7 +106,10 @@ window.grid = (function (window) {
             window.setTimeout(function () {
                 grid.div.commit();
             }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
+
             grid.commitMetrics();
+            console.log(grid.reportDiff());
+            grid.resetMetrics();
         });
         this.parent.metricsExcited = [];
         return this;
@@ -117,7 +120,17 @@ window.grid = (function (window) {
         this.col = this.colToGo;
         this.parent[this.row][this.col] = this;
         this.resetXY();
+    };
+
+    pt.resetMetrics = function () {
         this.commitDelay = 0;
+    };
+
+    pt.reportDiff = function () {
+        var diff = this.div.getDiff();
+        diff.delay = this.commitDelay;
+
+        return diff;
     };
 
     pt.appendTo = function (dom) {
