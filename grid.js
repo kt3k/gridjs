@@ -87,12 +87,12 @@ window.grid = (function (window) {
     pt.reset = function () {
         this.div.setRot(0);
         this.resetXY();
+        this.exciteMetrics();
     };
 
     pt.resetXY = function () {
         this.div.setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN);
         this.div.setX(this.parent.GRID_LEVEL * this.col + this.parent.LEFT_MARGIN);
-        this.exciteMetrics();
     };
 
     pt.exciteMetrics = function () {
