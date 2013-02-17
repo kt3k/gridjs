@@ -102,16 +102,33 @@ window.grid = (function (window) {
     };
 
     pt.commit = function () {
+        var diff = [];
+
         this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
                 grid.div.commit();
             }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
 
+            var prevRow = grid.row;
+            var prevCol = grid.col;
+
             grid.commitMetrics();
-            console.log(grid.reportDiff());
+
+            var report = grid.reportDiff();
+
+            report.row = prevRow;
+            report.col = prevCol;
+            report.rowToGo = grid.row;
+            report.colToGo = grid.col;
+            diff.push(report);
+
             grid.resetMetrics();
         });
+
+        this.parent.reportDiff(diff);
+
         this.parent.metricsExcited = [];
+
         return this;
     };
 
@@ -252,6 +269,7 @@ window.grid = (function (window) {
         return function () {
             this.rowToGo = this.nextRow(this.rowToGo, r);
             this.colToGo = this.nextCol(this.colToGo, c);
+
             this.exciteMetrics();
             return this;
         };
@@ -335,6 +353,12 @@ window.gridField = (function () {
         this.origin().commit();
 
         return this;
+    };
+
+    pt.reportDiff = function (data) {
+        if (typeof this.diffListener === 'function') {
+            this.diffListener(data);
+        }
     };
 
     pt.css = function (style) {
