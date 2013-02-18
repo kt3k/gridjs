@@ -355,6 +355,10 @@ window.gridField = (function () {
         return this;
     };
 
+    pt.setDiffListener = function (func) {
+        this.diffListener = func;
+    };
+
     pt.reportDiff = function (data) {
         if (typeof this.diffListener === 'function') {
             this.diffListener(data);
