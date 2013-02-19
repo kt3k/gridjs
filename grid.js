@@ -359,6 +359,10 @@ window.gridField = (function () {
         this.diffListener = func;
     };
 
+    pt.removeDiffListener = function () {
+        this.diffListener = null;
+    };
+
     pt.reportDiff = function (data) {
         if (typeof this.diffListener === 'function') {
             this.diffListener(data);
@@ -1022,6 +1026,8 @@ window.gridLayouter = (function () {
         });
 
         this.gfield = gfield;
+
+        window.gf = gfield;
 
         gfield.born().css({opacity: 0}).randomize().solidCommit();
 
