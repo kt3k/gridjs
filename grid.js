@@ -1054,6 +1054,8 @@ window.gridLayouter = (function () {
         var gfield = this.gfield;
         var self = this;
 
+        gfield.removeDiffListener();
+
         gfield.randomize().solidCommit();
 
         window.cardRibosome.clear();
