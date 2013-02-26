@@ -157,9 +157,13 @@ window.grid = (function (window) {
 
     pt.remove = function () {
         var parentElement = this.dom.parentElement;
+        var domToRemove = this.dom;
+        delete this.dom.grid;
 
         if (parentElement != null) {
-            parentElement.removeChild(this.dom);
+            elapsed(500).then(function () {
+                parentElement.removeChild(domToRemove);
+            });
         }
     };
 
@@ -1033,19 +1037,19 @@ window.gridLayouter = (function () {
 
         gfield.appendTo(window.document.body);
 
-        elapsed(200).then(function () {
+        elapsed(0).then(function () {
             gfield.css({opacity: 1}).solidCommit();
 
-            elapsed(500).then(function () {
+            elapsed(200).then(function () {
                 gfield.reset().commit();
 
                 elapsed(0).then(done);
             });
         });
 
-        this.proteins = gfield.createOperationMapping(OPERATION_MAPPING);
+        var om = gfield.createOperationMapping(OPERATION_MAPPING);
 
-        window.cardRibosome(this.proteins);
+        this.deck = window.cardDeck(om);
 
     };
     pt.onEnter = pt.methodOnEnter(pt.onEnter);
@@ -1058,12 +1062,12 @@ window.gridLayouter = (function () {
 
         gfield.randomize().solidCommit();
 
-        window.cardRibosome.clear();
+        this.deck.clear();
 
-        elapsed(500).then(function () {
+        elapsed(100).then(function () {
             gfield.css({opacity: 0}).solidCommit();
 
-            elapsed(1000).then(function () {
+            elapsed(0).then(function () {
                 gfield.remove();
                 delete self.gfield;
 
