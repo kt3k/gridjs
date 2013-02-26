@@ -1063,7 +1063,7 @@ window.gridLayouter = (function () {
         elapsed(500).then(function () {
             gfield.css({opacity: 0}).solidCommit();
 
-            elapsed(1500).then(function () {
+            elapsed(1000).then(function () {
                 gfield.remove();
                 delete self.gfield;
 
