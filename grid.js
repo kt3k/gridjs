@@ -992,7 +992,7 @@ window.gridLayouter = (function () {
     var TOP_MARGIN_DEFAULT = 10;
     var GRID_SIZE_DEFAULT = 50;
     var COMMIT_DIFF_DEFAULT = 40;
-    var HUE_DEFAULT = 23;
+    var HUE_DEFAULT = Math.floor(Math.random() * 360);
     var SAT_DEFAULT = 30;
     var LUM_DEFAULT = 50;
 
@@ -1036,6 +1036,8 @@ window.gridLayouter = (function () {
         gfield.born().css({opacity: 0}).randomize().solidCommit();
 
         gfield.appendTo(window.document.body);
+
+        gfield.setDiffListener(diffListener().listener());
 
         elapsed(0).then(function () {
             gfield.css({opacity: 1}).solidCommit();
