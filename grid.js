@@ -524,6 +524,11 @@ window.gridField = (function () {
     });
 
     pt.operate = function (op) {
+        if (op instanceof Array) {
+            this.operateMulti(op);
+            return;
+        }
+
         switch (op.key) {
         case 't':
             return this.reduceTranslate(op.cmds);
@@ -546,22 +551,10 @@ window.gridField = (function () {
         }
     };
 
-    pt.createOperationMapping = function (json) {
-        var mapping = {};
-
-        Object.keys(json).forEach(function (key) {
-            mapping[key] = this.createOperation(json[key]);
+    pt.operateMulti = function (operations) {
+        operations.forEach(function (op) {
+            this.operate(op);
         }, this);
-
-        return mapping;
-    };
-
-    pt.createOperation = function (ops) {
-        var field = this;
-
-        return function () {
-            ops.forEach(pt.operate, field);
-        };
     };
 
     var exports = function (args) {
@@ -1049,9 +1042,15 @@ window.gridLayouter = (function () {
             });
         });
 
-        var om = gfield.createOperationMapping(OPERATION_MAPPING);
+        this.deck = window.cardDeck(function (syms) {
+            var ops = OPERATION_MAPPING[syms];
 
-        this.deck = window.cardDeck(om);
+            if (!ops) {
+                throw Error('Operation "' + syms + '" is not defined');
+            }
+
+            gfield.operate(ops);
+        });
 
     };
     pt.onEnter = pt.methodOnEnter(pt.onEnter);
