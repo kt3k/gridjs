@@ -12,6 +12,8 @@ window.grid = (function (window) {
     var DELAY_LEVEL = 300;
     var ANIMATION_DURATION = '500ms';
 
+    var elapsed = window.elapsed;
+
     // utility for periodic metrics
     var period = function (table) {
         var index = 0;
@@ -1030,7 +1032,7 @@ window.gridLayouter = (function () {
 
         gfield.appendTo(window.document.body);
 
-        gfield.setDiffListener(diffListener().listener());
+        gfield.setDiffListener(window.diffListener().listener());
 
         elapsed(0).then(function () {
             gfield.css({opacity: 1}).solidCommit();
