@@ -93,8 +93,9 @@ window.grid = (function (window) {
     };
 
     pt.resetXY = function () {
-        this.div.setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN);
-        this.div.setX(this.parent.GRID_LEVEL * this.col + this.parent.LEFT_MARGIN);
+        this.div
+        .setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN)
+        .setX(this.parent.GRID_LEVEL * this.col + this.parent.LEFT_MARGIN);
     };
 
     pt.exciteMetrics = function () {
@@ -153,7 +154,7 @@ window.grid = (function (window) {
     };
 
     pt.appendTo = function (dom) {
-        dom.appendChild(this.dom);
+        this.div.appendTo(dom);
         return this;
     };
 
