@@ -12,8 +12,6 @@ window.grid = (function (window) {
     var DELAY_LEVEL = 300;
     var ANIMATION_DURATION = '500ms';
 
-    var elapsed = window.elapsed;
-
     // utility for periodic metrics
     var period = function (table) {
         var index = 0;
@@ -47,7 +45,8 @@ window.grid = (function (window) {
             top: 0,
             width: this.parent.GRID_SIZE + 'px',
             height: this.parent.GRID_SIZE + 'px',
-            webkitTransitionDuration: ANIMATION_DURATION
+            webkitTransitionDuration: ANIMATION_DURATION,
+            borderRadius: '5px'
         };
 
         this.div = window.div(basicStyle).css(this.parent.style);
