@@ -3,7 +3,7 @@
  * grid.js 0.1.0
  * author: Yosiya Hinosawa ( @kt3k )
  * license: MIT License ( http://kt3k.mit-license.org/ )
- * dependency: div.js@1.0.1
+ * dependency: div.js@2.0
  */
 
 window.grid = (function (window) {
@@ -159,15 +159,13 @@ window.grid = (function (window) {
     };
 
     pt.remove = function () {
-        var parentElement = this.dom.parentElement;
-        var domToRemove = this.dom;
         delete this.dom.grid;
 
-        if (parentElement != null) {
-            elapsed(500).then(function () {
-                parentElement.removeChild(domToRemove);
-            });
-        }
+        this.div
+        .transition()
+        .duration(500)
+        .remove()
+        .transitionCommit();
     };
 
     pt.execute = function (cmd) {
@@ -282,7 +280,7 @@ window.grid = (function (window) {
         };
     };
 
-    // t[num] num is ten key notation.
+    // ten key notation.
     pt.t1 = transMethod(1, -1);
     pt.t2 = transMethod(1, 0);
     pt.t3 = transMethod(1, 1);
