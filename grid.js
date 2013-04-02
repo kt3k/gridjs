@@ -108,6 +108,7 @@ window.grid = (function (window) {
 
         this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
+                grid.affectRider();
                 grid.div.commit();
             }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
 
@@ -122,7 +123,7 @@ window.grid = (function (window) {
             report.col = prevCol;
             report.rowToGo = grid.row;
             report.colToGo = grid.col;
-            diff.push(report);
+            //diff.push(report);
 
             grid.resetMetrics();
         });
@@ -152,8 +153,23 @@ window.grid = (function (window) {
         return diff;
     };
 
+    pt.affectRider = function () {
+        if (this.rider != null && typeof this.rider.listen === "function") {
+            this.rider.listen(this.div.getDiff());
+        }
+
+        return this;
+    };
+
+    pt.setRider = function (rider) {
+        this.rider = rider;
+
+        return this;
+    };
+
     pt.appendTo = function (dom) {
         this.div.appendTo(dom);
+
         return this;
     };
 
@@ -347,7 +363,17 @@ window.gridField = (function () {
         window.div.lum = this.LUM_DEFAULT;
 
         this.forEachIndex(function (i, j) {
-            window.grid(i, j, this);
+            var g = window.grid(i, j, this)
+
+            if (Math.random() > 0.5) {
+                return;
+            }
+
+            g.setRider({
+                listen: function (diff) {
+                    console.log(diff);
+                }
+            });
         });
 
         return this;
