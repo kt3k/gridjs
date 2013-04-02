@@ -1071,12 +1071,12 @@ var compileRoutes = function (CODON_MAP, OP_MAP) {
     Object.keys(CODON_MAP).forEach(function (codon) {
         codonMap[codon] = CODON_MAP[codon]
         .map(function (op) {
-            return (op.cmds
+            return op.cmds
             .join('')
             .split('')
             .map(function (cmd) { return OP_MAP[op.key][cmd]; })
             .join('|')
-            .split('|'));
+            .split('|');
         })
         .reduce(function (x, y) { return x.concat(y); }, []);
     });
