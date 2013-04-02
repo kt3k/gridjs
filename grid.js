@@ -501,7 +501,9 @@ window.gridField = (function () {
 
     pt.reduceRot = reduceCommandsWithMapping({
         'R': 'rR|gN',
+        'r': 'rR|rR|rR|rR|gN',
         'L': 'rL|gN',
+        'l': 'rL|rL|rL|rL|gN',
         ' ': 'gN'
     });
 
@@ -592,7 +594,7 @@ var OPERATION_MAPPING = {
         'RLRL',
         '    ',
         '    ',
-        '  R '
+        '  r '
     ]}, {key: 'm'}],
 
     SSO: [{key: 'r', cmds: [
@@ -847,8 +849,22 @@ var OPERATION_MAPPING = {
         '↑←↑←'
     ]}, {key: 'm'}],
 
-    NNW: [
-    ],
+    NNW: [{key: 'd', cmds: [
+        '1   ',
+        '    ',
+        '    ',
+        '   1'
+    ]}, {key: 'r', cmds: [
+        'l  l',
+        '    ',
+        '    ',
+        'r  r'
+    ]}, {key: 't', cmds: [
+        '↖  ↗',
+        '    ',
+        '    ',
+        '↙  ↘'
+    ]}, {key: 'm'}],
 
     NOS: [
     ],
