@@ -154,7 +154,7 @@ window.grid = (function (window) {
     };
 
     pt.affectRider = function () {
-        if (this.rider != null && typeof this.rider.listen === "function") {
+        if (this.rider != null && typeof this.rider.listen === 'function') {
             this.rider.listen(this.div.getDiff());
         }
 
@@ -363,7 +363,7 @@ window.gridField = (function () {
         window.div.lum = this.LUM_DEFAULT;
 
         this.forEachIndex(function (i, j) {
-            var g = window.grid(i, j, this)
+            var g = window.grid(i, j, this);
 
             if (Math.random() > 0.5) {
                 return;
@@ -371,7 +371,7 @@ window.gridField = (function () {
 
             g.setRider({
                 listen: function (diff) {
-                    console.log(diff);
+                    window.console.log(diff);
                 }
             });
         });
@@ -1064,6 +1064,8 @@ var OP_MAP = {
 };
 
 var compileRoutes = function (CODON_MAP, OP_MAP) {
+    'use strict';
+
     var codonMap = {};
 
     Object.keys(CODON_MAP).forEach(function (codon) {
