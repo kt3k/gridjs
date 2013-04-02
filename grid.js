@@ -401,7 +401,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.solidCommit = function () {
+    pt.commit = function () {
         this.forEachGrid(function (grid) {
             grid.div.commit();
         });
@@ -527,17 +527,17 @@ window.gridLayouter = (function () {
 
         window.gf = gfield;
 
-        gfield.born().css({opacity: 0}).randomize().solidCommit();
+        gfield.born().css({opacity: 0}).randomize().commit();
 
         gfield.appendTo(window.document.body);
 
         gfield.setDiffListener(window.diffListener().listener());
 
         elapsed(0).then(function () {
-            gfield.css({opacity: 1}).solidCommit();
+            gfield.css({opacity: 1}).commit();
 
             elapsed(200).then(function () {
-                gfield.reset().solidCommit();
+                gfield.reset().commit();
 
                 elapsed(0).then(done);
             });
@@ -562,12 +562,12 @@ window.gridLayouter = (function () {
 
         gfield.removeDiffListener();
 
-        gfield.randomize().solidCommit();
+        gfield.randomize().commit();
 
         this.deck.clear();
 
         elapsed(100).then(function () {
-            gfield.css({opacity: 0}).solidCommit();
+            gfield.css({opacity: 0}).commit();
 
             elapsed(0).then(function () {
                 gfield.remove();
