@@ -459,130 +459,6 @@ window.gridField = (function () {
         }
     };
 
-    var COMMAND_SEPARATOR = '|';
-
-    var mapper = function (mapping) {
-        return function (x) {
-            return mapping[x];
-        };
-    };
-
-    var flattenJoin = function flattenJoin(array, sep) {
-        if (array instanceof Array) {
-            return array.map(function (x) {
-                return flattenJoin(x, sep);
-            }).join(sep);
-        }
-
-        return array;
-    };
-
-    var reduceCommandsWithMapping = function (mapping) {
-        return function (routes) {
-            routes = flattenJoin(routes, '');
-
-            var commands = routes.split('')
-            .map(mapper(mapping))
-            .join(COMMAND_SEPARATOR)
-            .split(COMMAND_SEPARATOR);
-
-            this.origin().executeIterate(commands);
-
-            return this;
-        };
-    };
-
-    pt.reduceDelay = reduceCommandsWithMapping({
-        '1': 'd1|gN',
-        '2': 'd2|gN',
-        '3': 'd3|gN',
-        '4': 'd4|gN',
-        '5': 'd5|gN',
-        '6': 'd6|gN',
-        '7': 'd7|gN',
-        '8': 'd8|gN',
-        '9': 'd9|gN',
-        ' ': 'gN'
-    });
-
-    pt.reduceTranslate = reduceCommandsWithMapping({
-        '↙': 't1|gN',
-        '↓': 't2|gN',
-        '↘': 't3|gN',
-        '←': 't4|gN',
-        '→': 't6|gN',
-        '↖': 't7|gN',
-        '↑': 't8|gN',
-        '↗': 't9|gN',
-        ' ': 'gN'
-    });
-
-    pt.reduceScales = reduceCommandsWithMapping({
-        '↑': 'cR|gN',
-        '↓': 'cL|gN',
-        ' ': 'gN'
-    });
-
-    pt.reduceRot = reduceCommandsWithMapping({
-        'R': 'rR|gN',
-        'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
-        'L': 'rL|gN',
-        'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
-        ' ': 'gN'
-    });
-
-    pt.reduceHue = reduceCommandsWithMapping({
-        '↑': 'hR|gN',
-        '↓': 'hL|gN',
-        ' ': 'gN'
-    });
-
-    pt.reduceSat = reduceCommandsWithMapping({
-        'R': 'sR|gN',
-        'L': 'sL|gN',
-        ' ': 'gN'
-    });
-
-    pt.reduceLum = reduceCommandsWithMapping({
-        'R': 'lR|gN',
-        'L': 'lL|gN',
-        ' ': 'gN'
-    });
-
-    pt.operate = function (op) {
-        if (op instanceof Array) {
-            this.operateMulti(op);
-            return;
-        }
-
-        switch (op.key) {
-        case 'translate':
-            return this.reduceTranslate(op.cmds);
-        case 'delay':
-            return this.reduceDelay(op.cmds);
-        case 'rot':
-            return this.reduceRot(op.cmds);
-        case 'hue':
-            return this.reduceHue(op.cmds);
-        case 'sat':
-            return this.reduceSat(op.cmds);
-        case 'lum':
-            return this.reduceLum(op.cmds);
-        case 'scale':
-            return this.reduceScales(op.cmds);
-        case 'commit':
-            return this.commit();
-        default:
-            throw Error('unsupported operation: key = `' + op.key + '`');
-        }
-    };
-
-    pt.operateMulti = function (operations) {
-        operations.forEach(function (op) {
-            this.operate(op);
-        }, this);
-    };
-
     var exports = function (args) {
         return new gridField(args);
     };
@@ -724,7 +600,7 @@ window.gridLayouter = (function () {
 
 
 /**
- * compile CODON -> grid method sequence
+ * compile CODON -> grid command sequence
  */
 
 var CODON_MAP = {
