@@ -501,9 +501,9 @@ window.gridField = (function () {
 
     pt.reduceRot = reduceCommandsWithMapping({
         'R': 'rR|gN',
-        'r': 'rR|rR|rR|rR|gN',
+        'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
         'L': 'rL|gN',
-        'l': 'rL|rL|rL|rL|gN',
+        'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
         ' ': 'gN'
     });
 
