@@ -379,12 +379,6 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.commit = function () {
-        this.origin().commit();
-
-        return this;
-    };
-
     pt.setDiffListener = function (func) {
         this.diffListener = func;
     };
@@ -543,7 +537,7 @@ window.gridLayouter = (function () {
             gfield.css({opacity: 1}).solidCommit();
 
             elapsed(200).then(function () {
-                gfield.reset().commit();
+                gfield.reset().solidCommit();
 
                 elapsed(0).then(done);
             });
