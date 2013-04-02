@@ -451,16 +451,14 @@ window.gridField = (function () {
         return array;
     };
 
-    var reduceCommandsWithMapping = function (mapping, append) {
-        append = append || [];
+    var reduceCommandsWithMapping = function (mapping) {
         return function (routes) {
             routes = flattenJoin(routes, '');
 
             var commands = routes.split('')
             .map(mapper(mapping))
             .join(COMMAND_SEPARATOR)
-            .split(COMMAND_SEPARATOR)
-            .concat(append);
+            .split(COMMAND_SEPARATOR);
 
             this.origin().executeIterate(commands);
 
