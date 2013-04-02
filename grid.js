@@ -556,21 +556,21 @@ window.gridField = (function () {
         }
 
         switch (op.key) {
-        case 't':
+        case 'translate':
             return this.reduceTranslate(op.cmds);
-        case 'd':
+        case 'delay':
             return this.reduceDelay(op.cmds);
-        case 'r':
+        case 'rot':
             return this.reduceRot(op.cmds);
-        case 'h':
+        case 'hue':
             return this.reduceHue(op.cmds);
-        case 's':
+        case 'sat':
             return this.reduceSat(op.cmds);
-        case 'l':
+        case 'lum':
             return this.reduceLum(op.cmds);
-        case 'c':
+        case 'scale':
             return this.reduceScales(op.cmds);
-        case 'm':
+        case 'commit':
             return this.commit();
         default:
             throw Error('unsupported operation: key = `' + op.key + '`');
@@ -601,255 +601,381 @@ window.gridField = (function () {
  * dependency: grid.js@0.1.0 card-ribosome.js@0.1.0 elapsed.js@1.0 scene.js@0.1.0
  */
 
-var OPERATION_MAPPING = {
-    SSS: [{key: 'd', cmds: [
+/**
+ * gridLayouter implements scene
+ */
+
+window.gridLayouter = (function () {
+    'use strict';
+
+    var elapsed = window.elapsed;
+
+    var NUM_GRIDS_DEFAULT = 4;
+    var GRID_MARGIN_DEFAULT = 10;
+    var LEFT_MARGIN_DEFAULT = 30;
+    var TOP_MARGIN_DEFAULT = 10;
+    var GRID_SIZE_DEFAULT = 50;
+    var COMMIT_DIFF_DEFAULT = 40;
+    var HUE_DEFAULT = Math.floor(Math.random() * 360);
+    var SAT_DEFAULT = 30;
+    var LUM_DEFAULT = 50;
+
+    var gridLayouter = function (args) {
+        this.args = args;
+        this.initParams();
+    };
+
+    var pt = gridLayouter.prototype = new window.scene();
+
+    pt.initParams = function () {
+        this.num = NUM_GRIDS_DEFAULT;
+        this.margin = GRID_MARGIN_DEFAULT;
+        this.left = LEFT_MARGIN_DEFAULT;
+        this.top = TOP_MARGIN_DEFAULT;
+        this.size = GRID_SIZE_DEFAULT;
+        this.diff = COMMIT_DIFF_DEFAULT;
+        this.hue = HUE_DEFAULT;
+        this.sat = SAT_DEFAULT;
+        this.lum = LUM_DEFAULT;
+    };
+
+    pt.onEnter = function (done) {
+
+        var gfield = window.gridField({
+            num: this.num,
+            margin: this.margin,
+            left: this.left,
+            top: this.top,
+            size: this.size,
+            diff: this.diff,
+            hue: this.hue,
+            sat: this.sat,
+            lum: this.lum
+        });
+
+        this.gfield = gfield;
+
+        window.gf = gfield;
+
+        gfield.born().css({opacity: 0}).randomize().solidCommit();
+
+        gfield.appendTo(window.document.body);
+
+        gfield.setDiffListener(window.diffListener().listener());
+
+        elapsed(0).then(function () {
+            gfield.css({opacity: 1}).solidCommit();
+
+            elapsed(200).then(function () {
+                gfield.reset().commit();
+
+                elapsed(0).then(done);
+            });
+        });
+
+        this.deck = window.cardDeck(function (syms) {
+            var cmds = codonMap[syms];
+
+            if (!cmds) {
+                throw Error('Operation "' + syms + '" is not defined');
+            }
+
+            gfield.origin().executeIterate(cmds);
+        });
+
+    };
+    pt.onEnter = pt.methodOnEnter(pt.onEnter);
+
+    pt.onExit = function (done) {
+        var gfield = this.gfield;
+        var self = this;
+
+        gfield.removeDiffListener();
+
+        gfield.randomize().solidCommit();
+
+        this.deck.clear();
+
+        elapsed(100).then(function () {
+            gfield.css({opacity: 0}).solidCommit();
+
+            elapsed(0).then(function () {
+                gfield.remove();
+                delete self.gfield;
+
+                elapsed(0).then(done);
+            });
+        });
+    };
+    pt.onExit = pt.methodOnExit(pt.onExit);
+
+    pt.exitConfirmNeeded = true;
+
+    var exports = function (args) {
+        return new gridLayouter(args);
+    };
+
+    exports.prototype = pt;
+
+    pt.constructor = gridLayouter;
+
+    return exports;
+}());
+
+
+/**
+ * compile CODON -> grid method sequence
+ */
+
+var CODON_MAP = {
+    SSS: [{key: 'delay', cmds: [
         '21 3',
         '21 3',
         '21 3',
         '21 4'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '→→→↘',
         '→→→↘',
         '→→→↘',
         '→→→↘'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SSN: [{key: 'r', cmds: [
+    SSN: [{key: 'rot', cmds: [
         'RLRL',
         '    ',
         '    ',
         '  r '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SSO: [{key: 'r', cmds: [
+    SSO: [{key: 'rot', cmds: [
         ' L  ',
         ' L  ',
         'L L ',
         '   L'
-    ]}, {key: 'l', cmds: [
+    ]}, {key: 'lum', cmds: [
         ' L  ',
         ' L  ',
         'L L ',
         '   L'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SSW: [{key: 'r', cmds: [
+    SSW: [{key: 'rot', cmds: [
         '    ',
         '    ',
         'RRRR',
         '    '
-    ]}, {key: 'l', cmds: [
+    ]}, {key: 'lum', cmds: [
         '    ',
         '    ',
         'RRRR',
         '    '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SNS: [{key: 'r', cmds: [
+    SNS: [{key: 'rot', cmds: [
         '  R ',
         '  R ',
         '  R ',
         '  R '
-    ]}, {key: 'l', cmds: [
+    ]}, {key: 'lum', cmds: [
         '  R ',
         '  R ',
         '  R ',
         '  R '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SNN: [{key: 'd', cmds: [
+    SNN: [{key: 'delay', cmds: [
         '  11',
         '  11',
         '11  ',
         '11  '
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '↓←↓←',
         '↓↑←↑',
         '↓→↓↑',
         '→↑→↑'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SNO: [{key: 'd', cmds: [
+    SNO: [{key: 'delay', cmds: [
         '11  ',
         '11  ',
         '  11',
         '  11'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '→↓→↓',
         '↑←↑←',
         '→↓→↓',
         '↑←↑←'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SNW: [{key: 'd', cmds: [
+    SNW: [{key: 'delay', cmds: [
         '  11',
         '  11',
         '11  ',
         '11  '
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '↓←↓←',
         '→↑→↑',
         '↓←↓←',
         '→↑→↑'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SOS: [{key: 'd', cmds: [
+    SOS: [{key: 'delay', cmds: [
         '3113',
         '2  2',
         '2  2',
         '2  2'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '↖↗↖↗',
         '↖↗↖↗',
         '↖↗↖↗',
         '↖↗↖↗'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SON: [{key: 'd', cmds: [
+    SON: [{key: 'delay', cmds: [
         '1111',
         '1  1',
         '1  1',
         '1111'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '→→→↓',
         '↑→↓↓',
         '↑↑←↓',
         '↑←←←'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SOO: [{key: 'd', cmds: [
+    SOO: [{key: 'delay', cmds: [
         ' 11 ',
         '3223',
         '2112',
         '3333'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '↓↓↓↓',
         '↓↓↓↓',
         '↓↓↓↓',
         '↓↓↓↓'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SOW: [{key: 'c', cmds: [
+    SOW: [{key: 'scale', cmds: [
         '↑↓↑↓',
         '↓↑↓↑',
         '↑↓↑↓',
         '↓↑↓↑'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SWS: [{key: 'c', cmds: [
+    SWS: [{key: 'scale', cmds: [
         ' ↑↓ ',
         '↑↑↓↓',
         '↓↓↑↑',
         ' ↓↑ '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SWN: [{key: 'r', cmds: [
+    SWN: [{key: 'rot', cmds: [
         'RLRL',
         'LRLR',
         'RLRL',
         'LRLR'
-    ]}, {key: 'h', cmds: [
+    ]}, {key: 'hue', cmds: [
         '↑↓↑↓',
         '↓↑↓↑',
         '↑↓↑↓',
         '↓↑↓↑'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SWO: [{key: 'r', cmds: [
+    SWO: [{key: 'rot', cmds: [
         ' RL ',
         'RRLL',
         'LLRR',
         ' LR '
-    ]}, {key: 'h', cmds: [
+    ]}, {key: 'hue', cmds: [
         ' ↑↓ ',
         '↑↑↓↓',
         '↓↓↑↑',
         ' ↓↑ '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    SWW: [{key: 'r', cmds: [
+    SWW: [{key: 'rot', cmds: [
         ' L  ',
         ' L  ',
         'L L ',
         '   L'
-    ]}, {key: 'l', cmds: [
+    ]}, {key: 'lum', cmds: [
         ' L  ',
         ' L  ',
         'L L ',
         '   L'
-    ]}, {key: 'h', cmds: [
+    ]}, {key: 'hue', cmds: [
         ' ↑  ',
         ' ↑  ',
         '↑ ↑ ',
         '   ↑'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NSS: [{key: 'r', cmds: [
+    NSS: [{key: 'rot', cmds: [
         ' RL ',
         'RRLL',
         'LLRR',
         ' LR '
-    ]}, {key: 's', cmds: [
+    ]}, {key: 'sat', cmds: [
         ' RL ',
         'RRLL',
         'LLRR',
         ' LR '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NSN: [{key: 'r', cmds: [
+    NSN: [{key: 'rot', cmds: [
         'RLRL',
         'LRLR',
         'RLRL',
         'LRLR'
-    ]}, {key: 's', cmds: [
+    ]}, {key: 'sat', cmds: [
         'RLRL',
         'LRLR',
         'RLRL',
         'LRLR'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NSO: [{key: 'r', cmds: [
+    NSO: [{key: 'rot', cmds: [
         ' RL ',
         'RRLL',
         'LLRR',
         ' LR '
-    ]}, {key: 'l', cmds: [
+    ]}, {key: 'lum', cmds: [
         ' RL ',
         'RRLL',
         'LLRR',
         ' LR '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NSW: [{key: 'r', cmds: [
+    NSW: [{key: 'rot', cmds: [
         'RLRL',
         'LRLR',
         'RLRL',
         'LRLR'
-    ]}, {key: 'l', cmds: [
+    ]}, {key: 'lum', cmds: [
         'RLRL',
         'LRLR',
         'RLRL',
         'LRLR'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NNS: [{key: 'd', cmds: [
+    NNS: [{key: 'delay', cmds: [
         '3 23',
         '211 ',
         ' 112',
         '32 3'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '←→↘↑',
         '↗→↓↓',
         '↑↑←↙',
         '↓↖←→'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NNN: [{key: 'd', cmds: [
+    NNN: [{key: 'delay', cmds: [
         '3 23',
         '211 ',
         ' 112',
         '32 3'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '←→↘↑',
         '↗→↓↓',
         '↑↑←↙',
@@ -859,36 +985,36 @@ var OPERATION_MAPPING = {
         '→  ↙',
         '↗  ←',
         ' ↑↖ '
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NNO: [{key: 'd', cmds: [
+    NNO: [{key: 'delay', cmds: [
         '1 1 ',
         '2322',
         '2232',
         ' 1 1'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '→↓→↓',
         '↑→↑↓',
         '↑↓←↓',
         '↑←↑←'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
-    NNW: [{key: 'd', cmds: [
+    NNW: [{key: 'delay', cmds: [
         '1   ',
         '    ',
         '    ',
         '   1'
-    ]}, {key: 'r', cmds: [
+    ]}, {key: 'rot', cmds: [
         'l  l',
         '    ',
         '    ',
         'r  r'
-    ]}, {key: 't', cmds: [
+    ]}, {key: 'translate', cmds: [
         '↖  ↗',
         '    ',
         '    ',
         '↙  ↘'
-    ]}, {key: 'm'}],
+    ]}, {key: 'commit', cmds: ['m']}],
 
     NOS: [
     ],
@@ -1011,122 +1137,79 @@ var OPERATION_MAPPING = {
     ]
 };
 
-/**
- * gridLayouter implements scene
- */
-window.gridLayouter = (function () {
-    'use strict';
+var OP_MAP = {
+    delay: {
+        '1': 'd1|gN',
+        '2': 'd2|gN',
+        '3': 'd3|gN',
+        '4': 'd4|gN',
+        '5': 'd5|gN',
+        '6': 'd6|gN',
+        '7': 'd7|gN',
+        '8': 'd8|gN',
+        '9': 'd9|gN',
+        ' ': 'gN'
+    },
+    translate: {
+        '↙': 't1|gN',
+        '↓': 't2|gN',
+        '↘': 't3|gN',
+        '←': 't4|gN',
+        '→': 't6|gN',
+        '↖': 't7|gN',
+        '↑': 't8|gN',
+        '↗': 't9|gN',
+        ' ': 'gN'
+    },
+    scale: {
+        '↑': 'cR|gN',
+        '↓': 'cL|gN',
+        ' ': 'gN'
+    },
+    rot: {
+        'R': 'rR|gN',
+        'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
+        'L': 'rL|gN',
+        'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
+        ' ': 'gN'
+    },
+    hue: {
+        '↑': 'hR|gN',
+        '↓': 'hL|gN',
+        ' ': 'gN'
+    },
+    sat: {
+        'R': 'sR|gN',
+        'L': 'sL|gN',
+        ' ': 'gN'
+    },
+    lum: {
+        'R': 'lR|gN',
+        'L': 'lL|gN',
+        ' ': 'gN'
+    },
+    commit: {
+        'm': 'commit'
+    }
+};
 
-    var elapsed = window.elapsed;
+var compileRoutes = function (CODON_MAP, OP_MAP) {
+    var codonMap = {};
 
-    var NUM_GRIDS_DEFAULT = 4;
-    var GRID_MARGIN_DEFAULT = 10;
-    var LEFT_MARGIN_DEFAULT = 30;
-    var TOP_MARGIN_DEFAULT = 10;
-    var GRID_SIZE_DEFAULT = 50;
-    var COMMIT_DIFF_DEFAULT = 40;
-    var HUE_DEFAULT = Math.floor(Math.random() * 360);
-    var SAT_DEFAULT = 30;
-    var LUM_DEFAULT = 50;
+    Object.keys(CODON_MAP).forEach(function (codon) {
+        codonMap[codon] = CODON_MAP[codon]
+        .map(function (op) {
+            return (op.cmds
+            .join('')
+            .split('')
+            .map(function (cmd) { return OP_MAP[op.key][cmd]; })
+            .join('|')
+            .split('|'));
+        })
+        .reduce(function (x, y) { return x.concat(y); }, []);
+    });
 
-    var gridLayouter = function (args) {
-        this.args = args;
-        this.initParams();
-    };
+    return codonMap;
+};
 
-    var pt = gridLayouter.prototype = new window.scene();
-
-    pt.initParams = function () {
-        this.num = NUM_GRIDS_DEFAULT;
-        this.margin = GRID_MARGIN_DEFAULT;
-        this.left = LEFT_MARGIN_DEFAULT;
-        this.top = TOP_MARGIN_DEFAULT;
-        this.size = GRID_SIZE_DEFAULT;
-        this.diff = COMMIT_DIFF_DEFAULT;
-        this.hue = HUE_DEFAULT;
-        this.sat = SAT_DEFAULT;
-        this.lum = LUM_DEFAULT;
-    };
-
-    pt.onEnter = function (done) {
-
-        var gfield = window.gridField({
-            num: this.num,
-            margin: this.margin,
-            left: this.left,
-            top: this.top,
-            size: this.size,
-            diff: this.diff,
-            hue: this.hue,
-            sat: this.sat,
-            lum: this.lum
-        });
-
-        this.gfield = gfield;
-
-        window.gf = gfield;
-
-        gfield.born().css({opacity: 0}).randomize().solidCommit();
-
-        gfield.appendTo(window.document.body);
-
-        gfield.setDiffListener(window.diffListener().listener());
-
-        elapsed(0).then(function () {
-            gfield.css({opacity: 1}).solidCommit();
-
-            elapsed(200).then(function () {
-                gfield.reset().commit();
-
-                elapsed(0).then(done);
-            });
-        });
-
-        this.deck = window.cardDeck(function (syms) {
-            var ops = OPERATION_MAPPING[syms];
-
-            if (!ops) {
-                throw Error('Operation "' + syms + '" is not defined');
-            }
-
-            gfield.operate(ops);
-        });
-
-    };
-    pt.onEnter = pt.methodOnEnter(pt.onEnter);
-
-    pt.onExit = function (done) {
-        var gfield = this.gfield;
-        var self = this;
-
-        gfield.removeDiffListener();
-
-        gfield.randomize().solidCommit();
-
-        this.deck.clear();
-
-        elapsed(100).then(function () {
-            gfield.css({opacity: 0}).solidCommit();
-
-            elapsed(0).then(function () {
-                gfield.remove();
-                delete self.gfield;
-
-                elapsed(0).then(done);
-            });
-        });
-    };
-    pt.onExit = pt.methodOnExit(pt.onExit);
-
-    pt.exitConfirmNeeded = true;
-
-    var exports = function (args) {
-        return new gridLayouter(args);
-    };
-
-    exports.prototype = pt;
-
-    pt.constructor = gridLayouter;
-
-    return exports;
-}());
+var codonMap = compileRoutes(CODON_MAP, OP_MAP);
