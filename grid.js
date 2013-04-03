@@ -357,7 +357,7 @@ window.gridField = (function () {
         return this[0][0];
     };
 
-    pt.born = function () {
+    pt.create = function () {
         window.div.hue = this.HUE_DEFAULT;
         window.div.sat = this.SAT_DEFAULT;
         window.div.lum = this.LUM_DEFAULT;
@@ -381,10 +381,14 @@ window.gridField = (function () {
 
     pt.setDiffListener = function (func) {
         this.diffListener = func;
+
+        return this;
     };
 
     pt.removeDiffListener = function () {
         this.diffListener = null;
+
+        return this;
     };
 
     pt.reportDiff = function (data) {
@@ -511,7 +515,7 @@ window.gridLayouter = (function () {
 
     pt.onEnter = function (done) {
 
-        var gfield = window.gridField({
+        var gfield = this.gfield = window.gridField({
             num: this.num,
             margin: this.margin,
             left: this.left,
@@ -521,17 +525,12 @@ window.gridLayouter = (function () {
             hue: this.hue,
             sat: this.sat,
             lum: this.lum
-        });
-
-        this.gfield = gfield;
-
-        window.gf = gfield;
-
-        gfield.born().css({opacity: 0}).randomize().commit();
-
-        gfield.appendTo(window.document.body);
-
-        gfield.setDiffListener(window.diffListener().listener());
+        }).create()
+        .css({opacity: 0})
+        .randomize()
+        .commit()
+        .appendTo(window.document.body)
+        .setDiffListener(window.diffListener().listener());
 
         elapsed(0).then(function () {
             gfield.css({opacity: 1}).commit();
