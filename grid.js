@@ -1016,81 +1016,99 @@ var CODON_MAP = {
     ]
 };
 
-var OP_MAP = {
-    delay: {
-        '1': 'd1|gN',
-        '2': 'd2|gN',
-        '3': 'd3|gN',
-        '4': 'd4|gN',
-        '5': 'd5|gN',
-        '6': 'd6|gN',
-        '7': 'd7|gN',
-        '8': 'd8|gN',
-        '9': 'd9|gN',
-        ' ': 'gN'
-    },
-    translate: {
-        '↙': 't1|gN',
-        '↓': 't2|gN',
-        '↘': 't3|gN',
-        '←': 't4|gN',
-        '→': 't6|gN',
-        '↖': 't7|gN',
-        '↑': 't8|gN',
-        '↗': 't9|gN',
-        ' ': 'gN'
-    },
-    scale: {
-        '↑': 'cR|gN',
-        '↓': 'cL|gN',
-        ' ': 'gN'
-    },
-    rot: {
-        'R': 'rR|gN',
-        'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
-        'L': 'rL|gN',
-        'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
-        ' ': 'gN'
-    },
-    hue: {
-        '↑': 'hR|gN',
-        '↓': 'hL|gN',
-        ' ': 'gN'
-    },
-    sat: {
-        'R': 'sR|gN',
-        'L': 'sL|gN',
-        ' ': 'gN'
-    },
-    lum: {
-        'R': 'lR|gN',
-        'L': 'lL|gN',
-        ' ': 'gN'
-    },
-    commit: {
-        'm': 'commit'
-    }
-};
-
-var compileRoutes = function (CODON_MAP, OP_MAP) {
+window.GridCommandCompiler = (function (CODON_MAP, OP_MAP) {
     'use strict';
-
+/*
     var codonMap = {};
 
     Object.keys(CODON_MAP).forEach(function (codon) {
         codonMap[codon] = CODON_MAP[codon]
-        .map(function (op) {
-            return op.cmds
-            .join('')
-            .split('')
-            .map(function (cmd) { return OP_MAP[op.key][cmd]; })
-            .join('|')
-            .split('|');
-        })
+        .map()
+        */
+    var exports = {};
+
+    exports.OP_MAP = {
+        delay: {
+            '1': 'd1|gN',
+            '2': 'd2|gN',
+            '3': 'd3|gN',
+            '4': 'd4|gN',
+            '5': 'd5|gN',
+            '6': 'd6|gN',
+            '7': 'd7|gN',
+            '8': 'd8|gN',
+            '9': 'd9|gN',
+            ' ': 'gN'
+        },
+        translate: {
+            '↙': 't1|gN',
+            '↓': 't2|gN',
+            '↘': 't3|gN',
+            '←': 't4|gN',
+            '→': 't6|gN',
+            '↖': 't7|gN',
+            '↑': 't8|gN',
+            '↗': 't9|gN',
+            ' ': 'gN'
+        },
+        scale: {
+            '↑': 'cR|gN',
+            '↓': 'cL|gN',
+            ' ': 'gN'
+        },
+        rot: {
+            'R': 'rR|gN',
+            'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
+            'L': 'rL|gN',
+            'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
+            ' ': 'gN'
+        },
+        hue: {
+            '↑': 'hR|gN',
+            '↓': 'hL|gN',
+            ' ': 'gN'
+        },
+        sat: {
+            'R': 'sR|gN',
+            'L': 'sL|gN',
+            ' ': 'gN'
+        },
+        lum: {
+            'R': 'lR|gN',
+            'L': 'lL|gN',
+            ' ': 'gN'
+        },
+        commit: {
+            'm': 'commit'
+        }
+    };
+
+    exports.compileOp = function (op) {
+        return op.cmds
+        .join('')
+        .split('')
+        .map(function (cmd) { return exports.OP_MAP[op.key][cmd]; })
+        .join('|')
+        .split('|');
+    }
+
+    exports.compileOpList = function (ops) {
+        return ops
+        .map(exports.compileOp)
         .reduce(function (x, y) { return x.concat(y); }, []);
-    });
+    }
 
-    return codonMap;
-};
+    exports.compile = function(opsMap) {
+        var cmdMap = {};
 
-var codonMap = compileRoutes(CODON_MAP, OP_MAP);
+        Object.keys(opsMap).forEach(function (key) {
+            cmdMap[key] = exports.compileOpList(opsMap[key]);
+        });
+
+        return cmdMap;
+    };
+
+    return exports;
+}());
+
+var codonMap = GridCommandCompiler.compile(CODON_MAP);
