@@ -1016,15 +1016,9 @@ var CODON_MAP = {
     ]
 };
 
-window.GridCommandCompiler = (function (CODON_MAP, OP_MAP) {
+window.GridCommandCompiler = (function () {
     'use strict';
-/*
-    var codonMap = {};
 
-    Object.keys(CODON_MAP).forEach(function (codon) {
-        codonMap[codon] = CODON_MAP[codon]
-        .map()
-        */
     var exports = {};
 
     exports.OP_MAP = {
@@ -1090,15 +1084,15 @@ window.GridCommandCompiler = (function (CODON_MAP, OP_MAP) {
         .map(function (cmd) { return exports.OP_MAP[op.key][cmd]; })
         .join('|')
         .split('|');
-    }
+    };
 
     exports.compileOpList = function (ops) {
         return ops
         .map(exports.compileOp)
         .reduce(function (x, y) { return x.concat(y); }, []);
-    }
+    };
 
-    exports.compile = function(opsMap) {
+    exports.compile = function (opsMap) {
         var cmdMap = {};
 
         Object.keys(opsMap).forEach(function (key) {
@@ -1111,4 +1105,4 @@ window.GridCommandCompiler = (function (CODON_MAP, OP_MAP) {
     return exports;
 }());
 
-var codonMap = GridCommandCompiler.compile(CODON_MAP);
+var codonMap = window.GridCommandCompiler.compile(CODON_MAP);
