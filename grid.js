@@ -176,12 +176,6 @@ window.grid = (function (window) {
         return this[cmd]();
     };
 
-    pt.executeIterate = function (cmds) {
-        return cmds.reduce(function (grid, cmd) {
-            return grid.execute(cmd);
-        }, this);
-    };
-
     var linearChangeMethod = function (callback) {
         return function () {
             var args = arguments;
@@ -346,7 +340,9 @@ window.gridField = (function () {
     };
 
     pt.executeGridCommands = function (cmds) {
-        this.origin().executeIterate(cmds);
+        cmds.reduce(function (grid, cmd) {
+            return grid.execute(cmd);
+        }, this.origin());
 
         return this;
     };
