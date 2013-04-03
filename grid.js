@@ -356,6 +356,12 @@ window.gridField = (function () {
         return this[0][0];
     };
 
+    pt.executeGridCommands = function (cmds) {
+        this.origin().executeIterate(cmds);
+
+        return this;
+    };
+
     pt.create = function () {
         window.div.hue = this.HUE_DEFAULT;
         window.div.sat = this.SAT_DEFAULT;
@@ -549,7 +555,7 @@ window.gridLayouter = (function () {
                 throw Error('Operation "' + syms + '" is not defined');
             }
 
-            gfield.origin().executeIterate(cmds);
+            gfield.executeGridCommands(cmds);
         });
 
     };
