@@ -600,11 +600,99 @@ window.gridLayouter = (function () {
     return exports;
 }());
 
-
 /**
  * GridCommandCompiler
  * author: Yosiya Hinosawa ( @kt3k )
  */
+
+window.GridCommandCompiler = (function () {
+    'use strict';
+
+    var exports = {};
+
+    exports.OP_MAP = {
+        delay: {
+            '1': 'd1|gN',
+            '2': 'd2|gN',
+            '3': 'd3|gN',
+            '4': 'd4|gN',
+            '5': 'd5|gN',
+            '6': 'd6|gN',
+            '7': 'd7|gN',
+            '8': 'd8|gN',
+            '9': 'd9|gN',
+            ' ': 'gN'
+        },
+        translate: {
+            '↙': 't1|gN',
+            '↓': 't2|gN',
+            '↘': 't3|gN',
+            '←': 't4|gN',
+            '→': 't6|gN',
+            '↖': 't7|gN',
+            '↑': 't8|gN',
+            '↗': 't9|gN',
+            ' ': 'gN'
+        },
+        scale: {
+            '↑': 'cR|gN',
+            '↓': 'cL|gN',
+            ' ': 'gN'
+        },
+        rot: {
+            'R': 'rR|gN',
+            'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
+            'L': 'rL|gN',
+            'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
+            ' ': 'gN'
+        },
+        hue: {
+            '↑': 'hR|gN',
+            '↓': 'hL|gN',
+            ' ': 'gN'
+        },
+        sat: {
+            'R': 'sR|gN',
+            'L': 'sL|gN',
+            ' ': 'gN'
+        },
+        lum: {
+            'R': 'lR|gN',
+            'L': 'lL|gN',
+            ' ': 'gN'
+        },
+        commit: {
+            'm': 'commit'
+        }
+    };
+
+    exports.compileOp = function (op) {
+        return op.cmds
+        .join('')
+        .split('')
+        .map(function (cmd) { return exports.OP_MAP[op.key][cmd]; })
+        .join('|')
+        .split('|');
+    };
+
+    exports.compileOpList = function (ops) {
+        return ops
+        .map(exports.compileOp)
+        .reduce(function (x, y) { return x.concat(y); }, []);
+    };
+
+    exports.compile = function (opsMap) {
+        var cmdMap = {};
+
+        Object.keys(opsMap).forEach(function (key) {
+            cmdMap[key] = exports.compileOpList(opsMap[key]);
+        });
+
+        return cmdMap;
+    };
+
+    return exports;
+}());
 
 var CODON_MAP = {
     SSS: [{key: 'delay', cmds: [
@@ -1015,94 +1103,5 @@ var CODON_MAP = {
     WWW: [
     ]
 };
-
-window.GridCommandCompiler = (function () {
-    'use strict';
-
-    var exports = {};
-
-    exports.OP_MAP = {
-        delay: {
-            '1': 'd1|gN',
-            '2': 'd2|gN',
-            '3': 'd3|gN',
-            '4': 'd4|gN',
-            '5': 'd5|gN',
-            '6': 'd6|gN',
-            '7': 'd7|gN',
-            '8': 'd8|gN',
-            '9': 'd9|gN',
-            ' ': 'gN'
-        },
-        translate: {
-            '↙': 't1|gN',
-            '↓': 't2|gN',
-            '↘': 't3|gN',
-            '←': 't4|gN',
-            '→': 't6|gN',
-            '↖': 't7|gN',
-            '↑': 't8|gN',
-            '↗': 't9|gN',
-            ' ': 'gN'
-        },
-        scale: {
-            '↑': 'cR|gN',
-            '↓': 'cL|gN',
-            ' ': 'gN'
-        },
-        rot: {
-            'R': 'rR|gN',
-            'r': 'rR|rR|rR|rR|rR|rR|rR|rR|gN',
-            'L': 'rL|gN',
-            'l': 'rL|rL|rL|rL|rL|rL|rL|rL|gN',
-            ' ': 'gN'
-        },
-        hue: {
-            '↑': 'hR|gN',
-            '↓': 'hL|gN',
-            ' ': 'gN'
-        },
-        sat: {
-            'R': 'sR|gN',
-            'L': 'sL|gN',
-            ' ': 'gN'
-        },
-        lum: {
-            'R': 'lR|gN',
-            'L': 'lL|gN',
-            ' ': 'gN'
-        },
-        commit: {
-            'm': 'commit'
-        }
-    };
-
-    exports.compileOp = function (op) {
-        return op.cmds
-        .join('')
-        .split('')
-        .map(function (cmd) { return exports.OP_MAP[op.key][cmd]; })
-        .join('|')
-        .split('|');
-    };
-
-    exports.compileOpList = function (ops) {
-        return ops
-        .map(exports.compileOp)
-        .reduce(function (x, y) { return x.concat(y); }, []);
-    };
-
-    exports.compile = function (opsMap) {
-        var cmdMap = {};
-
-        Object.keys(opsMap).forEach(function (key) {
-            cmdMap[key] = exports.compileOpList(opsMap[key]);
-        });
-
-        return cmdMap;
-    };
-
-    return exports;
-}());
 
 var codonMap = window.GridCommandCompiler.compile(CODON_MAP);
