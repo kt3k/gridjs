@@ -64,8 +64,6 @@ window.grid = (function (window) {
 
         parent.metricsExcited || (parent.metricsExcited = []);
 
-        this.div.grid = this;
-
         this.met = this.div.met;
         this.dom = this.div.dom;
     };
@@ -174,8 +172,6 @@ window.grid = (function (window) {
     };
 
     pt.remove = function () {
-        delete this.dom.grid;
-
         this.div
         .transition()
         .duration(500)
