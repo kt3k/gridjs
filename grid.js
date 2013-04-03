@@ -596,7 +596,8 @@ window.gridLayouter = (function () {
 
 
 /**
- * compile CODON -> grid command sequence
+ * GridCommandCompiler
+ * author: Yosiya Hinosawa ( @kt3k )
  */
 
 var CODON_MAP = {
