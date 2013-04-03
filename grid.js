@@ -413,6 +413,8 @@ window.gridField = (function () {
         this.forEachGrid(function (grid) {
             grid.remove();
         });
+
+        return this;
     };
 
     pt.forEachGrid = function (func) {
