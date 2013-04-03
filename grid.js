@@ -327,10 +327,7 @@ window.grid = (function (window) {
 window.gridField = (function () {
     'use strict';
 
-    var gridField = function (args) {
-        this.init(args);
-    };
-
+    var gridField = function () {};
     var pt = gridField.prototype;
 
     pt.init = function (args) {
@@ -351,6 +348,8 @@ window.gridField = (function () {
         this.LUM_DEFAULT = args.lum;
 
         this.style = args.style;
+
+        return this;
     };
 
     pt.origin = function () {
@@ -457,12 +456,11 @@ window.gridField = (function () {
         }
     };
 
-    var exports = function (args) {
-        return new gridField(args);
+    var exports = function () {
+        return new gridField();
     };
 
     pt.constructor = exports;
-
     exports.prototype = pt;
 
     return exports;
@@ -515,7 +513,8 @@ window.gridLayouter = (function () {
 
     pt.onEnter = function (done) {
 
-        var gfield = this.gfield = window.gridField({
+        var gfield = this.gfield = window.gridField()
+        .init({
             num: this.num,
             margin: this.margin,
             left: this.left,
@@ -525,7 +524,8 @@ window.gridLayouter = (function () {
             hue: this.hue,
             sat: this.sat,
             lum: this.lum
-        }).create()
+        })
+        .create()
         .css({opacity: 0})
         .randomize()
         .commit()
