@@ -561,9 +561,10 @@ window.gridLayouter = (function () {
         var gfield = this.gfield;
         var self = this;
 
-        gfield.removeDiffListener();
-
-        gfield.randomize().commit();
+        gfield
+        .removeDiffListener()
+        .randomize()
+        .commit();
 
         this.deck.clear();
 
