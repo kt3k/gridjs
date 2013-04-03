@@ -115,18 +115,8 @@ window.grid = (function (window) {
 
             grid.commitMetrics();
 
-            var report = grid.reportDiff();
-
-            report.row = prevRow;
-            report.col = prevCol;
-            report.rowToGo = grid.row;
-            report.colToGo = grid.col;
-            //diff.push(report);
-
             grid.resetMetrics();
         });
-
-        this.parent.reportDiff(diff);
 
         this.parent.metricsExcited = [];
 
@@ -142,13 +132,6 @@ window.grid = (function (window) {
 
     pt.resetMetrics = function () {
         this.commitDelay = 0;
-    };
-
-    pt.reportDiff = function () {
-        var diff = this.div.getDiff();
-        diff.delay = this.commitDelay;
-
-        return diff;
     };
 
     pt.affectRider = function () {
@@ -386,24 +369,6 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.setDiffListener = function (func) {
-        this.diffListener = func;
-
-        return this;
-    };
-
-    pt.removeDiffListener = function () {
-        this.diffListener = null;
-
-        return this;
-    };
-
-    pt.reportDiff = function (data) {
-        if (typeof this.diffListener === 'function') {
-            this.diffListener(data);
-        }
-    };
-
     pt.css = function (style) {
         this.forEachGrid(function (grid) {
             grid.div.css(style);
@@ -538,7 +503,6 @@ window.gridLayouter = (function () {
         .randomize()
         .commit()
         .appendTo(window.document.body)
-        .setDiffListener(window.diffListener().listener());
 
         elapsed(0).then(function () {
             gfield.css({opacity: 1}).commit();
@@ -568,7 +532,6 @@ window.gridLayouter = (function () {
         var self = this;
 
         gfield
-        .removeDiffListener()
         .randomize()
         .commit();
 
