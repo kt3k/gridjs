@@ -159,8 +159,18 @@ window.grid = (function (window) {
         return this;
     };
 
+    pt.initRider = function () {
+        if (this.rider != null && typeof this.rider.init === 'function') {
+            this.rider.init(this.div);
+        }
+
+        return this;
+    };
+
     pt.setRider = function (rider) {
         this.rider = rider;
+
+        this.initRider();
 
         return this;
     };
@@ -370,11 +380,7 @@ window.gridField = (function () {
                 return;
             }
 
-            g.setRider({
-                listen: function (diff) {
-                    window.console.log(diff);
-                }
-            });
+            g.setRider(new window.gridRider());
         });
 
         return this;
