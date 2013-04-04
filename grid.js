@@ -153,6 +153,14 @@ window.grid = (function (window) {
         return this;
     };
 
+    pt.removeRider = function () {
+        if (this.rider != null && typeof this.rider.remove === 'function') {
+            this.rider.remove();
+        }
+
+        return this;
+    };
+
     pt.appendTo = function (dom) {
         this.div.appendTo(dom);
 
@@ -407,6 +415,14 @@ window.gridField = (function () {
     pt.remove = function () {
         this.forEachGrid(function (grid) {
             grid.remove();
+        });
+
+        return this;
+    };
+
+    pt.removeRider = function () {
+        this.forEachGrid(function (grid) {
+            grid.removeRider();
         });
 
         return this;
