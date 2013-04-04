@@ -59,6 +59,16 @@ window.gridRider = (function (window) {
         this.div.commit();
     };
 
+    pt.remove = function () {
+        this.div
+        .transition()
+        .addY(-400)
+        .css({opacity: 0})
+        .transition()
+        .remove()
+        .transitionCommit();
+    };
+
     var exports = pt.constructor = function () {
         return new gridRider();
     }
