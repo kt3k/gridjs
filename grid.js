@@ -102,16 +102,11 @@ window.grid = (function (window) {
     };
 
     pt.commit = function () {
-        var diff = [];
-
         this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
                 grid.affectRider();
                 grid.div.commit();
             }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
-
-            var prevRow = grid.row;
-            var prevCol = grid.col;
 
             grid.commitMetrics();
 
@@ -311,7 +306,13 @@ window.gridField = (function () {
     'use strict';
 
     var gridField = function () {};
+
     var pt = gridField.prototype;
+
+    // return random positive integer less than n.
+    var dice = function (n) {
+        return Math.floor(Math.random() * n);
+    };
 
     pt.init = function (args) {
         this.NUM_GRIDS = args.num;
@@ -339,6 +340,10 @@ window.gridField = (function () {
         return this[0][0];
     };
 
+    pt.getRandomGrid = function () {
+        return this[dice(4)][dice(4)];
+    };
+
     pt.executeGridCommands = function (cmds) {
         cmds.reduce(function (grid, cmd) {
             return grid.execute(cmd);
@@ -353,13 +358,7 @@ window.gridField = (function () {
         window.div.lum = this.LUM_DEFAULT;
 
         this.forEachIndex(function (i, j) {
-            var g = window.grid(i, j, this);
-
-            if (Math.random() > 0.5) {
-                return;
-            }
-
-            g.setRider(new window.gridRider());
+            window.grid(i, j, this);
         });
 
         return this;
@@ -500,13 +499,17 @@ window.gridLayouter = (function () {
         .css({opacity: 0})
         .randomize()
         .commit()
-        .appendTo(window.document.body)
+        .appendTo(window.document.body);
 
         elapsed(0).then(function () {
-            gfield.css({opacity: 1}).commit();
+            gfield
+            .css({opacity: 1})
+            .commit();
 
             elapsed(200).then(function () {
-                gfield.reset().commit();
+                gfield
+                .reset()
+                .commit();
 
                 elapsed(0).then(done);
             });
