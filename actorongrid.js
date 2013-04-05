@@ -7,14 +7,14 @@ var dice = function (n) {
     return Math.floor(Math.random() * n);
 };
 
-window.gridRider = (function (window) {
+window.actorOnGrid = (function (window) {
     'use strict';
 
     var GRID_SIZE = 50;
     var BORDER = 10;
     var RIDER_SIZE = GRID_SIZE - BORDER * 2;
 
-    var gridRider = function () {
+    var actorOnGrid = function () {
         this.parity = 1;
     };
 
