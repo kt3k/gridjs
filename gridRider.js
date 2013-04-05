@@ -57,16 +57,49 @@ window.gridRider = (function (window) {
         this.parity *= -1;
 
         this.div.commit();
+
+        if (this.isDead()) {
+            this.deathSequece();
+        }
+    };
+
+    pt.isDead = function () {
+        return Math.abs(this.div.getRot()) > 1000;
     };
 
     pt.remove = function () {
         this.div
         .transition()
-        .addY(-400)
+        .addRot(400)
+        .setScale(0)
         .css({opacity: 0})
         .transition()
         .remove()
         .transitionCommit();
+    };
+
+    pt.deathSequece = function () {
+        this.div
+        .transition()
+        .setScale(150)
+        .transition()
+        .setScale(50)
+        .transition()
+        .setScale(150)
+        .transition()
+        .setScale(50)
+        .transition()
+        .setScale(150)
+        .transition()
+        .setScale(50)
+        .transition()
+        .setScale(150)
+        .transition()
+        .setScale(0)
+
+        .transition()
+        .remove()
+        .transitionCommit
     };
 
     var exports = pt.constructor = function () {
