@@ -1,5 +1,5 @@
 /**
- * gridRider.js 0.0.1
+ * actorongrid.js 0.0.1
  * author: Yosiya Hinosawa ( @kt3k )
  */
 
@@ -103,10 +103,10 @@ window.actorOnGrid = (function (window) {
     };
 
     var exports = pt.constructor = function () {
-        return new gridRider();
+        return new actorOnGrid();
     }
 
-    exports.prototype = gridRider.prototype = pt;
+    exports.prototype = actorOnGrid.prototype = pt;
 
     return exports;
 }(this));
