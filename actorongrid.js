@@ -68,6 +68,7 @@ window.actorOnGrid = (function (window) {
     };
 
     pt.remove = function () {
+        console.log('actorOnGrid remove')
         this.div
         .transition()
         .addRot(400)
@@ -81,25 +82,45 @@ window.actorOnGrid = (function (window) {
     pt.deathSequece = function () {
         this.div
         .transition()
+        .setHue(0)
+        .setSat(100)
+        .setLum(50)
         .setScale(150)
         .transition()
+        .setSat(0)
+        .setLum(0)
         .setScale(50)
+
         .transition()
+        .setSat(100)
+        .setLum(50)
         .setScale(150)
         .transition()
+        .setSat(0)
+        .setLum(0)
         .setScale(50)
+
         .transition()
+        .setSat(100)
+        .setLum(50)
         .setScale(150)
         .transition()
+        .setSat(0)
+        .setLum(0)
         .setScale(50)
+
         .transition()
+        .setSat(100)
+        .setLum(50)
         .setScale(150)
         .transition()
+        .setSat(0)
+        .setLum(0)
         .setScale(0)
 
         .transition()
         .remove()
-        .transitionCommit
+        .transitionCommit()
     };
 
     var exports = pt.constructor = function () {
