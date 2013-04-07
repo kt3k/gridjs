@@ -7,6 +7,10 @@ var dice = function (n) {
     return Math.floor(Math.random() * n);
 };
 
+var idice = function (n) {
+    return dice(n * 2 + 1) - n;
+}
+
 window.actorOnGrid = (function (window) {
     'use strict';
 
@@ -20,7 +24,7 @@ window.actorOnGrid = (function (window) {
 
     var pt = {};
 
-    pt.init = function(div) {
+    pt.init = function(grid) {
         this.div = window.div()
         .css({
             'position': 'absolute',
@@ -31,8 +35,8 @@ window.actorOnGrid = (function (window) {
             'zIndex': 5,
             'boxShadow': '0px 0px 3px black' 
         })
-        .setX(BORDER + div.getX())
-        .setY(BORDER + div.getY() - 400)
+        .setX(BORDER + grid.div.getX())
+        .setY(BORDER + grid.div.getY() - 400)
         .setHue(dice(360))
         .setRot(0)
         .commit()
@@ -45,16 +49,13 @@ window.actorOnGrid = (function (window) {
 
         var self = this;
 
-        this.div.dom.addEventListener('click', function () { console.log(self); }, true);
+        this.div.dom.addEventListener('click', function () { self.deathSequece(); }, true);
     };
 
     pt.listen = function (move) {
         Object.keys(move).forEach(function (key) {
             this.div.met[key] += move[key];
         }, this);
-
-        this.div.addRot(360 * this.parity);
-        this.parity *= -1;
 
         this.div.commit();
 
@@ -68,7 +69,6 @@ window.actorOnGrid = (function (window) {
     };
 
     pt.remove = function () {
-        console.log('actorOnGrid remove')
         this.div
         .transition()
         .addRot(400)
@@ -82,44 +82,80 @@ window.actorOnGrid = (function (window) {
     pt.deathSequece = function () {
         this.div
         .transition()
+        .duration(200)
+        .addX(idice(30))
+        .addY(idice(30))
+        .transition()
+        .duration(200)
+        .addX(idice(30))
+        .addY(idice(30))
+        .transition()
+        .duration(200)
+        .addX(idice(30))
+        .addY(idice(30))
+        .transition()
+        .duration(200)
+        .addX(idice(30))
+        .addY(idice(30))
+
+        .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setHue(0)
         .setSat(100)
         .setLum(50)
         .setScale(150)
         .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setSat(0)
         .setLum(0)
         .setScale(50)
 
         .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setSat(100)
         .setLum(50)
         .setScale(150)
         .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setSat(0)
         .setLum(0)
         .setScale(50)
 
         .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setSat(100)
         .setLum(50)
         .setScale(150)
         .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setSat(0)
         .setLum(0)
         .setScale(50)
 
         .transition()
+        .duration(200)
+        .addX(idice(10))
+        .addY(idice(10))
         .setSat(100)
         .setLum(50)
         .setScale(150)
         .transition()
-        .setSat(0)
-        .setLum(0)
-        .setScale(0)
-
+        .css({opacity: 0})
         .transition()
         .remove()
+
         .transitionCommit()
     };
 
