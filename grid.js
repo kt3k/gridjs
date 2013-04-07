@@ -139,7 +139,7 @@ window.grid = (function (window) {
 
     pt.initRider = function () {
         if (this.rider != null && typeof this.rider.init === 'function') {
-            this.rider.init(this.div);
+            this.rider.init(this);
         }
 
         return this;
