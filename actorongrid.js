@@ -62,6 +62,7 @@ window.actorOnGrid = (function (window) {
         this.commit();
 
         if (this.isDead()) {
+            this.unset();
             this.deathSequece();
         }
     };
