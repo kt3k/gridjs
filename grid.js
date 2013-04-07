@@ -153,6 +153,12 @@ window.grid = (function (window) {
         return this;
     };
 
+    pt.unsetRider = function () {
+        this.rider = null;
+
+        return this;
+    };
+
     pt.removeRider = function () {
         if (this.rider != null && typeof this.rider.remove === 'function') {
             this.rider.remove();
