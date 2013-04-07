@@ -25,6 +25,8 @@ window.actorOnGrid = (function (window) {
     var pt = {};
 
     pt.init = function(grid) {
+        this.grid = grid;
+
         this.div = window.div()
         .css({
             'position': 'absolute',
@@ -57,12 +59,20 @@ window.actorOnGrid = (function (window) {
             this.div.met[key] += move[key];
         }, this);
 
-        this.div.commit();
+        this.commit();
 
         if (this.isDead()) {
             this.deathSequece();
         }
     };
+
+    pt.unset = function () {
+        this.grid.unsetRider();
+    }
+
+    pt.commit = function () {
+        this.div.commit();
+    }
 
     pt.isDead = function () {
         return Math.abs(this.div.getRot()) > 1000;
