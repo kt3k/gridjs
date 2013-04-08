@@ -438,6 +438,18 @@ window.gridField = (function () {
         return this;
     };
 
+    pt.vacantGrids = function () {
+        var list = [];
+
+        this.forEachGrid(function (grid) {
+            if (!grid.riderExists()) {
+                list.push(grid);
+            }
+        });
+
+        return list;
+    };
+
     pt.forEachGrid = function (func) {
         this.forEachIndex(function (i, j) {
             func.call(this, this[i][j]);
