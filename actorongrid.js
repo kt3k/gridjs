@@ -40,7 +40,7 @@ window.actorOnGrid = (function (window) {
         .setX(BORDER + grid.div.getX())
         .setY(BORDER + grid.div.getY() - 400)
         .setHue(dice(360))
-        .setRot(0)
+        .setRot(-360)
         .commit()
         .appendTo(window.document.body)
         .transition()
@@ -76,7 +76,7 @@ window.actorOnGrid = (function (window) {
     }
 
     pt.isDead = function () {
-        return Math.abs(this.div.getRot()) > 1000;
+        return Math.abs(this.div.getRot()) > 500;
     };
 
     pt.remove = function () {
