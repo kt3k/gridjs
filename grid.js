@@ -150,6 +150,10 @@ window.grid = (function (window) {
     };
 
     pt.setRider = function (rider) {
+        if (this.riderExists()) {
+            this.removeRider();
+        }
+
         this.rider = rider;
 
         this.initRider();
@@ -488,6 +492,10 @@ window.gridField = (function () {
         return sample(this.vacantGrids(), n);
     };
 
+    pt.riderExists = function () {
+        return this.vacantGrids().length < this.NUM_GRIDS * this.NUM_GRIDS;
+    };
+
     pt.forEachGrid = function (func) {
         this.forEachIndex(function (i, j) {
             func.call(this, this[i][j]);
@@ -590,6 +598,26 @@ window.gridLayouter = (function () {
                 elapsed(0).then(done);
             });
         });
+
+        setInterval(function () {
+            if (!gfield.riderExists()) {
+                gfield.sampleVacantGrids(3).forEach(function (grid) {
+                    grid.setRider(new window.actorOnGrid());
+                });
+
+                setTimeout(function () {
+                    gfield.sampleVacantGrids(3).forEach(function (grid) {
+                        grid.setRider(new window.actorOnGrid());
+                    });
+                }, 400);
+
+                setTimeout(function () {
+                    gfield.sampleVacantGrids(3).forEach(function (grid) {
+                        grid.setRider(new window.actorOnGrid());
+                    });
+                }, 800);
+            }
+        }, 500)
 
         this.deck = window.cardDeck(function (syms) {
             var cmds = codonMap[syms];
