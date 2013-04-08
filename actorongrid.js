@@ -4,12 +4,16 @@
  */
 
 var dice = function (n) {
+    'use strict';
+
     return Math.floor(Math.random() * n);
 };
 
 var idice = function (n) {
+    'use strict';
+
     return dice(n * 2 + 1) - n;
-}
+};
 
 window.actorOnGrid = (function (window) {
     'use strict';
@@ -24,7 +28,7 @@ window.actorOnGrid = (function (window) {
 
     var pt = {};
 
-    pt.init = function(grid) {
+    pt.init = function (grid) {
         this.grid = grid;
 
         this.div = window.div()
@@ -35,7 +39,7 @@ window.actorOnGrid = (function (window) {
             'borderRadius': '5px',
             'opacity': 0,
             'zIndex': 5,
-            'boxShadow': '0px 0px 3px black' 
+            'boxShadow': '0px 0px 3px black'
         })
         .setX(BORDER + grid.div.getX())
         .setY(BORDER + grid.div.getY() - 400)
@@ -69,11 +73,11 @@ window.actorOnGrid = (function (window) {
 
     pt.unset = function () {
         this.grid.unsetRider();
-    }
+    };
 
     pt.commit = function () {
         this.div.commit();
-    }
+    };
 
     pt.isDead = function () {
         return Math.abs(this.div.getRot()) > 500;
@@ -167,12 +171,12 @@ window.actorOnGrid = (function (window) {
         .transition()
         .remove()
 
-        .transitionCommit()
+        .transitionCommit();
     };
 
     var exports = pt.constructor = function () {
         return new actorOnGrid();
-    }
+    };
 
     exports.prototype = actorOnGrid.prototype = pt;
 

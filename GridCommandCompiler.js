@@ -502,4 +502,4 @@ var CODON_MAP = {
     ]
 };
 
-var codonMap = window.GridCommandCompiler.compile(CODON_MAP);
+window.codonMap = window.GridCommandCompiler.compile(CODON_MAP);

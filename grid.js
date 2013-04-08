@@ -131,7 +131,7 @@ window.grid = (function (window) {
 
     pt.riderExists = function () {
         return this.rider != null;
-    }
+    };
 
     pt.affectRider = function () {
         if (this.rider != null && typeof this.rider.listen === 'function') {
@@ -349,7 +349,7 @@ window.gridField = (function () {
         });
 
         return n;
-    }
+    };
 
     var sample = function (list, numOfSamples) {
         if (numOfSamples == null) {
@@ -366,7 +366,7 @@ window.gridField = (function () {
         }
 
         return nums.map(function (n) { return list[n]; });
-    }
+    };
 
     window.sample = sample;
 
@@ -617,10 +617,10 @@ window.gridLayouter = (function () {
                     });
                 }, 800);
             }
-        }, 500)
+        }, 500);
 
         this.deck = window.cardDeck(function (syms) {
-            var cmds = codonMap[syms];
+            var cmds = window.codonMap[syms];
 
             if (!cmds) {
                 throw Error('Operation "' + syms + '" is not defined');
