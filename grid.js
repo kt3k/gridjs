@@ -129,6 +129,10 @@ window.grid = (function (window) {
         this.commitDelay = 0;
     };
 
+    pt.riderExists = function () {
+        return this.rider !== null;
+    }
+
     pt.affectRider = function () {
         if (this.rider != null && typeof this.rider.listen === 'function') {
             this.rider.listen(this.div.getDiff());
