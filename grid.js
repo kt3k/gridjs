@@ -130,7 +130,7 @@ window.grid = (function (window) {
     };
 
     pt.riderExists = function () {
-        return this.rider !== null;
+        return this.rider != null;
     }
 
     pt.affectRider = function () {
@@ -482,6 +482,10 @@ window.gridField = (function () {
         });
 
         return list;
+    };
+
+    pt.sampleVacantGrids = function (n) {
+        return sample(this.vacantGrids(), n);
     };
 
     pt.forEachGrid = function (func) {
