@@ -335,6 +335,37 @@ window.gridField = (function () {
         return Math.floor(Math.random() * n);
     };
 
+    var bump = function (n, list) {
+        list.sort();
+
+        list.forEach(function (i) {
+            if (i <= n) {
+                n++;
+            }
+        });
+
+        return n;
+    }
+
+    var sample = function (list, numOfSamples) {
+        if (numOfSamples == null) {
+            numOfSamples = 1;
+        }
+
+        var listLength = list.length;
+        var nums = [];
+
+        while (nums.length < numOfSamples) {
+            var n = dice(listLength - nums.length);
+            n = bump(n, nums);
+            nums.push(n);
+        }
+
+        return nums.map(function (n) { return list[n]; });
+    }
+
+    window.sample = sample;
+
     pt.init = function (args) {
         this.NUM_GRIDS = args.num;
         this.GRID_MARGIN = args.margin;
