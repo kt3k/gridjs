@@ -178,6 +178,9 @@ window.grid = (function (window) {
     };
 
     pt.remove = function () {
+        this.removeRider();
+        this.unsetRider();
+
         this.div
         .transition()
         .duration(500)
