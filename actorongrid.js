@@ -36,10 +36,8 @@ window.actorOnGrid = (function (window) {
             'position': 'absolute',
             'width': RIDER_SIZE + 'px',
             'height': RIDER_SIZE + 'px',
-            'borderRadius': '5px',
             'opacity': 0,
-            'zIndex': 5,
-            'boxShadow': '0px 0px 3px black'
+            'zIndex': 5
         })
         .setX(BORDER + grid.div.getX())
         .setY(BORDER + grid.div.getY() - 400)

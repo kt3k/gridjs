@@ -45,8 +45,7 @@ window.grid = (function (window) {
             top: 0,
             width: this.parent.GRID_SIZE + 'px',
             height: this.parent.GRID_SIZE + 'px',
-            webkitTransitionDuration: ANIMATION_DURATION,
-            borderRadius: '5px'
+            webkitTransitionDuration: ANIMATION_DURATION
         };
 
         this.div = window.div(basicStyle).css(this.parent.style);
