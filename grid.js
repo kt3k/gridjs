@@ -598,7 +598,7 @@ window.gridLayouter = (function () {
             });
         });
 
-        setInterval(function () {
+        this.timer = setInterval(function () {
             if (!gfield.riderExists()) {
                 gfield.sampleVacantGrids(3).forEach(function (grid) {
                     grid.setRider(new window.actorOnGrid());
@@ -640,6 +640,8 @@ window.gridLayouter = (function () {
         .commit();
 
         this.deck.clear();
+
+        clearInterval(this.timer);
 
         elapsed(100).then(function () {
             gfield.css({opacity: 0}).commit();
