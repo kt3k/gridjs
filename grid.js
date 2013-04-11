@@ -558,6 +558,10 @@ window.gridLayouter = (function () {
 
     pt.constructor = exports;
 
+    Function.prototype.is = function (decorator) {
+        return decorator(this);
+    };
+
     pt.initParams = function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
@@ -634,8 +638,8 @@ window.gridLayouter = (function () {
             gfield.executeGridCommands(cmds);
         });
 
-    };
-    pt.onEnter = pt.methodOnEnter(pt.onEnter);
+    }
+    .is(pt.methodOnEnter);
 
     pt.onExit = function (done) {
         var gfield = this.gfield;
@@ -659,10 +663,12 @@ window.gridLayouter = (function () {
                 elapsed(0).then(done);
             });
         });
-    };
-    pt.onExit = pt.methodOnExit(pt.onExit);
+    }
+    .is(pt.methodOnExit);
 
     pt.exitConfirmNeeded = true;
+
+    delete Function.prototype.is;
 
     return exports;
 }());
