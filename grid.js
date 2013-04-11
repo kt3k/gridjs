@@ -550,7 +550,13 @@ window.gridLayouter = (function () {
         this.initParams();
     };
 
-    var pt = gridLayouter.prototype = new window.scene();
+    var exports = function (args) {
+        return new gridLayouter(args);
+    };
+
+    var pt = gridLayouter.prototype = exports.prototype = new window.scene();
+
+    pt.constructor = gridLayouter;
 
     pt.initParams = function () {
         this.num = NUM_GRIDS_DEFAULT;
@@ -657,14 +663,6 @@ window.gridLayouter = (function () {
     pt.onExit = pt.methodOnExit(pt.onExit);
 
     pt.exitConfirmNeeded = true;
-
-    var exports = function (args) {
-        return new gridLayouter(args);
-    };
-
-    exports.prototype = pt;
-
-    pt.constructor = gridLayouter;
 
     return exports;
 }());
