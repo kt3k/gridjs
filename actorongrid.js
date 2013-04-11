@@ -37,7 +37,8 @@ window.actorOnGrid = (function (window) {
             'width': RIDER_SIZE + 'px',
             'height': RIDER_SIZE + 'px',
             'opacity': 0,
-            'zIndex': 5
+            'zIndex': 5,
+            'backgroundImage': 'url(img/firefox-icon-30.png)'
         })
         .setX(BORDER + grid.div.getX())
         .setY(BORDER + grid.div.getY() - 400)
