@@ -556,7 +556,7 @@ window.gridLayouter = (function () {
 
     var pt = gridLayouter.prototype = exports.prototype = new window.scene();
 
-    pt.constructor = gridLayouter;
+    pt.constructor = exports;
 
     pt.initParams = function () {
         this.num = NUM_GRIDS_DEFAULT;
