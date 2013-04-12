@@ -639,7 +639,7 @@ window.gridLayouter = (function () {
         });
 
     }
-    .is(pt.methodOnEnter);
+    .is(window.scene.OnEnterMethod);
 
     pt.onExit = function (done) {
         var gfield = this.gfield;
@@ -664,7 +664,7 @@ window.gridLayouter = (function () {
             });
         });
     }
-    .is(pt.methodOnExit);
+    .is(window.scene.OnExitMethod);
 
     pt.exitConfirmNeeded = true;
 
