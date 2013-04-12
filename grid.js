@@ -558,6 +558,7 @@ window.gridLayouter = (function () {
 
     pt.constructor = exports;
 
+    // enhance language enabling python-like decorator
     Function.prototype.is = function (decorator) {
         return decorator(this);
     };
