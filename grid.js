@@ -66,14 +66,18 @@ window.grid = (function (window) {
         this.dom = this.div.dom;
     };
 
-    var pt = grid.prototype;
+    var exports = function (i, j, parent) {
+        return new grid(i, j, parent);
+    };
+
+    var gridPrototype = grid.prototype = exports.prototype = {constructor: exports};
 
     // return random positive integer less than n.
     var dice = function (n) {
         return Math.floor(Math.random() * n);
     };
 
-    pt.setRandomMetrics = function () {
+    gridPrototype.setRandomMetrics = function () {
         this.div.setX(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_X - this.parent.GRID_SIZE / 2);
         this.div.setY(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_Y - this.parent.GRID_SIZE / 2);
 
@@ -81,25 +85,25 @@ window.grid = (function (window) {
         this.div.setRot(dice(amp * 2) - amp);
     };
 
-    pt.reset = function () {
+    gridPrototype.reset = function () {
         this.div.setRot(0);
         this.resetXY();
         this.exciteMetrics();
     };
 
-    pt.resetXY = function () {
+    gridPrototype.resetXY = function () {
         this.div
         .setY(this.parent.GRID_LEVEL * this.row + this.parent.TOP_MARGIN)
         .setX(this.parent.GRID_LEVEL * this.col + this.parent.LEFT_MARGIN);
     };
 
-    pt.exciteMetrics = function () {
+    gridPrototype.exciteMetrics = function () {
         if (this.parent.metricsExcited.indexOf(this) === -1) {
             this.parent.metricsExcited.push(this);
         }
     };
 
-    pt.commit = function () {
+    gridPrototype.commit = function () {
         this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
                 grid.affectRider();
@@ -116,22 +120,22 @@ window.grid = (function (window) {
         return this;
     };
 
-    pt.commitMetrics = function () {
+    gridPrototype.commitMetrics = function () {
         this.row = this.rowToGo;
         this.col = this.colToGo;
         this.parent[this.row][this.col] = this;
         this.resetXY();
     };
 
-    pt.resetMetrics = function () {
+    gridPrototype.resetMetrics = function () {
         this.commitDelay = 0;
     };
 
-    pt.riderExists = function () {
+    gridPrototype.riderExists = function () {
         return this.rider != null;
     };
 
-    pt.affectRider = function () {
+    gridPrototype.affectRider = function () {
         if (this.rider != null && typeof this.rider.listen === 'function') {
             this.rider.listen(this.div.getDiff());
         }
@@ -139,7 +143,7 @@ window.grid = (function (window) {
         return this;
     };
 
-    pt.initRider = function () {
+    gridPrototype.initRider = function () {
         if (this.rider != null && typeof this.rider.init === 'function') {
             this.rider.init(this);
         }
@@ -147,7 +151,7 @@ window.grid = (function (window) {
         return this;
     };
 
-    pt.setRider = function (rider) {
+    gridPrototype.setRider = function (rider) {
         if (this.riderExists()) {
             this.removeRider();
         }
@@ -159,13 +163,13 @@ window.grid = (function (window) {
         return this;
     };
 
-    pt.unsetRider = function () {
+    gridPrototype.unsetRider = function () {
         this.rider = null;
 
         return this;
     };
 
-    pt.removeRider = function () {
+    gridPrototype.removeRider = function () {
         if (this.rider != null && typeof this.rider.remove === 'function') {
             this.rider.remove();
         }
@@ -173,13 +177,13 @@ window.grid = (function (window) {
         return this;
     };
 
-    pt.appendTo = function (dom) {
+    gridPrototype.appendTo = function (dom) {
         this.div.appendTo(dom);
 
         return this;
     };
 
-    pt.remove = function () {
+    gridPrototype.remove = function () {
         this.removeRider();
         this.unsetRider();
 
@@ -190,7 +194,7 @@ window.grid = (function (window) {
         .transitionCommit();
     };
 
-    pt.execute = function (cmd) {
+    gridPrototype.execute = function (cmd) {
         return this[cmd]();
     };
 
@@ -221,20 +225,20 @@ window.grid = (function (window) {
         this.div.addHue(hue);
     });
 
-    pt.rR = rotateMethod(90);
-    pt.rL = rotateMethod(-90);
+    gridPrototype.rR = rotateMethod(90);
+    gridPrototype.rL = rotateMethod(-90);
 
-    pt.hR = hueMethod(60);
-    pt.hL = hueMethod(-60);
+    gridPrototype.hR = hueMethod(60);
+    gridPrototype.hL = hueMethod(-60);
 
-    pt.sR = periodicMethod('sat', 'up');
-    pt.sL = periodicMethod('sat', 'down');
+    gridPrototype.sR = periodicMethod('sat', 'up');
+    gridPrototype.sL = periodicMethod('sat', 'down');
 
-    pt.lR = periodicMethod('lum', 'up');
-    pt.lL = periodicMethod('lum', 'down');
+    gridPrototype.lR = periodicMethod('lum', 'up');
+    gridPrototype.lL = periodicMethod('lum', 'down');
 
-    pt.cR = periodicMethod('scale', 'up');
-    pt.cL = periodicMethod('scale', 'down');
+    gridPrototype.cR = periodicMethod('scale', 'up');
+    gridPrototype.cL = periodicMethod('scale', 'down');
 
     var nextGetOp = function (r, c) {
         return function () {
@@ -242,29 +246,29 @@ window.grid = (function (window) {
         };
     };
 
-    pt.nextRow = function (row, d) {
+    gridPrototype.nextRow = function (row, d) {
         return (row + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
-    pt.nextCol = function (col, d) {
+    gridPrototype.nextCol = function (col, d) {
         return (col + this.parent.NUM_GRIDS + d) % this.parent.NUM_GRIDS;
     };
 
     // g[num] num is ten key notation.
-    pt.g1 = nextGetOp(1, -1);
-    pt.g2 = nextGetOp(1, 0);
-    pt.g3 = nextGetOp(1, 1);
-    pt.g4 = nextGetOp(0, -1);
-    pt.g6 = nextGetOp(0, 1);
-    pt.g7 = nextGetOp(-1, -1);
-    pt.g8 = nextGetOp(-1, 0);
-    pt.g9 = nextGetOp(-1, 1);
+    gridPrototype.g1 = nextGetOp(1, -1);
+    gridPrototype.g2 = nextGetOp(1, 0);
+    gridPrototype.g3 = nextGetOp(1, 1);
+    gridPrototype.g4 = nextGetOp(0, -1);
+    gridPrototype.g6 = nextGetOp(0, 1);
+    gridPrototype.g7 = nextGetOp(-1, -1);
+    gridPrototype.g8 = nextGetOp(-1, 0);
+    gridPrototype.g9 = nextGetOp(-1, 1);
 
-    pt.gN = function () {
+    gridPrototype.gN = function () {
         return this.onLastCol() ? this.g3() : this.g6();
     };
 
-    pt.onLastCol = function () {
+    gridPrototype.onLastCol = function () {
         return this.col === this.parent.NUM_GRIDS - 1;
     };
 
@@ -276,15 +280,15 @@ window.grid = (function (window) {
         };
     };
 
-    pt.d1 = delayMethod(1);
-    pt.d2 = delayMethod(2);
-    pt.d3 = delayMethod(3);
-    pt.d4 = delayMethod(4);
-    pt.d5 = delayMethod(5);
-    pt.d6 = delayMethod(6);
-    pt.d7 = delayMethod(7);
-    pt.d8 = delayMethod(8);
-    pt.d9 = delayMethod(9);
+    gridPrototype.d1 = delayMethod(1);
+    gridPrototype.d2 = delayMethod(2);
+    gridPrototype.d3 = delayMethod(3);
+    gridPrototype.d4 = delayMethod(4);
+    gridPrototype.d5 = delayMethod(5);
+    gridPrototype.d6 = delayMethod(6);
+    gridPrototype.d7 = delayMethod(7);
+    gridPrototype.d8 = delayMethod(8);
+    gridPrototype.d9 = delayMethod(9);
 
     var transMethod = function (r, c) {
         return function () {
@@ -297,23 +301,14 @@ window.grid = (function (window) {
     };
 
     // ten key notation.
-    pt.t1 = transMethod(1, -1);
-    pt.t2 = transMethod(1, 0);
-    pt.t3 = transMethod(1, 1);
-    pt.t4 = transMethod(0, -1);
-    pt.t6 = transMethod(0, 1);
-    pt.t7 = transMethod(-1, -1);
-    pt.t8 = transMethod(-1, 0);
-    pt.t9 = transMethod(-1, 1);
-
-    pt.nop = function () {};
-
-    var exports = function (i, j, parent) {
-        return new grid(i, j, parent);
-    };
-
-    pt.constructor = exports;
-    exports.prototype = pt;
+    gridPrototype.t1 = transMethod(1, -1);
+    gridPrototype.t2 = transMethod(1, 0);
+    gridPrototype.t3 = transMethod(1, 1);
+    gridPrototype.t4 = transMethod(0, -1);
+    gridPrototype.t6 = transMethod(0, 1);
+    gridPrototype.t7 = transMethod(-1, -1);
+    gridPrototype.t8 = transMethod(-1, 0);
+    gridPrototype.t9 = transMethod(-1, 1);
 
     return exports;
 }(window));
@@ -330,7 +325,11 @@ window.gridField = (function () {
 
     var gridField = function () {};
 
-    var pt = gridField.prototype;
+    var exports = function () {
+        return new gridField();
+    };
+
+    var gridFieldPrototype = gridField.prototype = exports.prototype = {constructor: exports};
 
     // return random positive integer less than n.
     var dice = function (n) {
@@ -368,7 +367,7 @@ window.gridField = (function () {
 
     window.sample = sample;
 
-    pt.init = function (args) {
+    gridFieldPrototype.init = function (args) {
         this.NUM_GRIDS = args.num;
         this.GRID_MARGIN = args.margin;
         this.LEFT_MARGIN = args.left;
@@ -390,15 +389,15 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.origin = function () {
+    gridFieldPrototype.origin = function () {
         return this[0][0];
     };
 
-    pt.getRandomGrid = function () {
+    gridFieldPrototype.getRandomGrid = function () {
         return this[dice(4)][dice(4)];
     };
 
-    pt.executeGridCommands = function (cmds) {
+    gridFieldPrototype.executeGridCommands = function (cmds) {
         cmds.reduce(function (grid, cmd) {
             return grid.execute(cmd);
         }, this.origin());
@@ -406,7 +405,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.create = function () {
+    gridFieldPrototype.create = function () {
         window.div.hue = this.HUE_DEFAULT;
         window.div.sat = this.SAT_DEFAULT;
         window.div.lum = this.LUM_DEFAULT;
@@ -418,7 +417,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.css = function (style) {
+    gridFieldPrototype.css = function (style) {
         this.forEachGrid(function (grid) {
             grid.div.css(style);
         });
@@ -426,7 +425,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.commit = function () {
+    gridFieldPrototype.commit = function () {
         this.forEachGrid(function (grid) {
             grid.div.commit();
         });
@@ -434,7 +433,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.randomize = function () {
+    gridFieldPrototype.randomize = function () {
         this.forEachGrid(function (grid) {
             grid.setRandomMetrics();
         });
@@ -442,7 +441,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.reset = function () {
+    gridFieldPrototype.reset = function () {
         this.forEachGrid(function (grid) {
             grid.reset();
         });
@@ -450,7 +449,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.appendTo = function (dom) {
+    gridFieldPrototype.appendTo = function (dom) {
         this.forEachGrid(function (grid) {
             grid.appendTo(dom);
         });
@@ -458,7 +457,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.remove = function () {
+    gridFieldPrototype.remove = function () {
         this.forEachGrid(function (grid) {
             grid.remove();
         });
@@ -466,7 +465,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.removeRider = function () {
+    gridFieldPrototype.removeRider = function () {
         this.forEachGrid(function (grid) {
             grid.removeRider();
         });
@@ -474,7 +473,7 @@ window.gridField = (function () {
         return this;
     };
 
-    pt.vacantGrids = function () {
+    gridFieldPrototype.vacantGrids = function () {
         var list = [];
 
         this.forEachGrid(function (grid) {
@@ -486,34 +485,27 @@ window.gridField = (function () {
         return list;
     };
 
-    pt.sampleVacantGrids = function (n) {
+    gridFieldPrototype.sampleVacantGrids = function (n) {
         return sample(this.vacantGrids(), n);
     };
 
-    pt.riderExists = function () {
+    gridFieldPrototype.riderExists = function () {
         return this.vacantGrids().length < this.NUM_GRIDS * this.NUM_GRIDS;
     };
 
-    pt.forEachGrid = function (func) {
+    gridFieldPrototype.forEachGrid = function (func) {
         this.forEachIndex(function (i, j) {
             func.call(this, this[i][j]);
         });
     };
 
-    pt.forEachIndex = function (func) {
+    gridFieldPrototype.forEachIndex = function (func) {
         for (var i = 0; i < this.NUM_GRIDS; i++) {
             for (var j = 0; j < this.NUM_GRIDS; j++) {
                 func.call(this, i, j);
             }
         }
     };
-
-    var exports = function () {
-        return new gridField();
-    };
-
-    pt.constructor = exports;
-    exports.prototype = pt;
 
     return exports;
 }());
@@ -553,16 +545,16 @@ window.gridLayouter = (function () {
         return new gridLayouter(args);
     };
 
-    var pt = gridLayouter.prototype = exports.prototype = new window.scene();
+    var gridLayouterPrototype = gridLayouter.prototype = exports.prototype = new window.scene();
 
-    pt.constructor = exports;
+    gridLayouterPrototype.constructor = exports;
 
     // enhance language enabling python-like decorator
     Function.prototype.is = function (decorator) {
         return decorator(this);
     };
 
-    pt.initParams = function () {
+    gridLayouterPrototype.initParams = function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
         this.left = LEFT_MARGIN_DEFAULT;
@@ -574,7 +566,7 @@ window.gridLayouter = (function () {
         this.lum = LUM_DEFAULT;
     };
 
-    pt.onEnter = function (done) {
+    gridLayouterPrototype.onEnter = function (done) {
 
         var gfield = this.gfield = window.gridField()
         .init({
@@ -641,7 +633,7 @@ window.gridLayouter = (function () {
     }
     .is(window.scene.OnEnterMethod);
 
-    pt.onExit = function (done) {
+    gridLayouterPrototype.onExit = function (done) {
         var gfield = this.gfield;
         var self = this;
 
@@ -666,7 +658,7 @@ window.gridLayouter = (function () {
     }
     .is(window.scene.OnExitMethod);
 
-    pt.exitConfirmNeeded = true;
+    gridLayouterPrototype.exitConfirmNeeded = true;
 
     delete Function.prototype.is;
 
