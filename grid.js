@@ -1,4 +1,3 @@
-'ユニコード';
 /**
  * grid.js 0.1.0
  * author: Yosiya Hinosawa ( @kt3k )
