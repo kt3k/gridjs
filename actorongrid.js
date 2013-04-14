@@ -45,7 +45,7 @@ window.actorOnGrid = (function (window) {
         .setHue(dice(360))
         .setRot(-360)
         .commit()
-        .appendTo(window.document.body)
+        .prependTo(window.document.body)
         .transition()
         .css({opacity: 1})
         .addY(400)
