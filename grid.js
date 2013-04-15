@@ -47,9 +47,10 @@ window.grid = (function (window) {
             webkitTransitionDuration: ANIMATION_DURATION
         };
 
-        this.div = window.div(basicStyle).css(this.parent.style);
+        this.div = window.div(basicStyle);
 
         this.commitDelay = 0;
+        this.__excited__ = false;
 
         // periodic parameters
         this.periodic = {};
@@ -106,20 +107,10 @@ window.grid = (function (window) {
         this.__excited__ = true;
     };
 
-    gridPrototype.commitAll = function () {
-        this.parent.forEachExcitedGrid(function (grid) {
-            window.setTimeout(function () {
-                grid.affectRider();
-                grid.commit();
-            }, grid.commitDelay);
-
-            grid.commitMetrics();
-
-            grid.resetMetrics();
-        });
-
-        return this;
-    };
+    gridPrototype.commitExcited = function () {
+        this.parent.commitExcited();
+    }
+    .E(Chainable);
 
     gridPrototype.commit = function () {
         this.div.commit();
@@ -450,6 +441,20 @@ window.gridField = (function () {
     gridFieldPrototype.commit = function () {
         this.forEachGrid(function (grid) {
             grid.commit();
+        });
+    }
+    .E(Chainable);
+
+    gridFieldPrototype.commitExcited = function () {
+        this.forEachExcitedGrid(function (grid) {
+            window.setTimeout(function () {
+                grid.affectRider();
+                grid.commit();
+            }, grid.commitDelay);
+
+            grid.commitMetrics();
+
+            grid.resetMetrics();
         });
     }
     .E(Chainable);

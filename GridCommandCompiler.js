@@ -60,7 +60,7 @@ window.GridCommandCompiler = (function () {
             ' ': 'gN'
         },
         commit: {
-            'm': 'commitAll'
+            'm': 'commitExcited'
         }
     };
 
