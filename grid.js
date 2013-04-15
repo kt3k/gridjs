@@ -331,6 +331,14 @@ window.gridField = (function () {
 
     var gridFieldPrototype = gridField.prototype = exports.prototype = {constructor: exports};
 
+    var Chainable = function (f) {
+        return function () {
+            f.apply(this, arguments);
+
+            return this;
+        };
+    };
+
     // return random positive integer less than n.
     var dice = function (n) {
         return Math.floor(Math.random() * n);
@@ -365,7 +373,7 @@ window.gridField = (function () {
         return nums.map(function (n) { return list[n]; });
     };
 
-    window.sample = sample;
+    exports.sample = sample;
 
     gridFieldPrototype.init = function (args) {
         this.NUM_GRIDS = args.num;
@@ -586,6 +594,9 @@ window.gridLayouter = (function () {
         .commit()
         .appendTo(window.document.body);
 
+        this.k = window.kyuukyuu().init().start();
+        this.flux = window.flux().init().start();
+
         elapsed(0).then(function () {
             gfield
             .css({opacity: 1})
@@ -642,6 +653,9 @@ window.gridLayouter = (function () {
         .commit();
 
         this.deck.clear();
+
+        this.k.stop();
+        this.flux.stop();
 
         clearInterval(this.timer);
 
