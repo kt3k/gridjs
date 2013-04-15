@@ -59,9 +59,6 @@ window.grid = (function (window) {
 
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
-
-        this.met = this.div.met;
-        this.dom = this.div.dom;
     };
 
     var exports = function (i, j, parent) {
@@ -113,7 +110,7 @@ window.grid = (function (window) {
         this.parent.forEachExcitedGrid(function (grid) {
             window.setTimeout(function () {
                 grid.affectRider();
-                grid.div.commit();
+                grid.commit();
             }, grid.commitDelay);
 
             grid.commitMetrics();
