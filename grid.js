@@ -60,8 +60,6 @@ window.grid = (function (window) {
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
 
-        parent.metricsExcited || (parent.metricsExcited = []);
-
         this.met = this.div.met;
         this.dom = this.div.dom;
     };
@@ -108,24 +106,20 @@ window.grid = (function (window) {
     };
 
     gridPrototype.exciteMetrics = function () {
-        if (this.parent.metricsExcited.indexOf(this) === -1) {
-            this.parent.metricsExcited.push(this);
-        }
+        this.__excited__ = true;
     };
 
     gridPrototype.commitAll = function () {
-        this.parent.metricsExcited.forEach(function (grid) {
+        this.parent.forEachExcitedGrid(function (grid) {
             window.setTimeout(function () {
                 grid.affectRider();
                 grid.div.commit();
-            }, Math.random() * grid.parent.COMMIT_DIFF + grid.commitDelay);
+            }, grid.commitDelay);
 
             grid.commitMetrics();
 
             grid.resetMetrics();
         });
-
-        this.parent.metricsExcited = [];
 
         return this;
     };
@@ -144,6 +138,7 @@ window.grid = (function (window) {
 
     gridPrototype.resetMetrics = function () {
         this.commitDelay = 0;
+        this.__excited__ = false;
     };
 
     gridPrototype.riderExists = function () {
@@ -511,18 +506,26 @@ window.gridField = (function () {
         return this.vacantGrids().length < this.NUM_GRIDS * this.NUM_GRIDS;
     };
 
-    gridFieldPrototype.forEachGrid = function (func) {
-        this.list.forEach(function (grid) {
-            func.call(this, grid);
-        });
-    };
-
     gridFieldPrototype.forEachIndex = function (func) {
         for (var i = 0; i < this.NUM_GRIDS; i++) {
             for (var j = 0; j < this.NUM_GRIDS; j++) {
                 func.call(this, i, j);
             }
         }
+    };
+
+    gridFieldPrototype.forEachGrid = function (func) {
+        this.list.forEach(function (grid) {
+            func.call(this, grid);
+        }, this);
+    };
+
+    gridFieldPrototype.forEachExcitedGrid = function (func) {
+        this.list.filter(function (grid) {
+            return grid.__excited__;
+        }).forEach(function (grid) {
+            func.call(this, grid);
+        }, this);
     };
 
     delete Function.prototype.E;
