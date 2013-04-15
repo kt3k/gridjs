@@ -339,6 +339,10 @@ window.gridField = (function () {
         };
     };
 
+    Function.prototype.E = function (decorator) {
+        return decorator(this);
+    };
+
     // return random positive integer less than n.
     var dice = function (n) {
         return Math.floor(Math.random() * n);
@@ -393,9 +397,8 @@ window.gridField = (function () {
         this.LUM_DEFAULT = args.lum;
 
         this.style = args.style;
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.origin = function () {
         return this[0][0];
@@ -409,9 +412,8 @@ window.gridField = (function () {
         cmds.reduce(function (grid, cmd) {
             return grid.execute(cmd);
         }, this.origin());
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.create = function () {
         window.div.hue = this.HUE_DEFAULT;
@@ -421,65 +423,58 @@ window.gridField = (function () {
         this.forEachIndex(function (i, j) {
             window.grid(i, j, this);
         });
+    }
+    .E(Chainable);
 
-        return this;
-    };
 
     gridFieldPrototype.css = function (style) {
         this.forEachGrid(function (grid) {
             grid.div.css(style);
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.commit = function () {
         this.forEachGrid(function (grid) {
             grid.div.commit();
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.randomize = function () {
         this.forEachGrid(function (grid) {
             grid.setRandomMetrics();
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.reset = function () {
         this.forEachGrid(function (grid) {
             grid.reset();
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.appendTo = function (dom) {
         this.forEachGrid(function (grid) {
             grid.appendTo(dom);
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.remove = function () {
         this.forEachGrid(function (grid) {
             grid.remove();
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.removeRider = function () {
         this.forEachGrid(function (grid) {
             grid.removeRider();
         });
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridFieldPrototype.vacantGrids = function () {
         var list = [];
@@ -514,6 +509,8 @@ window.gridField = (function () {
             }
         }
     };
+
+    delete Function.prototype.E;
 
     return exports;
 }());
