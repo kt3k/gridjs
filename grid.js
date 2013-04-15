@@ -545,7 +545,7 @@ window.gridField = (function () {
  * gridlayouter.js 0.1.0
  * author: Yosiya Hinosawa ( @kt3k )
  * license: MIT License ( http://kt3k.mit-license.org/ )
- * dependency: grid.js@0.1.0 card-ribosome.js@0.1.0 elapsed.js@1.0 scene.js@0.1.0
+ * dependency: grid.js@0.1.0 carddeck.js@0.1.0 scene.js@0.1.0
  */
 
 /**
