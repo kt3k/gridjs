@@ -329,7 +329,7 @@ window.gridField = (function () {
         return new gridField();
     };
 
-    var gridFieldPrototype = gridField.prototype = exports.prototype = [];
+    var gridFieldPrototype = gridField.prototype = exports.prototype = new window.Transitionable();
 
     gridFieldPrototype.constructor = exports;
 
@@ -398,6 +398,8 @@ window.gridField = (function () {
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
 
+        this.initTransition(this);
+
         this.style = args.style;
     }
     .E(Chainable);
@@ -436,6 +438,7 @@ window.gridField = (function () {
             grid.div.css(style);
         });
     }
+    .E(window.transition.Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.commit = function () {
@@ -443,6 +446,7 @@ window.gridField = (function () {
             grid.commit();
         });
     }
+    .E(window.transition.Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.commitExcited = function () {
@@ -471,6 +475,7 @@ window.gridField = (function () {
             grid.reset();
         });
     }
+    .E(window.transition.Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.appendTo = function (dom) {
@@ -485,6 +490,7 @@ window.gridField = (function () {
             grid.remove();
         });
     }
+    .E(window.transition.Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.removeRider = function () {
@@ -549,8 +555,6 @@ window.gridField = (function () {
 window.gridLayouter = (function () {
     'use strict';
 
-    var elapsed = window.elapsed;
-
     var NUM_GRIDS_DEFAULT = 4;
     var GRID_MARGIN_DEFAULT = 10;
     var LEFT_MARGIN_DEFAULT = 30;
@@ -594,39 +598,38 @@ window.gridLayouter = (function () {
     gridLayouterPrototype.onEnter = function (done) {
 
         var gfield = this.gfield = window.gridField()
-        .init({
-            num: this.num,
-            margin: this.margin,
-            left: this.left,
-            top: this.top,
-            size: this.size,
-            diff: this.diff,
-            hue: this.hue,
-            sat: this.sat,
-            lum: this.lum
-        })
-        .create()
-        .css({opacity: 0})
-        .randomize()
-        .commit()
-        .appendTo(window.document.body);
+            .init({
+                num: this.num,
+                margin: this.margin,
+                left: this.left,
+                top: this.top,
+                size: this.size,
+                diff: this.diff,
+                hue: this.hue,
+                sat: this.sat,
+                lum: this.lum
+            })
+            .create()
+            .css({opacity: 0})
+            .randomize()
+            .commit()
+            .appendTo(window.document.body)
+
+            .transition()
+            .duration(0)
+            .css({opacity: 1})
+            .commit()
+
+            .transition()
+            .duration(200)
+            .reset()
+            .commit()
+            .callback(done)
+
+            .transitionCommit();
 
         this.k = window.kyuukyuu().init().start();
         this.flux = window.flux().init().start();
-
-        elapsed(0).then(function () {
-            gfield
-            .css({opacity: 1})
-            .commit();
-
-            elapsed(200).then(function () {
-                gfield
-                .reset()
-                .commit();
-
-                elapsed(0).then(done);
-            });
-        });
 
         this.timer = setInterval(function () {
             if (!gfield.riderExists()) {
@@ -662,13 +665,6 @@ window.gridLayouter = (function () {
     .E(window.scene.OnEnterMethod);
 
     gridLayouterPrototype.onExit = function (done) {
-        var gfield = this.gfield;
-        var self = this;
-
-        gfield
-        .randomize()
-        .commit();
-
         this.deck.clear();
 
         this.k.stop();
@@ -676,16 +672,21 @@ window.gridLayouter = (function () {
 
         clearInterval(this.timer);
 
-        elapsed(100).then(function () {
-            gfield.css({opacity: 0}).commit();
+        this.gfield
+            .randomize()
+            .commit()
 
-            elapsed(0).then(function () {
-                gfield.remove();
-                delete self.gfield;
+            .transition()
+            .duration(100)
+            .css({opacity: 0})
+            .commit()
 
-                elapsed(0).then(done);
-            });
-        });
+            .transition()
+            .duration(0)
+            .remove()
+            .callback(done)
+
+            .transitionCommit();
     }
     .E(window.scene.OnExitMethod);
 
