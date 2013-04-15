@@ -77,6 +77,16 @@ window.grid = (function (window) {
         return Math.floor(Math.random() * n);
     };
 
+    var Chainable = function (f) {
+        return function () {
+            f.apply(this, arguments);
+
+            return this;
+        };
+    };
+
+    Function.prototype.E = function (decorator) { return decorator(this); };
+
     gridPrototype.setRandomMetrics = function () {
         this.div.setX(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_X - this.parent.GRID_SIZE / 2);
         this.div.setY(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_Y - this.parent.GRID_SIZE / 2);
@@ -103,7 +113,7 @@ window.grid = (function (window) {
         }
     };
 
-    gridPrototype.commit = function () {
+    gridPrototype.commitAll = function () {
         this.parent.metricsExcited.forEach(function (grid) {
             window.setTimeout(function () {
                 grid.affectRider();
@@ -119,6 +129,11 @@ window.grid = (function (window) {
 
         return this;
     };
+
+    gridPrototype.commit = function () {
+        this.div.commit();
+    }
+    .E(Chainable);
 
     gridPrototype.commitMetrics = function () {
         this.row = this.rowToGo;
@@ -310,6 +325,8 @@ window.grid = (function (window) {
     gridPrototype.t8 = transMethod(-1, 0);
     gridPrototype.t9 = transMethod(-1, 1);
 
+    delete Function.prototype.E;
+
     return exports;
 }(window));
 
@@ -329,7 +346,9 @@ window.gridField = (function () {
         return new gridField();
     };
 
-    var gridFieldPrototype = gridField.prototype = exports.prototype = {constructor: exports};
+    var gridFieldPrototype = gridField.prototype = exports.prototype = [];
+
+    gridFieldPrototype.constructor = exports;
 
     var Chainable = function (f) {
         return function () {
@@ -420,8 +439,10 @@ window.gridField = (function () {
         window.div.sat = this.SAT_DEFAULT;
         window.div.lum = this.LUM_DEFAULT;
 
+        this.list = [];
+
         this.forEachIndex(function (i, j) {
-            window.grid(i, j, this);
+            this.list.push(window.grid(i, j, this));
         });
     }
     .E(Chainable);
@@ -436,7 +457,7 @@ window.gridField = (function () {
 
     gridFieldPrototype.commit = function () {
         this.forEachGrid(function (grid) {
-            grid.div.commit();
+            grid.commit();
         });
     }
     .E(Chainable);
@@ -477,15 +498,9 @@ window.gridField = (function () {
     .E(Chainable);
 
     gridFieldPrototype.vacantGrids = function () {
-        var list = [];
-
-        this.forEachGrid(function (grid) {
-            if (!grid.riderExists()) {
-                list.push(grid);
-            }
+        return this.list.filter(function (grid) {
+            return !grid.riderExists();
         });
-
-        return list;
     };
 
     gridFieldPrototype.sampleVacantGrids = function (n) {
@@ -497,8 +512,8 @@ window.gridField = (function () {
     };
 
     gridFieldPrototype.forEachGrid = function (func) {
-        this.forEachIndex(function (i, j) {
-            func.call(this, this[i][j]);
+        this.list.forEach(function (grid) {
+            func.call(this, grid);
         });
     };
 
