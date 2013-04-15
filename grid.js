@@ -575,7 +575,7 @@ window.gridLayouter = (function () {
     gridLayouterPrototype.constructor = exports;
 
     // enhance language enabling python-like decorator
-    Function.prototype.is = function (decorator) {
+    Function.prototype.E = function (decorator) {
         return decorator(this);
     };
 
@@ -659,7 +659,7 @@ window.gridLayouter = (function () {
         });
 
     }
-    .is(window.scene.OnEnterMethod);
+    .E(window.scene.OnEnterMethod);
 
     gridLayouterPrototype.onExit = function (done) {
         var gfield = this.gfield;
@@ -687,7 +687,7 @@ window.gridLayouter = (function () {
             });
         });
     }
-    .is(window.scene.OnExitMethod);
+    .E(window.scene.OnExitMethod);
 
     gridLayouterPrototype.exitConfirmNeeded = true;
 
