@@ -565,13 +565,12 @@ window.gridLayouter = (function () {
     var SAT_DEFAULT = 30;
     var LUM_DEFAULT = 50;
 
-    var gridLayouter = function (args) {
-        this.args = args;
+    var gridLayouter = function () {
         this.initParams();
     };
 
-    var exports = function (args) {
-        return new gridLayouter(args);
+    var exports = function () {
+        return new gridLayouter();
     };
 
     var gridLayouterPrototype = gridLayouter.prototype = exports.prototype = new window.scene();
@@ -692,7 +691,7 @@ window.gridLayouter = (function () {
 
     gridLayouterPrototype.exitConfirmNeeded = true;
 
-    delete Function.prototype.is;
+    delete Function.prototype.E;
 
     return exports;
 }());
