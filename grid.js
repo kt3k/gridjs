@@ -552,37 +552,18 @@ window.gridField = (function () {
  * gridLayouter implements scene
  */
 
-window.gridLayouter = (function () {
-    'use strict';
+var NUM_GRIDS_DEFAULT = 4;
+var GRID_MARGIN_DEFAULT = 10;
+var LEFT_MARGIN_DEFAULT = 30;
+var TOP_MARGIN_DEFAULT = 10;
+var GRID_SIZE_DEFAULT = 50;
+var COMMIT_DIFF_DEFAULT = 40;
+var HUE_DEFAULT = Math.floor(Math.random() * 360);
+var SAT_DEFAULT = 30;
+var LUM_DEFAULT = 50;
 
-    var NUM_GRIDS_DEFAULT = 4;
-    var GRID_MARGIN_DEFAULT = 10;
-    var LEFT_MARGIN_DEFAULT = 30;
-    var TOP_MARGIN_DEFAULT = 10;
-    var GRID_SIZE_DEFAULT = 50;
-    var COMMIT_DIFF_DEFAULT = 40;
-    var HUE_DEFAULT = Math.floor(Math.random() * 360);
-    var SAT_DEFAULT = 30;
-    var LUM_DEFAULT = 50;
-
-    var gridLayouter = function () {
-        this.initParams();
-    };
-
-    var exports = function () {
-        return new gridLayouter();
-    };
-
-    var gridLayouterPrototype = gridLayouter.prototype = exports.prototype = new window.scene();
-
-    gridLayouterPrototype.constructor = exports;
-
-    // enhance language enabling python-like decorator
-    Function.prototype.E = function (decorator) {
-        return decorator(this);
-    };
-
-    gridLayouterPrototype.initParams = function () {
+window.gridLayouter = window.SceneFactory({
+    constructor: function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
         this.left = LEFT_MARGIN_DEFAULT;
@@ -592,11 +573,10 @@ window.gridLayouter = (function () {
         this.hue = HUE_DEFAULT;
         this.sat = SAT_DEFAULT;
         this.lum = LUM_DEFAULT;
-    };
+    },
 
-    gridLayouterPrototype.onEnter = function (done) {
-
-        var gfield = this.gfield = window.gridField()
+    onEnter: function (done) {
+        var gfield = this.gfield = window.gfield = window.gridField()
             .init({
                 num: this.num,
                 margin: this.margin,
@@ -660,10 +640,9 @@ window.gridLayouter = (function () {
             gfield.executeGridCommands(cmds);
         });
 
-    }
-    .E(window.scene.OnEnterMethod);
+    },
 
-    gridLayouterPrototype.onExit = function (done) {
+    onExit: function (done) {
         this.deck.clear();
 
         this.k.stop();
@@ -687,11 +666,4 @@ window.gridLayouter = (function () {
 
             .transitionCommit();
     }
-    .E(window.scene.OnExitMethod);
-
-    gridLayouterPrototype.exitConfirmNeeded = true;
-
-    delete Function.prototype.E;
-
-    return exports;
-}());
+});
