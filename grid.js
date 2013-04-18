@@ -562,7 +562,7 @@ var HUE_DEFAULT = Math.floor(Math.random() * 360);
 var SAT_DEFAULT = 30;
 var LUM_DEFAULT = 50;
 
-window.gridLayouter = window.SceneFactory({
+window.RoomScene = window.SceneFactory({
     constructor: function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
@@ -665,5 +665,9 @@ window.gridLayouter = window.SceneFactory({
             .callback(done)
 
             .transitionCommit();
-    }
+    },
+
+    exitConfirmNeeded: true,
+
+    exitConfirmMessage: 'Do you really want to leave this room?'
 });
