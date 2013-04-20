@@ -542,14 +542,14 @@ window.gridField = (function () {
 }());
 
 /**
- * gridlayouter.js 0.1.0
+ * roomscene.js 0.1.0
  * author: Yosiya Hinosawa ( @kt3k )
  * license: MIT License ( http://kt3k.mit-license.org/ )
  * dependency: grid.js@0.1.0 carddeck.js@0.1.0 scene.js@0.1.0
  */
 
 /**
- * gridLayouter implements scene
+ * RoomScene implements scene
  */
 
 var NUM_GRIDS_DEFAULT = 4;
@@ -562,7 +562,7 @@ var HUE_DEFAULT = Math.floor(Math.random() * 360);
 var SAT_DEFAULT = 30;
 var LUM_DEFAULT = 50;
 
-window.RoomScene = window.SceneFactory({
+window.RoomScene = window.scene.branch({
     constructor: function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
