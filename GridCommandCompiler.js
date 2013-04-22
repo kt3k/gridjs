@@ -381,8 +381,17 @@ var CODON_MAP = {
         '↙  ↘'
     ]}, {key: 'commit', cmds: ['m']}],
 
-    NOS: [
-    ],
+    NOS: [{key: 'delay', cmds: [
+        '2112',
+        '2  2',
+        '2  2',
+        '2112',
+    ]}, {key: 'translate', cmds: [
+        '→↓↓←',
+        '↑←→↑',
+        '↓←→↓',
+        '→↑↑←'
+    ]}, {key: 'commit', cmds: ['m']}],
 
     NON: [
     ],
