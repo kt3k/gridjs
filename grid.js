@@ -562,8 +562,8 @@ var HUE_DEFAULT = Math.floor(Math.random() * 360);
 var SAT_DEFAULT = 30;
 var LUM_DEFAULT = 50;
 
-window.RoomScene = window.scene.branch({
-    constructor: function () {
+window.RoomScene = window.scene.branch(function (prototype, parent) {
+    prototype.constructor = function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
         this.left = LEFT_MARGIN_DEFAULT;
@@ -573,9 +573,9 @@ window.RoomScene = window.scene.branch({
         this.hue = HUE_DEFAULT;
         this.sat = SAT_DEFAULT;
         this.lum = LUM_DEFAULT;
-    },
+    };
 
-    onEnter: function (done) {
+    prototype.onEnter = function (done) {
         var gfield = this.gfield = window.gfield = window.gridField()
             .init({
                 num: this.num,
@@ -608,7 +608,7 @@ window.RoomScene = window.scene.branch({
             .transitionCommit();
 
         this.k = window.kyuukyuu().init().start();
-        this.flux = window.flux().init().start();
+        this.flux = window.flow().init(document.body).loop();
 
         this.timer = setInterval(function () {
             if (!gfield.riderExists()) {
@@ -639,10 +639,9 @@ window.RoomScene = window.scene.branch({
 
             gfield.executeGridCommands(cmds);
         });
+    };
 
-    },
-
-    onExit: function (done) {
+    prototype.onExit = function (done) {
         this.deck.clear();
 
         this.k.stop();
@@ -665,9 +664,9 @@ window.RoomScene = window.scene.branch({
             .callback(done)
 
             .transitionCommit();
-    },
+    };
 
-    exitConfirmNeeded: true,
+    prototype.exitConfirmNeeded = true;
 
-    exitConfirmMessage: 'Do you really want to leave this room?'
+    prototype.exitConfirmMessage = 'Do you really want to leave this room?';
 });
