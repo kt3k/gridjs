@@ -81,8 +81,6 @@ window.grid = (function (window) {
         };
     };
 
-    Function.prototype.E = function (decorator) { return decorator(this); };
-
     gridPrototype.setRandomMetrics = function () {
         this.div.setX(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_X - this.parent.GRID_SIZE / 2);
         this.div.setY(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_Y - this.parent.GRID_SIZE / 2);
@@ -308,8 +306,6 @@ window.grid = (function (window) {
     gridPrototype.t8 = transMethod(-1, 0);
     gridPrototype.t9 = transMethod(-1, 1);
 
-    delete Function.prototype.E;
-
     return exports;
 }(window));
 
@@ -339,10 +335,6 @@ window.gridField = (function () {
 
             return this;
         };
-    };
-
-    Function.prototype.E = function (decorator) {
-        return decorator(this);
     };
 
     // return random positive integer less than n.
@@ -535,8 +527,6 @@ window.gridField = (function () {
             func.call(this, grid);
         }, this);
     };
-
-    delete Function.prototype.E;
 
     return exports;
 }());
