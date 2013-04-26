@@ -607,7 +607,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent) {
 
             .transitionCommit();
 
-        this.k = window.kyuukyuu().init().start();
+        this.k = window.kunkun().init(document.body).loop();
         this.flux = window.flow().init(document.body).loop();
 
         this.timer = setInterval(function () {
