@@ -47,7 +47,7 @@ window.grid = (function (window) {
             webkitTransitionDuration: ANIMATION_DURATION
         };
 
-        this.div = window.div(basicStyle);
+        this.div = window.div().css(basicStyle);
 
         this.commitDelay = 0;
         this.__excited__ = false;
@@ -72,6 +72,8 @@ window.grid = (function (window) {
     var dice = function (n) {
         return Math.floor(Math.random() * n);
     };
+
+    Function.prototype.E = function (d) { return d(this); };
 
     var Chainable = function (f) {
         return function () {
@@ -306,6 +308,8 @@ window.grid = (function (window) {
     gridPrototype.t8 = transMethod(-1, 0);
     gridPrototype.t9 = transMethod(-1, 1);
 
+    delete Function.prototype.E;
+
     return exports;
 }(window));
 
@@ -329,6 +333,8 @@ window.gridField = (function () {
 
     gridFieldPrototype.constructor = exports;
 
+    Function.prototype.E = function (d) { return d(this); };
+
     var Chainable = function (f) {
         return function () {
             f.apply(this, arguments);
@@ -336,6 +342,8 @@ window.gridField = (function () {
             return this;
         };
     };
+
+    var Transitionable = window.div.decorators.Transitionable;
 
     // return random positive integer less than n.
     var dice = function (n) {
@@ -430,7 +438,7 @@ window.gridField = (function () {
             grid.div.css(style);
         });
     }
-    .E(window.transition.Transitionable)
+    .E(Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.commit = function () {
@@ -438,7 +446,7 @@ window.gridField = (function () {
             grid.commit();
         });
     }
-    .E(window.transition.Transitionable)
+    .E(Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.commitExcited = function () {
@@ -467,7 +475,7 @@ window.gridField = (function () {
             grid.reset();
         });
     }
-    .E(window.transition.Transitionable)
+    .E(Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.appendTo = function (dom) {
@@ -482,7 +490,7 @@ window.gridField = (function () {
             grid.remove();
         });
     }
-    .E(window.transition.Transitionable)
+    .E(Transitionable)
     .E(Chainable);
 
     gridFieldPrototype.removeRider = function () {
@@ -527,6 +535,8 @@ window.gridField = (function () {
             func.call(this, grid);
         }, this);
     };
+
+    delete Function.prototype.E;
 
     return exports;
 }());
