@@ -562,7 +562,9 @@ var HUE_DEFAULT = Math.floor(Math.random() * 360);
 var SAT_DEFAULT = 30;
 var LUM_DEFAULT = 50;
 
-window.RoomScene = window.scene.branch(function (prototype, parent) {
+window.RoomScene = window.scene.branch(function (prototype) {
+    'use strict';
+
     prototype.constructor = function () {
         this.num = NUM_GRIDS_DEFAULT;
         this.margin = GRID_MARGIN_DEFAULT;
@@ -577,35 +579,35 @@ window.RoomScene = window.scene.branch(function (prototype, parent) {
 
     prototype.onEnter = function (done) {
         var gfield = this.gfield = window.gfield = window.gridField()
-            .init({
-                num: this.num,
-                margin: this.margin,
-                left: this.left,
-                top: this.top,
-                size: this.size,
-                diff: this.diff,
-                hue: this.hue,
-                sat: this.sat,
-                lum: this.lum
-            })
-            .create()
-            .css({opacity: 0})
-            .randomize()
-            .commit()
-            .appendTo(window.document.body)
+        .init({
+            num: this.num,
+            margin: this.margin,
+            left: this.left,
+            top: this.top,
+            size: this.size,
+            diff: this.diff,
+            hue: this.hue,
+            sat: this.sat,
+            lum: this.lum
+        })
+        .create()
+        .css({opacity: 0})
+        .randomize()
+        .commit()
+        .appendTo(window.document.body)
 
-            .transition()
-            .duration(0)
-            .css({opacity: 1})
-            .commit()
+        .transition()
+        .duration(0)
+        .css({opacity: 1})
+        .commit()
 
-            .transition()
-            .duration(200)
-            .reset()
-            .commit()
-            .callback(done)
+        .transition()
+        .duration(200)
+        .reset()
+        .commit()
+        .callback(done)
 
-            .transitionCommit();
+        .transitionCommit();
 
         this.k = window.kunkun().init(document.body).loop();
         this.flux = window.flow().init(document.body).loop();
