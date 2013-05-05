@@ -594,7 +594,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
         .css({opacity: 0})
         .randomize()
         .commit()
-        .appendTo(window.document.body)
+        .appendTo(this.getTargetDom())
 
         .transition()
         .duration(0)
@@ -609,8 +609,8 @@ window.RoomScene = window.scene.branch(function (prototype) {
 
         .transitionCommit();
 
-        this.k = window.kunkun().init(document.body).loop();
-        this.flux = window.flow().init(document.body).loop();
+        this.k = window.kunkun().init(this.getTargetDom()).loop();
+        this.flux = window.flow().init(this.getTargetDom()).loop();
 
         this.timer = setInterval(function () {
             if (!gfield.riderExists()) {
@@ -640,7 +640,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
             }
 
             gfield.executeGridCommands(cmds);
-        });
+        }, this.getTargetDom());
     };
 
     prototype.onExit = function (done) {
