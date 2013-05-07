@@ -554,9 +554,9 @@ window.gridField = (function () {
 
 var NUM_GRIDS_DEFAULT = 4;
 var GRID_MARGIN_DEFAULT = 10;
-var LEFT_MARGIN_DEFAULT = 30;
+var LEFT_MARGIN_DEFAULT = 55;
 var TOP_MARGIN_DEFAULT = 10;
-var GRID_SIZE_DEFAULT = 50;
+var GRID_SIZE_DEFAULT = 45;
 var COMMIT_DIFF_DEFAULT = 40;
 var HUE_DEFAULT = Math.floor(Math.random() * 360);
 var SAT_DEFAULT = 30;
