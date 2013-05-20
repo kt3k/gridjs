@@ -320,30 +320,12 @@ window.grid = (function (window) {
  * dependency: grid.js@0.1.0
  */
 
-window.gridField = (function () {
+window.GridField = window.Transitionable.branch(function (gridFieldPrototype, parent, decorators) {
     'use strict';
 
-    var gridField = function () {};
+    var Chainable = decorators.Chainable;
 
-    var exports = function () {
-        return new gridField();
-    };
-
-    var gridFieldPrototype = gridField.prototype = exports.prototype = new window.Transitionable();
-
-    gridFieldPrototype.constructor = exports;
-
-    Function.prototype.E = function (d) { return d(this); };
-
-    var Chainable = function (f) {
-        return function () {
-            f.apply(this, arguments);
-
-            return this;
-        };
-    };
-
-    var Transitionable = window.div.decorators.Transitionable;
+    var Transitionable = decorators.Transitionable;
 
     // return random positive integer less than n.
     var dice = function (n) {
@@ -378,8 +360,6 @@ window.gridField = (function () {
 
         return nums.map(function (n) { return list[n]; });
     };
-
-    exports.sample = sample;
 
     gridFieldPrototype.init = function (args) {
         this.NUM_GRIDS = args.num;
@@ -590,10 +570,7 @@ window.gridField = (function () {
         }
     };
 
-    delete Function.prototype.E;
-
-    return exports;
-}());
+});
 
 /**
  * roomscene.js 0.1.0
@@ -620,7 +597,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
     'use strict';
 
     prototype.onEnter = function (done) {
-        var gfield = this.gfield = window.gfield = window.gridField()
+        var gfield = this.gfield = window.gfield = window.GridField()
         .init({
             num: NUM_GRIDS_DEFAULT,
             margin: GRID_MARGIN_DEFAULT,
