@@ -600,30 +600,18 @@ var LUM_DEFAULT = 50;
 window.RoomScene = window.scene.branch(function (prototype) {
     'use strict';
 
-    prototype.constructor = function () {
-        this.num = NUM_GRIDS_DEFAULT;
-        this.margin = GRID_MARGIN_DEFAULT;
-        this.left = LEFT_MARGIN_DEFAULT;
-        this.top = TOP_MARGIN_DEFAULT;
-        this.size = GRID_SIZE_DEFAULT;
-        this.diff = COMMIT_DIFF_DEFAULT;
-        this.hue = HUE_DEFAULT;
-        this.sat = SAT_DEFAULT;
-        this.lum = LUM_DEFAULT;
-    };
-
     prototype.onEnter = function (done) {
         var gfield = this.gfield = window.gfield = window.gridField()
         .init({
-            num: this.num,
-            margin: this.margin,
-            left: this.left,
-            top: this.top,
-            size: this.size,
-            diff: this.diff,
-            hue: this.hue,
-            sat: this.sat,
-            lum: this.lum
+            num: NUM_GRIDS_DEFAULT,
+            margin: GRID_MARGIN_DEFAULT,
+            left: LEFT_MARGIN_DEFAULT,
+            top: TOP_MARGIN_DEFAULT,
+            size: GRID_SIZE_DEFAULT,
+            diff: COMMIT_DIFF_DEFAULT,
+            hue: HUE_DEFAULT,
+            sat: SAT_DEFAULT,
+            lum: LUM_DEFAULT
         })
         .appear(done)
         .appendTo(this.getTargetDom());
