@@ -454,6 +454,25 @@ window.gridField = (function () {
     }
     .E(Chainable);
 
+    gridFieldPrototype.disappear = function () {
+        this
+        .randomize()
+        .commit()
+
+        .transition()
+        .duration(100)
+        .css({opacity: 0})
+        .commit()
+
+        .transition()
+        .duration(0)
+        .remove()
+        .callback(done)
+
+        .transitionCommit();
+    }
+    .E(Chainable);
+
     gridFieldPrototype.css = function (style) {
         this.forEachGrid(function (grid) {
             grid.div.css(style);
@@ -650,21 +669,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
 
         clearInterval(this.timer);
 
-        this.gfield
-            .randomize()
-            .commit()
-
-            .transition()
-            .duration(100)
-            .css({opacity: 0})
-            .commit()
-
-            .transition()
-            .duration(0)
-            .remove()
-            .callback(done)
-
-            .transitionCommit();
+        this.gfield.disappear();
     };
 
     prototype.exitConfirmNeeded = true;
