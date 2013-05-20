@@ -5,7 +5,7 @@
  * dependency: div.js@2.0
  */
 
-window.grid = (function (window) {
+window.grid = window.Transitionable.branch(function (gridPrototype, parent, decorators) {
     'use strict';
 
     var DELAY_LEVEL = 300;
@@ -33,7 +33,7 @@ window.grid = (function (window) {
     };
 
     // constructor
-    var grid = function (i, j, parent) {
+    gridPrototype.constructor = function (i, j, parent) {
         this.row = this.rowToGo = i;
         this.col = this.colToGo = j;
         this.parent = parent;
@@ -62,26 +62,12 @@ window.grid = (function (window) {
         parent[this.row][this.col] = this;
     };
 
-    var exports = function (i, j, parent) {
-        return new grid(i, j, parent);
-    };
-
-    var gridPrototype = grid.prototype = exports.prototype = {constructor: exports};
-
     // return random positive integer less than n.
     var dice = function (n) {
         return Math.floor(Math.random() * n);
     };
 
-    Function.prototype.E = function (d) { return d(this); };
-
-    var Chainable = function (f) {
-        return function () {
-            f.apply(this, arguments);
-
-            return this;
-        };
-    };
+    var Chainable = decorators.Chainable;
 
     gridPrototype.setRandomMetrics = function () {
         this.div.setX(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_X - this.parent.GRID_SIZE / 2);
@@ -307,11 +293,7 @@ window.grid = (function (window) {
     gridPrototype.t7 = transMethod(-1, -1);
     gridPrototype.t8 = transMethod(-1, 0);
     gridPrototype.t9 = transMethod(-1, 1);
-
-    delete Function.prototype.E;
-
-    return exports;
-}(window));
+});
 
 /**
  * gridfield.js 0.1.0
@@ -434,7 +416,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
     }
     .E(Chainable);
 
-    gridFieldPrototype.disappear = function () {
+    gridFieldPrototype.disappear = function (done) {
         this
         .randomize()
         .commit()
@@ -646,7 +628,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
 
         clearInterval(this.timer);
 
-        this.gfield.disappear();
+        this.gfield.disappear(done);
     };
 
     prototype.exitConfirmNeeded = true;
