@@ -432,6 +432,27 @@ window.gridField = (function () {
     }
     .E(Chainable);
 
+    gridFieldPrototype.appear = function (done) {
+        this
+        .create()
+        .css({opacity: 0})
+        .randomize()
+        .commit()
+
+        .transition()
+        .duration(0)
+        .css({opacity: 1})
+        .commit()
+
+        .transition()
+        .duration(200)
+        .reset()
+        .commit()
+        .callback(done)
+
+        .transitionCommit();
+    }
+    .E(Chainable);
 
     gridFieldPrototype.css = function (style) {
         this.forEachGrid(function (grid) {
@@ -604,24 +625,8 @@ window.RoomScene = window.scene.branch(function (prototype) {
             sat: this.sat,
             lum: this.lum
         })
-        .create()
-        .css({opacity: 0})
-        .randomize()
-        .commit()
-        .appendTo(this.getTargetDom())
-
-        .transition()
-        .duration(0)
-        .css({opacity: 1})
-        .commit()
-
-        .transition()
-        .duration(200)
-        .reset()
-        .commit()
-        .callback(done)
-
-        .transitionCommit();
+        .appear(done)
+        .appendTo(this.getTargetDom());
 
         this.k = window.kunkun().init(this.getTargetDom()).loop();
         this.flux = window.flow().init(this.getTargetDom()).loop();
