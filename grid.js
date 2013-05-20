@@ -360,7 +360,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
 
-        this.initTransition(this);
+        this.initTransition();
 
         this.style = args.style;
     }
