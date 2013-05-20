@@ -536,6 +536,20 @@ window.gridField = (function () {
         }, this);
     };
 
+    gridFieldPrototype.symOpMapper = function (codonMap) {
+        var self = this;
+
+        return function (syms) {
+            var cmds = codonMap[syms];
+
+            if (!cmds) {
+                throw Error('Operation "' + syms + '" is not defined');
+            }
+
+            self.executeGridCommands(cmds);
+        }
+    };
+
     delete Function.prototype.E;
 
     return exports;
@@ -632,15 +646,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
             }
         }, 500);
 
-        this.deck = window.cardDeck(function (syms) {
-            var cmds = window.codonMap[syms];
-
-            if (!cmds) {
-                throw Error('Operation "' + syms + '" is not defined');
-            }
-
-            gfield.executeGridCommands(cmds);
-        }, this.getTargetDom());
+        this.deck = window.cardDeck(gfield.symOpMapper(window.codonMap), this.getTargetDom());
     };
 
     prototype.onExit = function (done) {
