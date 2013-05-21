@@ -97,6 +97,20 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
     }
     .E(Chainable);
 
+    gridPrototype.commitFull = function () {
+        var self = this;
+
+        window.setTimeout(function () {
+            self.affectRider();
+            self.commit();
+        }, this.commitDelay);
+
+        this.commitMetrics();
+
+        this.resetMetrics();
+    }
+    .E(Chainable);
+
     gridPrototype.commit = function () {
         this.div.commit();
     }
@@ -447,14 +461,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
 
     gridFieldPrototype.commitExcited = function () {
         this.forEachExcitedGrid(function (grid) {
-            window.setTimeout(function () {
-                grid.affectRider();
-                grid.commit();
-            }, grid.commitDelay);
-
-            grid.commitMetrics();
-
-            grid.resetMetrics();
+            grid.commitFull();
         });
     }
     .E(Chainable);
