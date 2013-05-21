@@ -550,7 +550,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
             }
 
             self.executeGridCommands(cmds);
-        }
+        };
     };
 
 });
