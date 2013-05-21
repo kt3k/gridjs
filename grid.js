@@ -595,8 +595,8 @@ window.RoomScene = window.scene.branch(function (prototype) {
         .appear(done)
         .appendTo(this.getTargetDom());
 
-        this.k = window.kunkun().init(this.getTargetDom()).loop();
-        this.flux = window.flow().init(this.getTargetDom()).loop();
+        this.k = window.kunkun().init(this.getTargetDom()).appear();
+        this.flux = window.flow().init(this.getTargetDom()).appear();
 
         this.timer = setInterval(function () {
             if (!gfield.riderExists()) {
@@ -624,8 +624,8 @@ window.RoomScene = window.scene.branch(function (prototype) {
     prototype.onExit = function (done) {
         this.deck.clear();
 
-        this.k.stop();
-        this.flux.stop();
+        this.k.disappear();
+        this.flux.disappear();
 
         clearInterval(this.timer);
 
