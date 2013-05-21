@@ -32,6 +32,12 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
         };
     };
 
+    var dice = function (n) {
+        return Math.floor(Math.random() * n);
+    };
+
+    var Chainable = decorators.Chainable;
+
     // constructor
     gridPrototype.constructor = function (i, j, parent) {
         this.row = this.rowToGo = i;
@@ -61,13 +67,6 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
         parent[this.row] || (parent[this.row] = {});
         parent[this.row][this.col] = this;
     };
-
-    // return random positive integer less than n.
-    var dice = function (n) {
-        return Math.floor(Math.random() * n);
-    };
-
-    var Chainable = decorators.Chainable;
 
     gridPrototype.setRandomMetrics = function () {
         this.div.setX(dice(this.parent.FIELD_SIZE) - this.parent.FIELD_SIZE / 2 + this.parent.FIELD_CENTER_X - this.parent.GRID_SIZE / 2);
