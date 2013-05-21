@@ -122,17 +122,15 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
         if (this.rider != null && typeof this.rider.listen === 'function') {
             this.rider.listen(this.div.getDiff());
         }
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.initRider = function () {
         if (this.rider != null && typeof this.rider.init === 'function') {
             this.rider.init(this);
         }
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.setRider = function (rider) {
         if (this.riderExists()) {
@@ -142,29 +140,25 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
         this.rider = rider;
 
         this.initRider();
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.unsetRider = function () {
         this.rider = null;
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.removeRider = function () {
         if (this.rider != null && typeof this.rider.remove === 'function') {
             this.rider.remove();
         }
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.appendTo = function (dom) {
         this.div.appendTo(dom);
-
-        return this;
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.remove = function () {
         this.removeRider();
@@ -175,7 +169,8 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
         .duration(500)
         .remove()
         .transitionCommit();
-    };
+    }
+    .E(Chainable);
 
     gridPrototype.execute = function (cmd) {
         return this[cmd]();
