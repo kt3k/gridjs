@@ -580,8 +580,7 @@ window.RoomScene = window.scene.branch(function (prototype) {
     'use strict';
 
     prototype.onEnter = function (done) {
-        var gfield = this.gfield = window.gfield = window.GridField()
-        .init({
+        this.gfield = window.GridField().init({
             num: NUM_GRIDS_DEFAULT,
             margin: GRID_MARGIN_DEFAULT,
             left: LEFT_MARGIN_DEFAULT,
@@ -591,45 +590,43 @@ window.RoomScene = window.scene.branch(function (prototype) {
             hue: HUE_DEFAULT,
             sat: SAT_DEFAULT,
             lum: LUM_DEFAULT
-        })
-        .appear(done)
-        .appendTo(this.getTargetDom());
+        }).appear(done).appendTo(this.getTargetDom());
 
         this.k = window.kunkun().init(this.getTargetDom()).appear();
         this.flux = window.flow().init(this.getTargetDom()).appear();
+        this.deck = window.cardDeck(this.gfield.symOpMapper(window.codonMap), this.getTargetDom());
+
+        var self = this;
 
         this.timer = setInterval(function () {
-            if (!gfield.riderExists()) {
-                gfield.sampleVacantGrids(3).forEach(function (grid) {
+            if (!self.gfield.riderExists()) {
+                self.gfield.sampleVacantGrids(3).forEach(function (grid) {
                     grid.setRider(new window.actorOnGrid());
                 });
 
                 setTimeout(function () {
-                    gfield.sampleVacantGrids(3).forEach(function (grid) {
+                    self.gfield.sampleVacantGrids(3).forEach(function (grid) {
                         grid.setRider(new window.actorOnGrid());
                     });
                 }, 400);
 
                 setTimeout(function () {
-                    gfield.sampleVacantGrids(3).forEach(function (grid) {
+                    self.gfield.sampleVacantGrids(3).forEach(function (grid) {
                         grid.setRider(new window.actorOnGrid());
                     });
                 }, 800);
             }
         }, 500);
 
-        this.deck = window.cardDeck(gfield.symOpMapper(window.codonMap), this.getTargetDom());
     };
 
     prototype.onExit = function (done) {
-        this.deck.clear();
-
+        this.gfield.disappear(done);
         this.k.disappear();
         this.flux.disappear();
+        this.deck.clear();
 
         clearInterval(this.timer);
-
-        this.gfield.disappear(done);
     };
 
     prototype.exitConfirmNeeded = true;
