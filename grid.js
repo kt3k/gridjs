@@ -576,7 +576,7 @@ var HUE_DEFAULT = Math.floor(Math.random() * 360);
 var SAT_DEFAULT = 30;
 var LUM_DEFAULT = 50;
 
-window.RoomScene = window.scene.branch(function (prototype) {
+window.RoomScene = window.scene.branch(function (prototype, parent, decorators) {
     'use strict';
 
     prototype.onEnter = function (done) {
@@ -618,7 +618,8 @@ window.RoomScene = window.scene.branch(function (prototype) {
             }
         }, 500);
 
-    };
+    }
+    .E(decorators.OnEnterMethod);
 
     prototype.onExit = function (done) {
         this.gfield.disappear(done);
@@ -627,7 +628,8 @@ window.RoomScene = window.scene.branch(function (prototype) {
         this.deck.clear();
 
         clearInterval(this.timer);
-    };
+    }
+    .E(decorators.OnExitMethod);
 
     prototype.exitConfirmNeeded = true;
 
