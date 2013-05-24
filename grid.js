@@ -594,7 +594,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
 
         this.k = window.kunkun().init(this.getTargetDom()).appear();
         this.flux = window.flow().init(this.getTargetDom()).appear();
-        this.deck = window.cardDeck(this.gfield.symOpMapper(window.codonMap), this.getTargetDom());
+        this.deck = window.cardDeck().init(this.gfield.symOpMapper(window.codonMap), this.getTargetDom()).appear();
 
         var self = this;
 
@@ -625,7 +625,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
         this.gfield.disappear(done);
         this.k.disappear();
         this.flux.disappear();
-        this.deck.clear();
+        this.deck.disappear();
 
         clearInterval(this.timer);
     }
