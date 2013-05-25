@@ -374,7 +374,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
 
-        this.opEvent = args.opEvent;
+        this.codonChannel = window.radio(args.opEvent);
 
         this.opEventListener = bind(this, 'symListener');
 
@@ -415,7 +415,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
     .E(Chainable);
 
     gridFieldPrototype.appear = function (done) {
-        window.radio(this.opEvent).subscribe(this.opEventListener);
+        this.codonChannel.subscribe(this.opEventListener);
 
         this
         .create()
@@ -439,7 +439,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
     .E(Chainable);
 
     gridFieldPrototype.disappear = function (done) {
-        window.radio(this.opEvent).unsubscribe(this.opEventListener);
+        this.codonChannel.unsubscribe(this.opEventListener);
 
         this
         .randomize()
