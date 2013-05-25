@@ -351,6 +351,12 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         return nums.map(function (n) { return list[n]; });
     };
 
+    var bind = function (obj, method) {
+        return function () {
+            obj[method].apply(obj, arguments);
+        };
+    };
+
     gridFieldPrototype.init = function (args) {
         this.NUM_GRIDS = args.num;
         this.GRID_MARGIN = args.margin;
@@ -367,6 +373,12 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         this.HUE_DEFAULT = args.hue;
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
+
+        this.opEvent = args.opEvent;
+
+        this.opEventListener = bind(this, 'symListener');
+
+        this.codonMap = args.codonMap;
 
         this.initTransition();
 
@@ -403,6 +415,8 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
     .E(Chainable);
 
     gridFieldPrototype.appear = function (done) {
+        window.radio(this.opEvent).subscribe(this.opEventListener);
+
         this
         .create()
         .css({opacity: 0})
@@ -425,6 +439,8 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
     .E(Chainable);
 
     gridFieldPrototype.disappear = function (done) {
+        window.radio(this.opEvent).unsubscribe(this.opEventListener);
+
         this
         .randomize()
         .commit()
@@ -539,18 +555,14 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         }, this);
     };
 
-    gridFieldPrototype.symOpMapper = function (codonMap) {
-        var self = this;
+    gridFieldPrototype.symListener = function (syms) {
+        var cmds = this.codonMap[syms];
 
-        return function (syms) {
-            var cmds = codonMap[syms];
+        if (!cmds) {
+            throw Error('Operation "' + syms + '" is not defined');
+        }
 
-            if (!cmds) {
-                throw Error('Operation "' + syms + '" is not defined');
-            }
-
-            self.executeGridCommands(cmds);
-        };
+        this.executeGridCommands(cmds);
     };
 
 });
@@ -580,7 +592,8 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
     'use strict';
 
     prototype.onEnter = function (done) {
-        this.gfield = window.GridField().init({
+        this.gfield = window.GridField()
+        .init({
             num: NUM_GRIDS_DEFAULT,
             margin: GRID_MARGIN_DEFAULT,
             left: LEFT_MARGIN_DEFAULT,
@@ -589,12 +602,19 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             diff: COMMIT_DIFF_DEFAULT,
             hue: HUE_DEFAULT,
             sat: SAT_DEFAULT,
-            lum: LUM_DEFAULT
-        }).appear(done).appendTo(this.getTargetDom());
+            lum: LUM_DEFAULT,
+            opEvent: 'op-event',
+            codonMap: window.codonMap
+        })
+        .appear(done)
+        .appendTo(this.getTargetDom());
 
         this.k = window.kunkun().init(this.getTargetDom()).appear();
         this.flux = window.flow().init(this.getTargetDom()).appear();
-        this.deck = window.cardDeck().init(this.gfield.symOpMapper(window.codonMap), this.getTargetDom()).appear();
+        this.deck = window.cardDeck().init({
+            opEvent: 'op-event',
+            dom: this.getTargetDom()
+        }).appear();
 
         var self = this;
 
