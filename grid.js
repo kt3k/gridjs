@@ -592,6 +592,8 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
     'use strict';
 
     prototype.onEnter = function (done) {
+        this.radio = window.radio;
+
         this.gfield = window.GridField()
         .init({
             num: NUM_GRIDS_DEFAULT,
@@ -605,7 +607,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             lum: LUM_DEFAULT,
             opEvent: 'op-event',
             codonMap: window.codonMap,
-            radio: window.radio
+            radio: this.radio
         })
         .appear(done)
         .appendTo(this.getTargetDom());
@@ -614,7 +616,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
         this.flux = window.flow().init(this.getTargetDom()).appear();
         this.deck = window.cardDeck().init({
             opEvent: 'op-event',
-            radio: window.radio,
+            radio: this.radio,
             dom: this.getTargetDom()
         }).appear();
 
