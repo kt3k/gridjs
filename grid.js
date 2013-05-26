@@ -383,6 +383,8 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         this.initTransition();
 
         this.style = args.style;
+
+        this.targetDom = args.dom;
     }
     .E(Chainable);
 
@@ -422,6 +424,8 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         .css({opacity: 0})
         .randomize()
         .commit()
+
+        .appendTo(this.targetDom)
 
         .transition()
         .duration(0)
@@ -607,10 +611,10 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             lum: LUM_DEFAULT,
             opEvent: 'op-event',
             codonMap: window.codonMap,
-            radio: this.radio
+            radio: this.radio,
+            dom: this.getTargetDom()
         })
-        .appear(done)
-        .appendTo(this.getTargetDom());
+        .appear(done);
 
         this.k = window.kunkun().init(this.getTargetDom()).appear();
         this.flux = window.flow().init(this.getTargetDom()).appear();
