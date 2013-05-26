@@ -393,8 +393,22 @@ var CODON_MAP = {
         '→↑↑←'
     ]}, {key: 'commit', cmds: ['m']}],
 
-    NON: [
-    ],
+    NON: [{key: 'rot', cmds: [
+        ' LR ',
+        'L  R',
+        'R  L',
+        ' RL ',
+    ]}, {key: 'delay', cmds: [
+        ' 23 ',
+        '   1',
+        '1   ',
+        ' 32 ',
+    ]}, {key: 'translate', cmds: [
+        ' ↗↖ ',
+        '↙  ↘',
+        '↖  ↗',
+        ' ↘↙ '
+    ]}, {key: 'commit', cmds: ['m']}],
 
     NOO: [
     ],
