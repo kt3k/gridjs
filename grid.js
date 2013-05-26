@@ -582,15 +582,21 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
  * RoomScene implements scene
  */
 
-var NUM_GRIDS_DEFAULT = 4;
-var GRID_MARGIN_DEFAULT = 10;
-var LEFT_MARGIN_DEFAULT = 55;
-var TOP_MARGIN_DEFAULT = 10;
-var GRID_SIZE_DEFAULT = 45;
-var COMMIT_DIFF_DEFAULT = 40;
-var HUE_DEFAULT = Math.floor(Math.random() * 360);
-var SAT_DEFAULT = 30;
-var LUM_DEFAULT = 50;
+var SCREEN_WIDTH = 320;
+var SCREEN_HEIGHT = 414;
+
+var NUM_GRIDS = 4;
+var GRID_MARGIN = 10;
+var TOP_MARGIN = 40;
+var GRID_SIZE = 40;
+
+var LEFT_MARGIN = (SCREEN_WIDTH - GRID_SIZE * NUM_GRIDS - GRID_MARGIN * (NUM_GRIDS - 1)) / 2;
+
+var COMMIT_DIFF = 40;
+
+var HUE = Math.floor(Math.random() * 360);
+var SAT = 30;
+var LUM = 50;
 
 window.RoomScene = window.scene.branch(function (prototype, parent, decorators) {
     'use strict';
@@ -599,15 +605,15 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
         this.radio = window.radio;
 
         this.gfield = window.GridField().init({
-            num: NUM_GRIDS_DEFAULT,
-            margin: GRID_MARGIN_DEFAULT,
-            left: LEFT_MARGIN_DEFAULT,
-            top: TOP_MARGIN_DEFAULT,
-            size: GRID_SIZE_DEFAULT,
-            diff: COMMIT_DIFF_DEFAULT,
-            hue: HUE_DEFAULT,
-            sat: SAT_DEFAULT,
-            lum: LUM_DEFAULT,
+            num: NUM_GRIDS,
+            margin: GRID_MARGIN,
+            left: LEFT_MARGIN,
+            top: TOP_MARGIN,
+            size: GRID_SIZE,
+            diff: COMMIT_DIFF,
+            hue: HUE,
+            sat: SAT,
+            lum: LUM,
             opEvent: 'op-event',
             codonMap: window.codonMap,
             radio: this.radio,
