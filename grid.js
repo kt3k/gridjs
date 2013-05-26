@@ -374,7 +374,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
 
-        this.codonChannel = window.radio(args.opEvent);
+        this.codonChannel = args.radio(args.opEvent);
 
         this.opEventListener = bind(this, 'symListener');
 
@@ -555,8 +555,8 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         }, this);
     };
 
-    gridFieldPrototype.symListener = function (syms) {
-        var cmds = this.codonMap[syms];
+    gridFieldPrototype.symListener = function (data) {
+        var cmds = this.codonMap[data.codon];
 
         if (!cmds) {
             throw Error('Operation "' + syms + '" is not defined');
@@ -604,7 +604,8 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             sat: SAT_DEFAULT,
             lum: LUM_DEFAULT,
             opEvent: 'op-event',
-            codonMap: window.codonMap
+            codonMap: window.codonMap,
+            radio: window.radio
         })
         .appear(done)
         .appendTo(this.getTargetDom());
@@ -613,6 +614,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
         this.flux = window.flow().init(this.getTargetDom()).appear();
         this.deck = window.cardDeck().init({
             opEvent: 'op-event',
+            radio: window.radio,
             dom: this.getTargetDom()
         }).appear();
 
