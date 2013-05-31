@@ -635,28 +635,9 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             dom: this.getTargetDom()
         }).appear();
 
-        var self = this;
-
-        this.timer = setInterval(function () {
-            if (!self.gfield.riderExists()) {
-                self.gfield.sampleVacantGrids(3).forEach(function (grid) {
-                    grid.setRider(new window.actorOnGrid());
-                });
-
-                setTimeout(function () {
-                    self.gfield.sampleVacantGrids(3).forEach(function (grid) {
-                        grid.setRider(new window.actorOnGrid());
-                    });
-                }, 400);
-
-                setTimeout(function () {
-                    self.gfield.sampleVacantGrids(3).forEach(function (grid) {
-                        grid.setRider(new window.actorOnGrid());
-                    });
-                }, 800);
-            }
-        }, 500);
-
+        this.enemyGroup = window.EnemyGroup().init({
+            gridField: this.gfield
+        }).appear();
     }
     .E(decorators.OnEnterMethod);
 
@@ -666,7 +647,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
         this.flux.disappear();
         this.deck.disappear();
 
-        clearInterval(this.timer);
+        this.enemyGroup.disappear();
     }
     .E(decorators.OnExitMethod);
 
