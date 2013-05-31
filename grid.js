@@ -374,9 +374,9 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
         this.SAT_DEFAULT = args.sat;
         this.LUM_DEFAULT = args.lum;
 
-        this.codonChannel = args.radio(args.opEvent);
-
-        this.opEventListener = bind(this, 'symListener');
+        this.__subscription__ = {
+            symListener: args.opEvent
+        };
 
         this.codonMap = args.codonMap;
 
@@ -386,6 +386,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
 
         this.targetDom = args.dom;
     }
+    .E(pubsub.InitSubscription)
     .E(Chainable);
 
     gridFieldPrototype.origin = function () {
@@ -417,8 +418,6 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
     .E(Chainable);
 
     gridFieldPrototype.appear = function (done) {
-        this.codonChannel.subscribe(this.opEventListener);
-
         this
         .create()
         .css({opacity: 0})
@@ -440,11 +439,10 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
 
         .transitionCommit();
     }
+    .E(pubsub.Subscribe)
     .E(Chainable);
 
     gridFieldPrototype.disappear = function (done) {
-        this.codonChannel.unsubscribe(this.opEventListener);
-
         this
         .randomize()
         .commit()
@@ -461,6 +459,7 @@ window.GridField = window.Transitionable.branch(function (gridFieldPrototype, pa
 
         .transitionCommit();
     }
+    .E(pubsub.Unsubscribe)
     .E(Chainable);
 
     gridFieldPrototype.css = function (style) {
@@ -616,7 +615,6 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             lum: LUM,
             opEvent: 'op-event',
             codonMap: window.codonMap,
-            radio: this.radio,
             dom: this.getTargetDom()
         }).appear(done);
 
@@ -630,7 +628,10 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
 
         this.deck = window.cardDeck().init({
             opEvent: 'op-event',
-            radio: this.radio,
+            baseEvent: 'base-event',
+            popEvent: 'pop-event',
+            shootEvent: 'shoot-event',
+            dealEvent: 'deal-event',
             dom: this.getTargetDom()
         }).appear();
 
