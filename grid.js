@@ -55,6 +55,8 @@ window.grid = window.Transitionable.branch(function (gridPrototype, parent, deco
 
         this.div = window.div().css(basicStyle);
 
+        this.div.dom.grid = this;
+
         this.commitDelay = 0;
         this.__excited__ = false;
 
