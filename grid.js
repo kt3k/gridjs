@@ -624,12 +624,12 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             dom: this.getTargetDom()
         }).appear();
 
-        this.uroMax = 10;
-
-        this.uro = Array(this.uroMax);
-        for (var i = 0; i < this.uroMax; i++) {
-            this.uro[i] = window.urouro().init({x: 100, y: 130, dom: this.getTargetDom()}).appear();
-        }
+        this.uroList = window.UroList().init({
+            max: 10,
+            x: 100,
+            y: 130,
+            dom: this.getTargetDom()
+        }).appear();
 
         this.deck = window.cardDeck().init({
             opEvent: 'op-event',
@@ -650,10 +650,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
         this.gfield.disappear(done);
         this.flux.disappear();
 
-        for (var i = 0; i < this.uroMax; i++) {
-            this.uro[i].disappear();
-            this.uro[i] = null;
-        }
+        this.uroList.disappear();
 
         this.deck.disappear();
 
