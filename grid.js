@@ -637,6 +637,7 @@ window.RoomScene = window.scene.branch(function (prototype, parent, decorators) 
             popEvent: 'pop-event',
             shootEvent: 'shoot-event',
             dealEvent: 'deal-event',
+            progressEvent: 'progress-event',
             dom: this.getTargetDom()
         }).appear();
 
