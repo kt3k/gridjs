@@ -410,8 +410,22 @@ var CODON_MAP = {
         ' ↘↙ '
     ]}, {key: 'commit', cmds: ['m']}],
 
-    NOO: [
-    ],
+    NOO: [{key: 'rot', cmds: [
+        ' r r',
+        '    ',
+        '    ',
+        ' l l',
+    ]}, {key: 'delay', cmds: [
+        '2121',
+        '    ',
+        '    ',
+        ' 3 3',
+    ]}, {key: 'translate', cmds: [
+        '→↖→↖',
+        '    ',
+        '    ',
+        '→↙→↙'
+    ]}, {key: 'commit', cmds: ['m']}],
 
     NOW: [
     ],
