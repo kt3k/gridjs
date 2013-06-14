@@ -444,8 +444,17 @@ var CODON_MAP = {
         '↗  ↖'
     ]}, {key: 'commit', cmds: ['m']}],
 
-    NWS: [
-    ],
+    NWS: [{key: 'delay', cmds: [
+        '    ',
+        '1111',
+        '2222',
+        '3333',
+    ]}, {key: 'translate', cmds: [
+        '→←→←',
+        '→←→←',
+        '→←→←',
+        '→←→←'
+    ]}, {key: 'commit', cmds: ['m']}],
 
     NWN: [
     ],
