@@ -456,8 +456,17 @@ var CODON_MAP = {
         '→←→←'
     ]}, {key: 'commit', cmds: ['m']}],
 
-    NWN: [
-    ],
+    NWN: [{key: 'delay', cmds: [
+        ' 11 ',
+        '1221',
+        '1221',
+        ' 11 ',
+    ]}, {key: 'translate', cmds: [
+        '↘↑↑↙',
+        '←↖↗→',
+        '←↙↘→',
+        '↗↓↓↖'
+    ]}, {key: 'commit', cmds: ['m']}],
 
     NWO: [
     ],
