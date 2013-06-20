@@ -1,6 +1,8 @@
 Grid.JS
 =======
 
-*Grid.JS* is WIP.
+A part of Yggs Building Adventure.
 
-Grid.JS implements various operations on NxN grids.
+It manages N by N tile grid maneuvers.
+
+It depends on ylep.js and div.js.
